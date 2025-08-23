@@ -4,7 +4,6 @@ import tailwindcss from "@tailwindcss/vite";
 
 // https://vite.dev/config/
 export default defineConfig({
-	base: '/PanPanFR.github.io/',
 	plugins: [
 		react(),
 		tailwindcss(),
@@ -33,14 +32,6 @@ export default defineConfig({
 	],
 	server: {
 		allowedHosts: true,
-		proxy: {
-			'/api': {
-				target: 'https://github-readme-stats-427uvq2u4-pandu-fatikha-rahmadanas-projects.vercel.app',
-				changeOrigin: true,
-				secure: true,
-				rewrite: (path) => path.replace(/^\/api/, '/api')
-			}
-		}
 	},
 	build: {
 		minify: "terser", // Use Terser for minification since give more smaller bundle

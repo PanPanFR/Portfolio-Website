@@ -54,9 +54,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
 	useEffect(() => {
 		const loadData = async () => {
 			try {
-				// Try to fetch all data, but handle individual failures gracefully
 				const [supportedLangs, projects, achievements, contributions] =
-					await Promise.allSettled([
+					await Promise.all([
 						fetchSupportedLangs(),
 						fetchProject(),
 						fetchAchievements(),
@@ -65,25 +64,14 @@ export function DataProvider({ children }: { children: ReactNode }) {
 
 				setContent((prev) => ({
 					...prev,
-					supportedLangs: supportedLangs.status === 'fulfilled' ? supportedLangs.value : [],
-					projects: projects.status === 'fulfilled' ? projects.value : [],
-					achievements: achievements.status === 'fulfilled' ? achievements.value : [],
-					contributions: contributions.status === 'fulfilled' ? contributions.value : defaultContributions,
+					supportedLangs,
+					projects,
+					achievements,
+					contributions,
 				}));
-
-				// Log any failed requests
-				[supportedLangs, projects, achievements, contributions].forEach((result, index) => {
-					if (result.status === 'rejected') {
-						const names = ['supportedLangs', 'projects', 'achievements', 'contributions'];
-						console.warn(`Failed to fetch ${names[index]}:`, result.reason);
-					}
-				});
 			} catch (erorr) {
 				console.error("Error fetching data:", erorr);
-				// Don't show error boundary for non-critical failures
-				// showBoundary(new Error("Failed to fetch data"));
-			} finally {
-				setIsLoading(false);
+				showBoundary(new Error("Failed to fetch data"));
 			}
 		};
 		loadData();
