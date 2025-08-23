@@ -1,0 +1,35 @@
+# Branch Protection Rules
+# File ini berisi rekomendasi untuk mengatur branch protection di GitHub
+
+## Branch Protection untuk `main`
+- ✅ Require a pull request before merging
+- ✅ Require approvals (minimal 1 reviewer)
+- ✅ Dismiss stale PR approvals when new commits are pushed
+- ✅ Require status checks to pass before merging
+- ✅ Require branches to be up to date before merging
+- ✅ Include administrators
+- ✅ Restrict pushes that create files that are larger than 100 MB
+
+## Branch Protection untuk `develop`
+- ✅ Require a pull request before merging
+- ✅ Require approvals (minimal 1 reviewer)
+- ✅ Require status checks to pass before merging
+- ✅ Require branches to be up to date before merging
+
+## Status Checks yang Diperlukan
+- ✅ Quality Check (test.yml)
+- ✅ Build (ci-cd.yml)
+- ✅ Deploy (deploy.yml)
+
+## Cara Setup Branch Protection
+1. Buka repository settings
+2. Pilih "Branches"
+3. Klik "Add rule" atau edit existing rule
+4. Atur sesuai rekomendasi di atas
+5. Klik "Create" atau "Save changes"
+
+## Keuntungan Branch Protection
+- Mencegah code yang belum di-review masuk ke production
+- Memastikan semua tests pass sebelum merge
+- Meningkatkan kualitas code
+- Mencegah accidental pushes ke protected branches
