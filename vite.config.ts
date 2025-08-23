@@ -32,6 +32,7 @@ export default defineConfig({
 	],
 	server: {
 		allowedHosts: true,
+		base: '/', // untuk user/organization page
 	},
 	build: {
 		minify: "terser", // Use Terser for minification since give more smaller bundle
