@@ -1,6 +1,6 @@
 # PanPan-Porto
 
-This is web created using Vite and React. You can test it in <a href="https://panpanfr.vercel.app" target="_blank">panpanfr.vercel.app</a>
+This is web created using Vite and React. You can test it in <a href="https://panpanfr.github.io/" target="_blank">panpanfr.vercel.app</a>
 
 ## Features
 
