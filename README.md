@@ -4,14 +4,21 @@ This is web created using Vite and React. You can test it in <a href="https://pa
 
 ## Features
 
-- 🌙 Mode Terang & Gelap (Dark/Light Mode)
-- 🌍 Dukungan Multi-bahasa (Multi Language Support)
-- 💻📱 Desain Responsif (Responsive Design)
-- ⚡ Performa Cepat dengan Vite (Fast Performance with Vite)
-- 🎨 UI Indah dengan Tailwind CSS (Beautiful UI with Tailwind CSS)
-- 📊 Integrasi Statistik GitHub (GitHub Stats Integration)
-- 🧱 UI Neobrutalist (Neobrutalist UI)
-- 🗂️ Data dari Google Spreadsheet (Google Spreadsheet Data)
+🌙 Dark/Light Mode - Switch between light and dark themes for comfortable viewing.
+
+🌍 Multi Language Support - Supports content in multiple languages, such as English and Indonesian.
+
+💻📱 Responsive Design - Adapts seamlessly to any screen size, from desktops to mobile phones.
+
+⚡ Fast Performance with Vite - Built with Vite for incredibly fast loading times and a smooth experience.
+
+🎨 Beautiful UI with Tailwind CSS - Modern and clean user interface styled with the Tailwind CSS framework.
+
+📊 GitHub Stats Integration - Dynamically displays your GitHub contributions and statistics on the website.
+
+🧱 Neobrutalist UI - Features a unique and bold design style with high contrast and sharp edges.
+
+🗂️ Google Spreadsheet Data - Uses a Google Spreadsheet as a simple, easy-to-manage database for your content.
 
 ## How to Use
 
