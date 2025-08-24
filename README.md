@@ -4,15 +4,15 @@ This is web created using Vite and React. You can test it in <a href="https://pa
 
 ## Features
 
-🌙 Dark/Light Mode - Switch between light and dark themes for comfortable viewing.
+- 🌙 Dark/Light Mode - Switch between light and dark themes for comfortable viewing.
 
-🌍 Multi Language Support - Supports content in multiple languages, such as English and Indonesian.
+- 🌍 Multi Language Support - Supports content in multiple languages, such as English and Indonesian.
 
-💻📱 Responsive Design - Adapts seamlessly to any screen size, from desktops to mobile phones.
+- 💻📱 Responsive Design - Adapts seamlessly to any screen size, from desktops to mobile phones.
 
-⚡ Fast Performance with Vite - Built with Vite for incredibly fast loading times and a smooth experience.
+- ⚡ Fast Performance with Vite - Built with Vite for incredibly fast loading times and a smooth experience.
 
-🎨 Beautiful UI with Tailwind CSS - Modern and clean user interface styled with the Tailwind CSS framework.
+- 🎨 Beautiful UI with Tailwind CSS - Modern and clean user interface styled with the Tailwind CSS framework.
 
 📊 GitHub Stats Integration - Dynamically displays your GitHub contributions and statistics on the website.
 
