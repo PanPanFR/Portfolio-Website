@@ -14,11 +14,11 @@ This is web created using Vite and React. You can test it in <a href="https://pa
 
 - 🎨 Beautiful UI with Tailwind CSS - Modern and clean user interface styled with the Tailwind CSS framework.
 
-📊 GitHub Stats Integration - Dynamically displays your GitHub contributions and statistics on the website.
+- 📊 GitHub Stats Integration - Dynamically displays your GitHub contributions and statistics on the website.
 
-🧱 Neobrutalist UI - Features a unique and bold design style with high contrast and sharp edges.
+- 🧱 Neobrutalist UI - Features a unique and bold design style with high contrast and sharp edges.
 
-🗂️ Google Spreadsheet Data - Uses a Google Spreadsheet as a simple, easy-to-manage database for your content.
+- 🗂️ Google Spreadsheet Data - Uses a Google Spreadsheet as a simple, easy-to-manage database for your content.
 
 ## How to Use
 
