@@ -12,7 +12,7 @@ export default function Footer() {
 			<div className="flex items-center gap-2">
 				<Button
 					href={
-						import.meta.env.VITE_GITHUB_LINK || "https://github.com/kiuyha"
+						import.meta.env.VITE_GITHUB_LINK || "https://github.com/PanPanFR"
 					}
 					aria-label="see my github profile"
 				>

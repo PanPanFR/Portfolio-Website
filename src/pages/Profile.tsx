@@ -136,10 +136,10 @@ function ProfileCard() {
 
 			<div className="p-4 pt-18 flex flex-col items-center justify-center">
 				<h2 className="text-xl font-bold ">
-					{import.meta.env.VITE_FULL_NAME || "Ketut Shridhara"}
+					{import.meta.env.VITE_FULL_NAME || "Pandu Fatikha Rahmadana"}
 				</h2>
 				<h3 className="text-md font-semibold mb-2">
-					({import.meta.env.VITE_NICKNAME || "Kiuyha"})
+					({import.meta.env.VITE_NICKNAME || "PanPanFR"})
 				</h3>
 				<TypingAnimation
 					sentence={
