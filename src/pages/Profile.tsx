@@ -71,7 +71,7 @@ function TypingAnimation({ sentence }: { sentence: string }) {
 	}, [text, isDeleting, index]);
 
 	return (
-		<div className="flex flex-wrap items-center font-mono font-bold min-h-[1.5rem] max-w-full">
+		<div className="flex flex-nowrap items-center font-mono font-bold min-h-[1.5rem] max-w-full">
 			<AnimatePresence>
 				{text.split("").map((char, i) => (
 					<motion.span
@@ -144,7 +144,7 @@ function ProfileCard() {
 				<TypingAnimation
 					sentence={
 						import.meta.env.VITE_TITLE ||
-						"Developer | Data Scientist"
+						"Fulltack | Software Engineer"
 					}
 				/>
 			</div>
