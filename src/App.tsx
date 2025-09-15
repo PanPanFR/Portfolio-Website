@@ -10,27 +10,33 @@ import Profile from "./pages/Profile";
 import Footer from "./components/Footer";
 import Achievements from "./pages/Achievements";
 import Contributions from "./pages/Contributions";
+import Projects from "./pages/Projects";
+import Blog from "./pages/Blog";
 
 // for route management
 export default function App() {
 	return (
-		<Routes>
-			<Route path="/" element={<InitialRedirector />} />
-			<Route path="/:lang" element={<LanguageLayout />}>
-				<Route index element={<Profile />} />
-				<Route path="achievements" element={<Achievements />} />
-				<Route path="contributions" element={<Contributions />} />
-				<Route
-					path="*"
-					element={
-						<ErrorPage
-							error={new Error("Page not found")}
-							errorCode="404"
-						/>
-					}
-				/>
-			</Route>
-		</Routes>
+		<div className="relative">
+			<Routes>
+				<Route path="/" element={<InitialRedirector />} />
+				<Route path="/:lang" element={<LanguageLayout />}>
+					<Route index element={<Profile />} />
+					<Route path="achievements" element={<Achievements />} />
+					<Route path="projects" element={<Projects />} />
+					<Route path="blog" element={<Blog />} />
+					<Route path="contributions" element={<Contributions />} />
+					<Route
+						path="*"
+						element={
+							<ErrorPage
+								error={new Error("Page not found")}
+								errorCode="404"
+							/>
+						}
+					/>
+				</Route>
+			</Routes>
+		</div>
 	);
 }
 
@@ -81,9 +87,11 @@ function LanguageLayout() {
 		<div className="relative min-h-screen text-black dark:text-white">
 			<Background />
 			<Header />
-			<main className="pt-25 pb-8 px-3 md:px-8">
-				<Outlet />
-			</main>
+			<div className="max-w-8xl mx-auto px-8">
+				<main className="pt-25 pb-8 px-12 md:px-24">
+					<Outlet />
+				</main>
+			</div>
 			<NavBar />
 			<Footer />
 		</div>

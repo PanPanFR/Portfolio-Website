@@ -14,10 +14,14 @@ interface ButtonProps {
 const defaultParentVariance = {
 	hidden: {
 		scale: 1,
+		x: 0,
+		y: 0,
 		transition: { duration: 0.2 },
 	},
 	visible: {
-		scale: 0.9,
+		scale: 1,
+		x: 0,
+		y: 0,
 		transition: { duration: 0.2 },
 	},
 };
@@ -41,7 +45,7 @@ export default function Button(props: ButtonProps) {
 			aria-label={ariaLabel}
 			whileHover="visible"
 			variants={parentVariance || defaultParentVariance}
-			className={`cursor-pointer px-3 py-2 flex items-center gap-2 bg-zinc-200 dark:bg-zinc-700 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] ${className}`}
+			className={`cursor-pointer btn rounded-xs border-2 border-black text-base shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all duration-200 ease-in-out hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] flex-grow bg-base-300 btn-lg text-base flex items-center gap-2 justify-center w-10 h-10 ${className}`}
 			{...(href
 				? {
 						href,
@@ -55,7 +59,7 @@ export default function Button(props: ButtonProps) {
 				<motion.div
 					variants={tooltipVariants || defaultTooltipVariants}
 					className="px-1.5 py-1 absolute -top-12 left-1/2 -translate-x-1/2 bg-white dark:bg-zinc-800 rounded-md border-2 border-zinc-900 dark:border-zinc-300
-												after:content-[''] after:absolute after:-bottom-1/2 after:left-1/2 after:-translate-x-1/2 after:border-8 after:border-transparent after:border-t-zinc-900 dark:after:border-t-zinc-300"
+										after:content-[''] after:absolute after:-bottom-1/2 after:left-1/2 after:-translate-x-1/2 after:border-8 after:border-transparent after:border-t-zinc-900 dark:after:border-t-zinc-300"
 				>
 					<span className="text-sm font-bold text-nowrap uppercase">
 						{tooltip}

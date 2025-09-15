@@ -81,6 +81,15 @@ export const ContributionsSchema = z.object({
 	),
 });
 
+export const TechStackSchema = z.object({
+	category: z.string(),
+	name: z.string(),
+	description: z.string(),
+	level: z.string(),
+	progress: z.number(),
+	logo: z.string().optional(),
+});
+
 export const defaultContributions: Contributions = {
 	profile: {
 		username: "N/A",
@@ -112,3 +121,4 @@ export type SupportedLang = z.infer<typeof SupportedLangSchema>;
 export type Translations = z.infer<typeof TranslationsSchema>;
 export type Contributions = z.infer<typeof ContributionsSchema>;
 export type LanguagesRepo = z.infer<typeof LanguagesRepoSchema>;
+export type TechStack = z.infer<typeof TechStackSchema> & { logo?: string };

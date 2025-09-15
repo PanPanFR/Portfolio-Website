@@ -63,7 +63,7 @@ export default function DetailsModal<TData extends Record<string, unknown>>({
 					<button
 						type="button"
 						aria-label="Close details"
-						className="cursor-pointer"
+						className="cursor-pointer active:translate-x-0.5 active:translate-y-0.5 active:shadow-none border-2 border-black dark:border-white"
 						onClick={close}
 					>
 						<X size={26} />
@@ -73,7 +73,7 @@ export default function DetailsModal<TData extends Record<string, unknown>>({
 				{/* Main Content Grid */}
 				<div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
 					{/* Left Panel (Details) */}
-					<div className="flex flex-col border-2 dark:border-zinc-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+					<div className="flex flex-col border-2 dark:border-zinc-600 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
 						{tags.length > 0 && (
 							<div className="flex flex-wrap items-center gap-2 px-4 py-2 border-b-2 dark:border-zinc-600">
 								{tags.map((tag: string) => (
@@ -90,22 +90,22 @@ export default function DetailsModal<TData extends Record<string, unknown>>({
 						{description && (
 							<div className="flex flex-col flex-1">
 								<button
-									type="button"
-									aria-label="Toggle collapsed content"
-									onClick={() =>
-										setIsDescriptionOpen((prev) => !prev)
-									}
-									className="px-4 py-2 cursor-pointer rounded-full flex items-center justify-between gap-2 w-full"
-								>
-									<h2 className="text-2xl font-bold">
-										{translations?.["description"] ||
-											"Description"}
-									</h2>
-									<ChevronDown
-										size={20}
-										className={`${isDescriptionOpen ? "rotate-180" : ""} transition-transform duration-300 ease-in-out`}
-									/>
-								</button>
+						type="button"
+						aria-label="Toggle collapsed content"
+						onClick={() =>
+							setIsDescriptionOpen((prev) => !prev)
+						}
+						className="px-4 py-2 cursor-pointer flex items-center justify-between gap-2 w-full"
+					>
+							<h2 className="text-2xl font-bold">
+								{translations?.["description"] ||
+									"Description"}
+							</h2>
+							<ChevronDown
+								size={20}
+								className={`${isDescriptionOpen ? "rotate-180" : ""} transition-transform duration-300 ease-in-out`}
+							/>
+						</button>
 								<AnimatePresence>
 									{isDescriptionOpen && (
 										<motion.span
@@ -124,25 +124,25 @@ export default function DetailsModal<TData extends Record<string, unknown>>({
 					</div>
 
 					{/* Right Panel (Media) */}
-					<div className="p-4 border-2 dark:border-zinc-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+					<div className="p-4 border-2 dark:border-zinc-600 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
 						<div className="border-2 dark:border-zinc-600">
 							{/* Browser Header */}
 							<div className="flex items-center justify-between px-4 py-2 border-b-4 dark:border-zinc-600">
-								<div className="flex items-center gap-2">
-									<div className="rounded-full w-4 h-4 bg-red-500" />
-									<div className="rounded-full w-4 h-4 bg-yellow-500" />
-									<div className="rounded-full w-4 h-4 bg-green-500" />
-								</div>
-								{externalLink && (
-									<Button
-										isLink
-										href={externalLink}
-										aria-label="Open in a new tab"
-									>
-										<ExternalLink size={15} />
-									</Button>
-								)}
-							</div>
+						<div className="flex items-center gap-2">
+							<div className="rounded-full w-4 h-4 bg-red-500" />
+							<div className="rounded-full w-4 h-4 bg-yellow-500" />
+							<div className="rounded-full w-4 h-4 bg-green-500" />
+						</div>
+						{externalLink && (
+							<Button
+								href={externalLink}
+								aria-label="Open in a new tab"
+								className="w-8 h-8 flex items-center justify-center border-2 border-black dark:border-white"
+							>
+								<ExternalLink size={12} />
+							</Button>
+						)}
+					</div>
 
 							{mediaPanel}
 						</div>

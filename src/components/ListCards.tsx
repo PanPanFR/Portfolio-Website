@@ -212,22 +212,22 @@ export default function ListCards<TData extends Record<string, unknown>>({
 					>
 						{group.map((field, index) => (
 							<motion.select
-								key={field.name + index}
-								whileTap={{ scale: 0.95 }}
-								value={field.value}
-								onChange={(e) => {
-									e.preventDefault();
-									field.setValue(e.target.value);
-								}}
-								aria-label={field.ariaLabel}
-								title={
-									field.options.find(
-										(opt) => opt.value === field.value,
-									)?.label || field.label
-								}
-								className={`min-w-0 flex-1 text-sm lg:text-base truncate cursor-pointer px-2 py-2 font-semibold uppercase h-full dark:border-zinc-600 outline-none
-									${searchConfig ? "lg:border-l-4" : ""} ${index === 1 ? "border-l-4" : ""}`}
-							>
+							key={field.name + index}
+							whileTap={{ scale: 0.95 }}
+							value={field.value}
+							onChange={(e) => {
+								e.preventDefault();
+								field.setValue(e.target.value);
+							}}
+							aria-label={field.ariaLabel}
+							title={
+								field.options.find(
+									(opt) => opt.value === field.value,
+								)?.label || field.label
+							}
+							className={`min-w-0 flex-1 text-sm lg:text-base truncate cursor-pointer px-2 py-2 font-semibold uppercase h-full dark:border-zinc-600 outline-none transition-all duration-200
+								${searchConfig ? "lg:border-l-4" : ""} ${index === 1 ? "border-l-4" : ""}`}
+						>
 								<option value="" className="dark:bg-zinc-900">
 									{(field.defaultValue || field.label)
 										.replace("_", " ")
@@ -248,21 +248,22 @@ export default function ListCards<TData extends Record<string, unknown>>({
 						{filterConfig.canReset &&
 							groupIndex === groupedSelectFields.length - 1 && (
 								<motion.button
-									onClick={(e) => {
-										e.preventDefault();
-										filterConfig.selectField.forEach(
-											(field) => {
-												field.setValue("");
-											},
-										);
-										setSearch("");
-									}}
-									whileHover={{ scale: 0.9 }}
-									aria-label="reset filters"
-									className="cursor-pointer border-l-4 px-4 py-2 dark:border-zinc-600"
-								>
-									<RefreshCcw size={25} />
-								</motion.button>
+							onClick={(e) => {
+								e.preventDefault();
+								filterConfig.selectField.forEach(
+									(field) => {
+										field.setValue("");
+									},
+								);
+								setSearch("");
+							}}
+							whileHover={{ scale: 0.9 }}
+							whileTap={{ scale: 0.95, x: 2, y: 2 }}
+							aria-label="reset filters"
+							className="cursor-pointer border-l-4 px-4 py-2 dark:border-zinc-600 transition-all duration-200 hover:shadow-none"
+						>
+							<RefreshCcw size={25} />
+						</motion.button>
 							)}
 					</motion.div>
 				))}
@@ -351,7 +352,7 @@ function Card<T extends Record<string, unknown>>({
 			viewport={{ once: true }}
 			exit={{ opacity: 0, y: -20 }}
 			transition={{ duration: 0.2, delay: index * 0.08 }}
-			className="flex flex-col bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+			className="flex flex-col bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
 		>
 			<div
 				className="group relative flex-1"
@@ -365,7 +366,7 @@ function Card<T extends Record<string, unknown>>({
 				{/* image */}
 				<img
 					src={
-						(data?.[cardConfig.imageField] as string) ||
+						(data?.[cardConfig.imageField] as string)?.trim() ||
 						cardConfig.placeholderImage
 					}
 					alt="project"

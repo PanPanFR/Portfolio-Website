@@ -7,13 +7,17 @@ import { Link, useLocation } from "react-router-dom";
 
 export default function Header() {
 	return (
-		<header className="w-full fixed z-100 bg-white dark:bg-zinc-800 shadow-2xl flex items-center px-8 py-4 justify-between border-b-2 border-zinc-900 dark:border-zinc-600">
-			<h1 className="font-bold text-2xl">
+		<header className="w-full fixed z-100 bg-white/95 dark:bg-zinc-800/95 shadow-2xl flex items-center px-8 py-4 justify-between border-b-2 border-zinc-900 dark:border-zinc-600">
+			<div>
+				<LanguageSwitcher />
+			</div>
+			<h1 className="font-bold text-2xl absolute left-1/2 transform -translate-x-1/2">
 				{import.meta.env.VITE_NICKNAME || "PanPanFR"}
 			</h1>
 			<div className="flex items-center gap-4">
-				<LanguageSwitcher />
-				<ThemeSwitcher />
+				<div>
+					<ThemeSwitcher />
+				</div>
 			</div>
 		</header>
 	);
@@ -47,7 +51,7 @@ function LanguageSwitcher() {
 				aria-label="Open language selection menu"
 				aria-haspopup="true"
 				aria-expanded={isOpen}
-				className="cursor-pointer flex items-center justify-center p-2 rounded-full transition-colors hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
+				className="cursor-pointer flex items-center justify-center p-2 rounded-full transition-all duration-200 hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500"
 				onClick={() => setIsOpen((prev) => !prev)}
 			>
 				<Languages size={20} />
@@ -60,7 +64,7 @@ function LanguageSwitcher() {
 						animate={{ opacity: 1, scale: 1, y: 0 }}
 						exit={{ opacity: 0, scale: 0.95, y: -10 }}
 						transition={{ duration: 0.2, ease: "easeOut" }}
-						className="absolute right-0 top-full mt-2 w-40 rounded-md bg-white p-1 shadow-lg ring-1 ring-black ring-opacity-5 dark:bg-zinc-800 dark:ring-gray-300 dark:ring-opacity-10"
+						className="absolute left-0 top-full mt-2 w-40 rounded-md bg-white p-1 shadow-lg ring-1 ring-black ring-opacity-5 dark:bg-zinc-800 dark:ring-gray-300 dark:ring-opacity-10"
 						role="menu"
 						aria-orientation="vertical"
 						aria-labelledby="language-menu-button"
@@ -99,7 +103,7 @@ function ThemeSwitcher() {
 			type="button"
 			aria-label="Toggle Dark Mode"
 			onClick={() => setDarkMode((prev) => !prev)}
-			className="p-2 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer rounded-full flex items-center justify-center"
+			className="p-2 hover:bg-gray-100 dark:hover:bg-gray-600 cursor-pointer rounded-full flex items-center justify-center transition-all duration-200"
 		>
 			<AnimatePresence mode="wait">
 				<motion.div

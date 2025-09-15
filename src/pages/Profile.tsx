@@ -11,95 +11,190 @@ import {
 	ExternalLink,
 	BrainCircuit,
 } from "lucide-react";
-import React, { useEffect, useMemo, useState } from "react";
+import React, { useMemo, useState } from "react";
 import { useData } from "../contexts/DataContext";
 import ListCards from "../components/ListCards";
 import Button from "../components/Button";
 import ImagesSlider from "../components/ImagesSlider";
 import DetailsModal from "../components/DetailsModal";
 import { IframeMedia } from "../components/IframeMedia";
+import TechStackLogos from "../components/TechStackLogos";
+import Marquee from "react-fast-marquee";
+import { SiReact, SiTypescript, SiJavascript, SiHtml5, SiCss3, SiNodedotjs, SiPython, SiPostgresql, SiMongodb, SiDocker, SiGooglecloud, SiGit } from 'react-icons/si';
+
+// Mapping tech names to icons
+const techIcons: Record<string, React.ReactNode> = {
+	"React": <SiReact />,
+	"TypeScript": <SiTypescript />,
+	"JavaScript": <SiJavascript />,
+	"HTML5": <SiHtml5 />,
+	"CSS3": <SiCss3 />,
+	"Node.js": <SiNodedotjs />,
+	"Python": <SiPython />,
+	"PostgreSQL": <SiPostgresql />,
+	"MongoDB": <SiMongodb />,
+	"Docker": <SiDocker />,
+	"Google Cloud": <SiGooglecloud />,
+	"Git": <SiGit />,
+	// Add more mappings as needed
+};
 
 export default function Profile() {
 	return (
-		<div className="mt-auto grid grid-cols-4 gap-4">
+		<div className="mt-auto grid grid-cols-4 gap-4 pb-4">
 			<ProfileCard />
 			<DetailsCard />
-			<Projects />
+			<TechStackSection />
 		</div>
 	);
 }
 
-function TypingAnimation({ sentence }: { sentence: string }) {
-	const [index, setIndex] = useState(0);
-	const [text, setText] = useState("");
-	const [isDeleting, setIsDeleting] = useState(false);
-
-	useEffect(() => {
-		// Determine the speed of typing/deleting
-		const typingSpeed = 100;
-		const deletingSpeed = 100;
-		const pauseDuration = 1500;
-
-		const handleTyping = () => {
-			if (!isDeleting) {
-				// If we are typing
-				if (text.length < sentence.length) {
-					setText(sentence.substring(0, text.length + 1));
-				} else {
-					// Finished typing, wait then start deleting
-					setTimeout(() => setIsDeleting(true), pauseDuration);
-				}
-			} else {
-				// If we are deleting
-				if (text.length > 0) {
-					setText(sentence.substring(0, text.length - 1));
-				} else {
-					// Finished deleting, move to next sentence
-					setIsDeleting(false);
-					setIndex((prevIndex) => (prevIndex + 1) % sentence.length);
-				}
+function TechStackSection() {
+	const { techStack, translations: { techStack: translations }, currentlyLearning } = useData();
+	
+	// Group tech stack by category
+	const groupedTechStack = useMemo(() => {
+		return techStack.reduce((acc, item) => {
+			if (!acc[item.category]) {
+				acc[item.category] = [];
 			}
-		};
+			acc[item.category].push(item);
+			return acc;
+		}, {} as Record<string, typeof techStack>);
+	}, [techStack]);
 
-		const timeout = setTimeout(
-			handleTyping,
-			isDeleting ? deletingSpeed : typingSpeed,
-		);
-
-		// Cleanup timeout on component unmount or state change
-		return () => clearTimeout(timeout);
-	}, [text, isDeleting, index]);
+	const categories = Object.keys(groupedTechStack);
+	
+	// Function to get color based on progress and theme
+	const getProgressColor = (progress: number) => {
+		// For light theme, use black; for dark theme, use white
+		return "bg-black dark:bg-white";
+	};
 
 	return (
-		<div className="flex flex-nowrap items-center font-mono font-bold min-h-[1.5rem] max-w-full">
-			<AnimatePresence>
-				{text.split("").map((char, i) => (
-					<motion.span
-						key={`${char}-${i}`}
-						initial={{ opacity: 0, y: 10 }}
-						animate={{ opacity: 1, y: 0 }}
-						exit={{ opacity: 0, y: 10 }}
-						transition={{ duration: 0.05 }}
-						className="min-w-[0.5rem]"
-					>
-						{char}
-					</motion.span>
-				))}
-			</AnimatePresence>
+		<>
+			<motion.div 
+				initial={{ opacity: 0, y: 20 }}
+				animate={{ opacity: 1, y: 0 }}
+				transition={{ duration: 0.5 }}
+				className="col-span-4 bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] p-4 md:p-6"
+			>
+				<h3 className="text-lg md:text-xl font-semibold mb-4">{translations?.["tech-stack-title"] || "Tech Stack"}</h3>
+				<p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+					{translations?.["tech-stack-description"] || "Teknologi dan tools yang saya gunakan untuk membangun aplikasi — terorganisir berdasarkan kategori dan level kenyamanan."}
+				</p>
+				<div className="py-4 overflow-hidden">
+					<TechStackLogos />
+				</div>
+			</motion.div>
 
-			{/* Blinking Cursor */}
-			<motion.span
-				className="w-0.5 h-5 bg-current rounded-full ml-1"
-				animate={{ opacity: [0, 1, 0] }}
-				transition={{
-					duration: 1,
-					repeat: Infinity,
-					ease: "easeInOut",
-				}}
-			/>
-		</div>
+			{/* Categories grid */}
+			{techStack.length > 0 && (
+				<section className="col-span-4 grid grid-cols-1 md:grid-cols-3 gap-4">
+					{categories.map((category, categoryIndex) => (
+						<motion.div 
+							key={category}
+							initial={{ opacity: 0, y: 20 }}
+							animate={{ opacity: 1, y: 0 }}
+							transition={{ duration: 0.3, delay: 0.1 * categoryIndex }}
+							className="bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] p-4"
+						>
+							<h2 className="text-lg font-semibold mb-3 capitalize">{category}</h2>
+							<p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
+							{category === "frontend" && (translations?.["frontend-description"] || "Framework & libraries yang sering saya gunakan.")}
+							{category === "backend" && (translations?.["backend-description"] || "API, server & integrasi.")}
+							{category === "database" && (translations?.["database-description"] || "Penyimpanan data & platform deployment.")}
+							{![`frontend`, `backend`, `database`].includes(category) && (translations?.["other-description"] || "Tools dan teknologi yang saya gunakan.")}
+						</p>
+							<ul className="space-y-2">
+								{groupedTechStack[category].map((item, itemIndex) => (
+									<motion.li 
+										key={item.name}
+										initial={{ opacity: 0, y: 10 }}
+										animate={{ opacity: 1, y: 0 }}
+										transition={{ duration: 0.2, delay: 0.1 * itemIndex }}
+										className="flex items-center justify-between"
+									>
+										<div className="flex items-center gap-2">
+											<div className="w-8 h-8 flex items-center justify-center text-sm font-medium">
+												{item.logo ? (
+													<img 
+														src={item.logo} 
+														alt={item.name} 
+														className="w-5 h-5 object-contain"
+														onError={(e) => {
+															const target = e.target as HTMLImageElement;
+															target.style.display = 'none';
+														}}
+													/>
+												) : techIcons[item.name] ? (
+													techIcons[item.name]
+												) : (
+													item.name.substring(0, 2).toUpperCase()
+												)}
+											</div>
+											<div>
+												<div className="font-medium text-sm">{item.name}</div>
+												<div className="text-xs text-gray-500 dark:text-gray-400">{item.description}</div>
+											</div>
+										</div>
+										{/* Skill bar */}
+										<div className="w-24">
+											<div className="h-2 bg-gray-200 dark:bg-zinc-700 overflow-hidden rounded-full">
+												<AnimatePresence>
+													<motion.div 
+														initial={{ width: 0 }}
+														animate={{ width: `${item.progress}%` }}
+														exit={{ width: 0 }}
+														transition={{ duration: 0.3, delay: 0.1 * itemIndex }}
+														className={`h-full rounded-full ${getProgressColor(item.progress)}`}
+													/>
+												</AnimatePresence>
+											</div>
+											<div className="text-xs text-right text-gray-500 dark:text-gray-400 mt-1 capitalize">{item.level}</div>
+										</div>
+									</motion.li>
+								))}
+							</ul>
+						</motion.div>
+					))}
+				</section>
+			)}
+
+			{/* Currently Learning */}
+			<motion.div 
+				initial={{ opacity: 0, y: 20 }}
+				animate={{ opacity: 1, y: 0 }}
+				transition={{ duration: 0.5 }}
+				className="col-span-4 bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] p-4 md:p-6"
+			>
+				<h3 className="text-lg md:text-xl font-semibold mb-4">{translations?.["currently-learning-title"] || "Currently Learning"}</h3>
+				<p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+					{translations?.["currently-learning-description"] || "Teknologi yang sedang saya pelajari untuk meningkatkan skill."}
+				</p>
+				<ul className="space-y-2">
+					{currentlyLearning.map((item, index) => (
+						<motion.li 
+							key={item.name}
+							initial={{ opacity: 0, y: 10 }}
+							animate={{ opacity: 1, y: 0 }}
+							transition={{ duration: 0.2, delay: 0.1 * index }}
+							className="flex items-center justify-between"
+						>
+							<div>
+								<div className="font-medium">{item.name}</div>
+								<div className="text-xs text-gray-500 dark:text-gray-400">{item.description}</div>
+							</div>
+							<div className="text-xs text-gray-500 dark:text-gray-400">{item.status}</div>
+						</motion.li>
+					))}
+				</ul>
+			</motion.div>
+		</>
 	);
 }
+
+
 
 function ProfileCard() {
 	return (
@@ -108,12 +203,12 @@ function ProfileCard() {
 			animate={{ rotateX: 0 }}
 			exit={{ rotateX: 90 }}
 			transition={{ duration: 0.5 }}
-			className="col-span-4 lg:col-span-1 bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] "
+			className="col-span-4 lg:col-span-1 bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
 		>
 			<div className="relative mb-4">
 				<img
 					alt="Profile Banner"
-					className="h-36 w-full object-cover border-2"
+					className="h-32 w-full object-cover border-2"
 					src="/banner_profile.avif"
 					loading="eager"
 					decoding="async"
@@ -128,25 +223,28 @@ function ProfileCard() {
 						alt="Profile Picture"
 						width={200}
 						height={200}
-						className="max-w-35 max-h-35 rounded-full border-3 dark:border-white object-cover"
+						className="max-w-32 max-h-32 rounded-full border-3 dark:border-white object-cover"
 						fetchPriority="high"
 					/>
 				</div>
 			</div>
 
-			<div className="p-4 pt-18 flex flex-col items-center justify-center">
-				<h2 className="text-xl font-bold ">
+			<div className="p-4 pt-16 flex flex-col items-center justify-center">
+				<h2 className="text-lg sm:text-xl md:text-2xl font-bold text-center overflow-hidden text-ellipsis max-w-full">
 					{import.meta.env.VITE_FULL_NAME || "Pandu Fatikha Rahmadana"}
 				</h2>
-				<h3 className="text-md font-semibold mb-2">
-					({import.meta.env.VITE_NICKNAME || "PanPanFR"})
+				<h3 className="text-md sm:text-lg md:text-xl font-semibold mt-1 mb-3 text-center overflow-hidden text-ellipsis max-w-full">
+					[{import.meta.env.VITE_NICKNAME || "PanPanFR"}]
 				</h3>
-				<TypingAnimation
-					sentence={
-						import.meta.env.VITE_TITLE ||
-						"Fulltack | Software Engineer"
-					}
-				/>
+				<div className="w-full max-w-xs pt-2 pb-2">
+					<Marquee 
+						speed={30}
+						pauseOnHover={true}
+						className="text-black dark:text-white font-bold leading-tight"
+					>
+						&nbsp;Software Engineer | Backend Developer | Frontend Developer | Cloud/Deployment DevOps | Software Engineer&nbsp;
+					</Marquee>
+				</div>
 			</div>
 		</motion.div>
 	);
@@ -178,9 +276,7 @@ function CollapsedContent({
 				</div>
 				<ChevronDown
 					size={20}
-					className={`${
-						isOpen ? "rotate-180" : ""
-					} transition-transform duration-300 ease-in-out`}
+					className={`${isOpen ? "rotate-180" : ""} transition-transform duration-300 ease-in-out`}
 				/>
 			</button>
 			<AnimatePresence>
@@ -239,27 +335,20 @@ function DetailsCard() {
 			>
 				<div className="space-y-2">
 					<p className="semibold text-justify">
-						<strong>
-							{translations?.["personal-info-address"] ||
-								"Address:"}
-						</strong>
+						<strong>{translations?.["personal-info-address"] || "Address:"}</strong>
 						{translations?.["personal-info-address-value"] ||
 							"Surabaya, Jawa Timur, Indonesia"}
 					</p>
 					<p className="semibold text-justify">
-						<strong>
-							{translations?.["personal-info-email"] || "Email:"}
-						</strong>
+						<strong>{translations?.["personal-info-email"] || "Email:"}</strong>
 						{translations?.["personal-info-email-value"] ||
 							"ketutshridhara@gmail.com"}
 					</p>
 					<p className="semibold text-justify">
 						<strong>
-							{translations?.["personal-info-birth-date"] ||
-								"Birth Date:"}
+							{translations?.["personal-info-birth-date"] || "Birth Date:"}
 						</strong>
-						{translations?.["personal-info-birth-date-value"] ||
-							"12 Maret 2007"}
+						{translations?.["personal-info-birth-date-value"] || "12 Maret 2007"}
 					</p>
 				</div>
 			</CollapsedContent>
@@ -325,20 +414,14 @@ function DetailsCard() {
 										{/* Text content */}
 										<div className="pl-5 md:pl-0 md:text-center md:mt-4">
 											<p className="text-sm font-semibold text-gray-700 dark:text-gray-300">
-												{translations?.[
-													`education-${index}-year`
-												] || "Year"}
+												{translations?.[`education-${index}-year`] || "Year"}
 											</p>
 											<div className="mt-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 rounded-lg shadow-sm min-w-[220px]">
 												<h3 className="font-bold">
-													{translations?.[
-														`education-${index}-title`
-													] || "Title"}
+													{translations?.[`education-${index}-title`] || "Title"}
 												</h3>
 												<p className="text-xs text-gray-500 dark:text-gray-400 uppercase mt-1">
-													{translations?.[
-														`education-${index}-institution`
-													] || "Institution"}
+													{translations?.[`education-${index}-institution`] || "Institution"}
 												</p>
 											</div>
 										</div>
@@ -352,169 +435,3 @@ function DetailsCard() {
 	);
 }
 
-function Projects() {
-	const {
-		projects,
-		translations: { projects: translations, sorting },
-	} = useData();
-	const [type, setType] = useState("");
-	const [techStack, setTechStack] = useState("");
-	const [sort, setSort] = useState("");
-	const types = useMemo(() => {
-		return [...new Set(projects.map((project) => project.type))].sort();
-	}, [projects]);
-
-	const techStacks = useMemo(() => {
-		return [
-			...new Set(projects.flatMap((project) => project.tech_stack)),
-		].sort();
-	}, [projects]);
-	return (
-		<ListCards
-			title={translations?.["projects-list"] || "Projects List"}
-			dataSet={projects}
-			searchConfig={{
-				placeholder:
-					translations?.["search-placeholder"] || "Search by name",
-				fieldSearch: "name",
-			}}
-			filterConfig={{
-				canReset: true,
-				selectField: [
-					{
-						name: "type",
-						label: translations?.["type"] || "type",
-						ariaLabel: "choose type of project",
-						options: types.map((type) => ({
-							label: type,
-							value: type,
-						})),
-						setValue: setType,
-						value: type,
-					},
-					{
-						name: "tech_stack",
-						label: translations?.["tech-stack"] || "tech_stack",
-						ariaLabel: "choose tech stack",
-						options: techStacks.map((techStack) => ({
-							label: techStack,
-							value: techStack,
-						})),
-						setValue: setTechStack,
-						value: techStack,
-					},
-					{
-						name: "sort",
-						label: "sort by (default: newest)",
-						ariaLabel: "sort projects by",
-						defaultValue: sorting?.["newest"] || "newest",
-						options: [
-							{
-								label: sorting?.["oldest"] || "Oldest",
-								value: "oldest",
-							},
-							{
-								label: sorting?.["name-asc"] || "Name (A-Z)",
-								value: "name-asc",
-								sortingMethod: (a, b) => {
-									return a.name.localeCompare(b.name);
-								},
-							},
-							{
-								label: sorting?.["name-desc"] || "Name (Z-A)",
-								value: "name-desc",
-								sortingMethod: (a, b) => {
-									return b.name.localeCompare(a.name);
-								},
-							},
-						],
-						setValue: setSort,
-						value: sort,
-					},
-				],
-			}}
-			cardConfig={{
-				imageField: "thumbnail",
-				placeholderImage: "/placeholder_project.avif",
-				buttons: {
-					leftButton: (data) =>
-						(() => {
-							const Icon = (() => {
-								switch (data.type) {
-									case "website":
-										return Globe;
-									case "cli_tool":
-										return TerminalSquare;
-									case "ml_model":
-										return BrainCircuit;
-									default:
-										return Info;
-								}
-							})();
-							return (
-								<Button
-									ariaLabel="type of project"
-									tooltip={data.type}
-								>
-									<Icon size={25} />
-								</Button>
-							);
-						})(),
-					rightButton: (data, setOpenModal) => (
-						<>
-							<Button
-								ariaLabel="view details of project"
-								onClick={() => setOpenModal(true)}
-							>
-								<Info size={15} />
-							</Button>
-							{data.github_link && (
-								<Button
-									href={data.github_link}
-									ariaLabel={`Github link for project ${data.name}`}
-								>
-									<img
-										src="/github.svg"
-										alt="github"
-										width={15}
-										height={15}
-										className="dark:invert"
-									/>
-								</Button>
-							)}
-							{data.link && (
-								<Button
-									href={data.link}
-									ariaLabel={`External link for project ${data.name}`}
-								>
-									<ExternalLink size={15} />
-								</Button>
-							)}
-						</>
-					),
-				},
-			}}
-			modal={(project, setOpenModal) => (
-				<DetailsModal
-					close={() => setOpenModal(false)}
-					data={project}
-					translations={translations}
-					descriptionField="description"
-					titleField="name"
-					tagsField="tech_stack"
-					externalLinkField="link"
-					mediaPanel={
-						project.type === "website" ? (
-							<IframeMedia link={project.link} />
-						) : (
-							<ImagesSlider
-								images={[project.thumbnail, ...project.images]}
-								placeholderImage="/placeholder_project.avif"
-							/>
-						)
-					}
-				/>
-			)}
-		/>
-	);
-}

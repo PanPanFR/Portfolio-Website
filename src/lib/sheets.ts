@@ -6,14 +6,16 @@ import {
 	BaseProjectSchema,
 	ProjectSchema,
 	SupportedLangSchema,
+	TechStackSchema,
 	type Achievement,
 	type Project,
 	type SupportedLang,
+	type TechStack,
 	type Translations,
 } from "./schemas";
 
 const SPREADSHEET_ID = import.meta.env.VITE_SPREADSHEET_ID;
-function fetchData(sheetName: string): Promise<Record<string, unknown>[]> {
+export function fetchData(sheetName: string): Promise<Record<string, unknown>[]> {
 	const sheetUrl = `https://docs.google.com/spreadsheets/d/${SPREADSHEET_ID}/gviz/tq?tqx=out:csv&sheet=${sheetName}`;
 	return new Promise((resolve, reject) => {
 		Papa.parse(sheetUrl, {
@@ -130,6 +132,7 @@ const ParseAchievementSchema = z.array(
 		.transform((item) => {
 			return {
 				...item,
+				thumbnail: item.thumbnail?.trim() || "",
 				images: item.images
 					? item.images.split(",").map((url) => url.trim())
 					: [],
@@ -154,4 +157,101 @@ export async function fetchAchievements(): Promise<Achievement[]> {
 	}
 
 	return validResult.data;
+}
+
+const ParseTechStackSchema = z.array(
+	z.object({
+		category: z.string(),
+		name: z.string(),
+		description: z.string(),
+		level: z.string(),
+		progress: z.string().or(z.number()).transform((val) => {
+			const parsed = typeof val === 'string' ? parseFloat(val) : val;
+			return parsed;
+		}),
+		logo: z.string().optional()
+	}).transform((item) => {
+		return item as TechStack & { logo?: string };
+	})
+);
+
+export async function fetchTechStack(): Promise<TechStack[]> {
+	try {
+		const data = await fetchData("Tech_stack");
+		const validResult = ParseTechStackSchema.safeParse(data);
+
+		if (!validResult.success) {
+			console.error(
+				"Invalid tech stack data received from source:",
+				z.prettifyError(validResult.error),
+			);
+			return [];
+		}
+
+		return validResult.data;
+	} catch (error) {
+		console.error("Error fetching tech stack data:", error);
+		return [];
+	}
+}
+
+// Schema for currently learning items
+const CurrentlyLearningSchema = z.array(
+	z.object({
+		name: z.string(),
+		description: z.string(),
+		status: z.string(),
+	})
+);
+
+export async function fetchCurrentlyLearning(): Promise<{name: string, description: string, status: string}[]> {
+	try {
+		const data = await fetchData("Currently_learning");
+		const validResult = CurrentlyLearningSchema.safeParse(data);
+
+		if (!validResult.success) {
+			console.error(
+				"Invalid currently learning data received from source:",
+				z.prettifyError(validResult.error),
+			);
+			return [];
+		}
+
+		return validResult.data;
+	} catch (error) {
+		console.error("Error fetching currently learning data:", error);
+		return [];
+	}
+}
+
+// Schema for blog posts
+const BlogPostSchema = z.array(
+	z.object({
+		title: z.string(),
+		description: z.string(),
+		link: z.string(),
+		thumbnail: z.string(),
+		date: z.string(),
+		category: z.string(),
+	})
+);
+
+export async function fetchBlogPosts(): Promise<{title: string, description: string, link: string, thumbnail: string, date: string, category: string}[]> {
+	try {
+		const data = await fetchData("Blog");
+		const validResult = BlogPostSchema.safeParse(data);
+
+		if (!validResult.success) {
+			console.error(
+				"Invalid blog posts data received from source:",
+				z.prettifyError(validResult.error),
+			);
+			return [];
+		}
+
+		return validResult.data;
+	} catch (error) {
+		console.error("Error fetching blog posts data:", error);
+		return [];
+	}
 }

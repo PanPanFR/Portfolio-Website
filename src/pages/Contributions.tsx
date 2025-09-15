@@ -45,7 +45,7 @@ ChartJS.register(
 
 export default function Contributions() {
 	return (
-		<div className="mt-auto grid grid-cols-6 gap-4">
+		<div className="mt-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
 			<ProfileCard />
 			<TopLangsCard />
 			<StatsCard />
@@ -96,7 +96,7 @@ function ProfileCard() {
 			animate={{ rotateX: 0 }}
 			exit={{ rotateX: 90 }}
 			transition={{ duration: 0.5 }}
-			className="col-span-6 lg:col-span-2 bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+			className="col-span-1 md:col-span-2 lg:col-span-2 bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
 		>
 			<div className="relative mb-4">
 				<img
@@ -287,7 +287,7 @@ function TopLangsCard() {
 			animate={{ rotateX: 0 }}
 			exit={{ rotateX: 90 }}
 			transition={{ duration: 0.5 }}
-			className="flex flex-col col-span-6 md:col-span-3 lg:col-span-2 bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+			className="flex flex-col col-span-1 md:col-span-2 lg:col-span-2 bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
 		>
 			{/* Header and Toggle Button */}
 			<div className="p-4 flex items-center justify-between border-b-2 dark:border-zinc-600">
@@ -299,7 +299,7 @@ function TopLangsCard() {
 					</span>
 				</div>
 				<button
-					className="cursor-pointer"
+					className="cursor-pointer transition-all duration-200 hover:shadow-none active:translate-x-0.5 active:translate-y-0.5 active:shadow-none p-1 rounded"
 					onClick={() =>
 						setChartType(chartType === "bar" ? "doughnut" : "bar")
 					}
@@ -399,7 +399,7 @@ function StatsCard() {
 			animate={{ rotateX: 0 }}
 			exit={{ rotateX: 90 }}
 			transition={{ duration: 0.5 }}
-			className="flex flex-col col-span-6 md:col-span-3 lg:col-span-2 bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+			className="flex flex-col col-span-1 md:col-span-2 lg:col-span-2 bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
 		>
 			{/* Header and Toggle Button */}
 			<div className="p-4 flex items-center gap-4 border-b-2 dark:border-zinc-600">
@@ -513,41 +513,41 @@ function Repositories() {
 						value: language,
 					},
 					{
-						name: "sort",
-						label: sorting?.["sort-by"] || "sort by",
-						ariaLabel: "sort projects by",
-						options: [
-							{
-								label: sorting?.["name-asc"] || "Name (A-Z)",
-								value: "name-asc",
-								sortingMethod: (a, b) => {
-									return a.name.localeCompare(b.name);
+							name: "sort",
+							label: sorting?.["sort-by"] || translations?.["sort-by"] || "sort by",
+							ariaLabel: translations?.["sort-repositories-by"] || "sort repositories by",
+							options: [
+								{
+									label: sorting?.["name-asc"] || translations?.["name-asc"] || "Name (A-Z)",
+									value: "name-asc",
+									sortingMethod: (a, b) => {
+										return a.name.localeCompare(b.name);
+									},
 								},
-							},
-							{
-								label: sorting?.["name-desc"] || "Name (Z-A)",
-								value: "name-desc",
-								sortingMethod: (a, b) => {
-									return b.name.localeCompare(a.name);
+								{
+									label: sorting?.["name-desc"] || translations?.["name-desc"] || "Name (Z-A)",
+									value: "name-desc",
+									sortingMethod: (a, b) => {
+										return b.name.localeCompare(a.name);
+									},
 								},
-							},
-							{
-								label:
-									sorting?.["size-desc"] ||
-									"Largest size",
-								value: "size-desc",
-								sortingMethod: (a, b) => {
-									return (
-										b.sizeInKB -
-										a.sizeInKB
-									);
+								{
+									label:
+										sorting?.["size-desc"] ||
+										translations?.["largest-size"] || "Largest size",
+									value: "size-desc",
+									sortingMethod: (a, b) => {
+										return (
+											b.sizeInKB -
+											a.sizeInKB
+										);
+									},
 								},
-							},
-							{
-								label:
-									sorting?.["size-asc"] ||
-									"Smallest size",
-								value: "size-asc",
+								{
+									label:
+										sorting?.["size-asc"] ||
+										translations?.["smallest-size"] || "Smallest size",
+									value: "size-asc",
 								sortingMethod: (a, b) => {
 									return (
 										a.sizeInKB -

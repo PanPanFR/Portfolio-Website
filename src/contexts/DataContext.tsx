@@ -10,6 +10,9 @@ import {
 	fetchProject,
 	fetchSupportedLangs,
 	fetchTranslations,
+	fetchTechStack,
+	fetchCurrentlyLearning,
+	fetchBlogPosts,
 } from "../lib/sheets";
 import { useErrorBoundary } from "react-error-boundary";
 import { fetchContributions } from "../lib/github";
@@ -20,15 +23,19 @@ import {
 	type Project,
 	type SupportedLang,
 	type Translations,
+	type TechStack,
 } from "../lib/schemas";
 
 interface Content {
 	supportedLangs: SupportedLang[];
 	projects: Project[];
 	achievements: Achievement[];
+	techStack: TechStack[];
 	translations: Translations;
 	contributions: Contributions;
 	currentLang: string;
+	currentlyLearning: {name: string, description: string, status: string}[];
+	blogPosts: {title: string, description: string, link: string, thumbnail: string, date: string, category: string}[];
 }
 
 const DataContext = createContext<
@@ -44,9 +51,12 @@ export function DataProvider({ children }: { children: ReactNode }) {
 		supportedLangs: [],
 		projects: [],
 		achievements: [],
+		techStack: [],
 		translations: {},
 		contributions: defaultContributions,
 		currentLang: "",
+		currentlyLearning: [],
+		blogPosts: [],
 	});
 	const [isLoading, setIsLoading] = useState(true);
 	const { showBoundary } = useErrorBoundary();
@@ -54,13 +64,16 @@ export function DataProvider({ children }: { children: ReactNode }) {
 	useEffect(() => {
 		const loadData = async () => {
 			try {
-				const [supportedLangs, projects, achievements, contributions] =
-					await Promise.all([
-						fetchSupportedLangs(),
-						fetchProject(),
-						fetchAchievements(),
-						fetchContributions(),
-					]);
+				const [supportedLangs, projects, achievements, contributions, techStack, currentlyLearning, blogPosts] =
+				await Promise.all([
+					fetchSupportedLangs(),
+					fetchProject(),
+					fetchAchievements(),
+					fetchContributions(),
+					fetchTechStack(),
+					fetchCurrentlyLearning(),
+					fetchBlogPosts(),
+				]);
 
 				setContent((prev) => ({
 					...prev,
@@ -68,9 +81,12 @@ export function DataProvider({ children }: { children: ReactNode }) {
 					projects,
 					achievements,
 					contributions,
+					techStack,
+					currentlyLearning,
+					blogPosts,
 				}));
-			} catch (erorr) {
-				console.error("Error fetching data:", erorr);
+			} catch (error) {
+				console.error("Error fetching data:", error);
 				showBoundary(new Error("Failed to fetch data"));
 			}
 		};
@@ -92,8 +108,8 @@ export function DataProvider({ children }: { children: ReactNode }) {
 				translations,
 				currentLang: langCode,
 			}));
-		} catch (erorr) {
-			console.error("Error fetching data:", erorr);
+		} catch (error) {
+			console.error("Error fetching data:", error);
 			showBoundary(new Error("Failed to fetch data"));
 		} finally {
 			setIsLoading(false);

@@ -69,23 +69,23 @@ export default function ImagesSlider({
 					{/* Left/Previous Button */}
 					{currentIndex > 0 && (
 						<button
-							onClick={handlePrevious}
-							className="cursor-pointer absolute top-1/2 left-3 transform -translate-y-1/2 bg-white/70 hover:bg-white text-gray-800 rounded-full w-10 h-10 flex items-center justify-center transition-all duration-300"
-							aria-label="Previous Image"
-						>
-							<ChevronLeft size={20} />
-						</button>
+						onClick={handlePrevious}
+						className="cursor-pointer absolute top-1/2 left-3 transform -translate-y-1/2 bg-white/70 hover:bg-white text-gray-800 rounded-full w-10 h-10 flex items-center justify-center transition-all duration-300 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none border-2 border-black dark:border-white"
+						aria-label="Previous Image"
+					>
+						<ChevronLeft size={20} />
+					</button>
 					)}
 
 					{/* Right/Next Button */}
 					{currentIndex < images.length - 1 && (
 						<button
-							onClick={handleNext}
-							className="cursor-pointer absolute top-1/2 right-3 transform -translate-y-1/2 bg-white/70 hover:bg-white text-gray-800 rounded-full w-10 h-10 flex items-center justify-center transition-all duration-300"
-							aria-label="Next Image"
-						>
-							<ChevronRight size={20} />
-						</button>
+						onClick={handleNext}
+						className="cursor-pointer absolute top-1/2 right-3 transform -translate-y-1/2 bg-white/70 hover:bg-white text-gray-800 rounded-full w-10 h-10 flex items-center justify-center transition-all duration-300 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none border-2 border-black dark:border-white"
+						aria-label="Next Image"
+					>
+						<ChevronRight size={20} />
+					</button>
 					)}
 
 					{/* Dots */}
@@ -97,7 +97,7 @@ export default function ImagesSlider({
 						key={index}
 						aria-label={`Go to slide ${index + 1}`}
 						onClick={() => setCurrentIndex(index)}
-						className={`cursor-pointer w-3 h-3 hover:bg-white rounded-full transition-colors duration-300
+						className={`cursor-pointer w-3 h-3 hover:bg-white rounded-full transition-colors duration-300 active:translate-x-0.5 active:translate-y-0.5 active:shadow-none border-2 border-black dark:border-white
 							${index === currentIndex ? "bg-white" : "bg-white/70"}
 						`}
 					/>

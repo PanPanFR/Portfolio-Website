@@ -105,33 +105,33 @@ export default function Achievements() {
 						value: skill,
 					},
 					{
-						name: "sort",
-						label: "sort by (default: newest)",
-						ariaLabel: "sort projects by",
-						defaultValue: sorting?.["newest"] || "newest",
-						options: [
-							{
-								label: sorting?.["oldest"] || "Oldest",
-								value: "oldest",
-							},
-							{
-								label: sorting?.["name-asc"] || "Name (A-Z)",
-								value: "name-asc",
-								sortingMethod: (a, b) => {
-									return a.name.localeCompare(b.name);
+							name: "sort",
+							label: translations?.["sort-by"] || "sort by (default: newest)",
+							ariaLabel: translations?.["sort-achievements-by"] || "sort achievements by",
+							defaultValue: sorting?.["newest"] || translations?.["newest"] || "newest",
+							options: [
+								{
+									label: sorting?.["oldest"] || translations?.["oldest"] || "Oldest",
+									value: "oldest",
 								},
-							},
-							{
-								label: sorting?.["name-desc"] || "Name (Z-A)",
-								value: "name-desc",
-								sortingMethod: (a, b) => {
-									return b.name.localeCompare(a.name);
+								{
+									label: sorting?.["name-asc"] || translations?.["name-asc"] || "Name (A-Z)",
+									value: "name-asc",
+									sortingMethod: (a, b) => {
+										return a.name.localeCompare(b.name);
+									},
 								},
-							},
-						],
-						setValue: setSort,
-						value: sort,
-					},
+								{
+									label: sorting?.["name-desc"] || translations?.["name-desc"] || "Name (Z-A)",
+									value: "name-desc",
+									sortingMethod: (a, b) => {
+										return b.name.localeCompare(a.name);
+									},
+								},
+							],
+							setValue: setSort,
+							value: sort,
+						},,
 				],
 			}}
 			cardConfig={{
@@ -174,19 +174,19 @@ export default function Achievements() {
 										ariaLabel="type of achievement"
 										tooltip={data.type}
 									>
-										<IconType size={25} />
+										<IconType size={20} />
 									</Button>
 									<Button
 										ariaLabel="category of achievement"
 										tooltip={data.category}
 									>
-										<Info size={25} />
+										<Info size={20} />
 									</Button>
 									<Button
 										ariaLabel="scope of achievement"
 										tooltip={data.scope}
 									>
-										<IconScope size={25} />
+										<IconScope size={20} />
 									</Button>
 								</>
 							);
