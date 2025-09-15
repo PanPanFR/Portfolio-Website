@@ -9,7 +9,7 @@ export default function Background() {
 			<Squares 
 				speed={0.1} 
 				squareSize={150}
-				direction="diagonal"
+				direction="top-left"
 				borderColor={darkMode ? '#ffffff' : '#000000'}
 			/>
 		</div>

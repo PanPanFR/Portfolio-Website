@@ -6,7 +6,6 @@ import {
 	BaseProjectSchema,
 	ProjectSchema,
 	SupportedLangSchema,
-	TechStackSchema,
 	type Achievement,
 	type Project,
 	type SupportedLang,

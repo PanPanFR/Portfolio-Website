@@ -81,7 +81,7 @@ function DockItem({
       role="button"
       aria-haspopup="true"
     >
-      {Children.map(children, child => cloneElement(child as React.ReactElement, { isHovered }))}
+      {Children.map(children, child => cloneElement(child as React.ReactElement, { isHovered } as any))}
     </motion.div>
   );
 }
@@ -89,6 +89,7 @@ function DockItem({
 type DockLabelProps = {
   className?: string;
   children: React.ReactNode;
+  isHovered?: MotionValue<number>;
 };
 
 function DockLabel({ children, className = '', ...rest }: DockLabelProps) {

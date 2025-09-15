@@ -105,33 +105,33 @@ export default function Achievements() {
 						value: skill,
 					},
 					{
-							name: "sort",
-							label: translations?.["sort-by"] || "sort by (default: newest)",
-							ariaLabel: translations?.["sort-achievements-by"] || "sort achievements by",
-							defaultValue: sorting?.["newest"] || translations?.["newest"] || "newest",
-							options: [
-								{
-									label: sorting?.["oldest"] || translations?.["oldest"] || "Oldest",
-									value: "oldest",
+						name: "sort",
+						label: translations?.["sort-by"] || "sort by (default: newest)",
+						ariaLabel: translations?.["sort-achievements-by"] || "sort achievements by",
+						defaultValue: sorting?.["newest"] || translations?.["newest"] || "newest",
+						options: [
+							{
+								label: sorting?.["oldest"] || translations?.["oldest"] || "Oldest",
+								value: "oldest",
+							},
+							{
+								label: sorting?.["name-asc"] || translations?.["name-asc"] || "Name (A-Z)",
+								value: "name-asc",
+								sortingMethod: (a, b) => {
+									return a.name.localeCompare(b.name);
 								},
-								{
-									label: sorting?.["name-asc"] || translations?.["name-asc"] || "Name (A-Z)",
-									value: "name-asc",
-									sortingMethod: (a, b) => {
-										return a.name.localeCompare(b.name);
-									},
+							},
+							{
+								label: sorting?.["name-desc"] || translations?.["name-desc"] || "Name (Z-A)",
+								value: "name-desc",
+								sortingMethod: (a, b) => {
+									return b.name.localeCompare(a.name);
 								},
-								{
-									label: sorting?.["name-desc"] || translations?.["name-desc"] || "Name (Z-A)",
-									value: "name-desc",
-									sortingMethod: (a, b) => {
-										return b.name.localeCompare(a.name);
-									},
-								},
-							],
-							setValue: setSort,
-							value: sort,
-						},,
+							},
+						],
+						setValue: setSort,
+						value: sort,
+					}
 				],
 			}}
 			cardConfig={{

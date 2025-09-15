@@ -6,18 +6,9 @@ import {
 	Info,
 	UserSearch,
 	type LucideIcon,
-	Globe,
-	TerminalSquare,
-	ExternalLink,
-	BrainCircuit,
 } from "lucide-react";
-import React, { useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { useData } from "../contexts/DataContext";
-import ListCards from "../components/ListCards";
-import Button from "../components/Button";
-import ImagesSlider from "../components/ImagesSlider";
-import DetailsModal from "../components/DetailsModal";
-import { IframeMedia } from "../components/IframeMedia";
 import TechStackLogos from "../components/TechStackLogos";
 import Marquee from "react-fast-marquee";
 import { SiReact, SiTypescript, SiJavascript, SiHtml5, SiCss3, SiNodedotjs, SiPython, SiPostgresql, SiMongodb, SiDocker, SiGooglecloud, SiGit } from 'react-icons/si';
@@ -66,7 +57,7 @@ function TechStackSection() {
 	const categories = Object.keys(groupedTechStack);
 	
 	// Function to get color based on progress and theme
-	const getProgressColor = (progress: number) => {
+	const getProgressColor = () => {
 		// For light theme, use black; for dark theme, use white
 		return "bg-black dark:bg-white";
 	};
@@ -147,7 +138,7 @@ function TechStackSection() {
 														animate={{ width: `${item.progress}%` }}
 														exit={{ width: 0 }}
 														transition={{ duration: 0.3, delay: 0.1 * itemIndex }}
-														className={`h-full rounded-full ${getProgressColor(item.progress)}`}
+														className={`h-full rounded-full ${getProgressColor()}`}
 													/>
 												</AnimatePresence>
 											</div>

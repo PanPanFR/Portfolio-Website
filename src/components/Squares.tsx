@@ -8,19 +8,19 @@ interface GridOffset {
 }
 
 interface SquaresProps {
-  direction?: 'diagonal' | 'up' | 'right' | 'down' | 'left';
+  className?: string;
   speed?: number;
+  direction?: 'top-left' | 'top-right' | 'bottom-left' | 'bottom-right' | 'right' | 'left' | 'up' | 'down' | 'diagonal';
   borderColor?: CanvasStrokeStyle;
   squareSize?: number;
-  hoverFillColor?: CanvasStrokeStyle;
 }
 
 const Squares: React.FC<SquaresProps> = ({
-  direction = 'right',
-  speed = 1,
+  className = '',
+  speed = 0.5,
+  direction = 'top-left',
   borderColor = '#999',
-  squareSize = 40,
-  hoverFillColor = '#222'
+  squareSize = 40
 }) => {
   const canvasRef = useRef<HTMLCanvasElement>(null);
   const requestRef = useRef<number | null>(null);
@@ -112,7 +112,7 @@ const Squares: React.FC<SquaresProps> = ({
     };
   }, [direction, speed, borderColor, squareSize]);
 
-  return <canvas ref={canvasRef} className="w-full h-full border-none block"></canvas>;
+  return <canvas ref={canvasRef} className={`w-full h-full border-none block ${className}`}></canvas>;
 };
 
 export default Squares;

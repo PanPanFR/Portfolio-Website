@@ -1,5 +1,5 @@
-import React, { useMemo, useState } from "react";
-import { motion, AnimatePresence } from "framer-motion";
+import { useMemo, useState } from "react";
+import { motion } from "framer-motion";
 import { useData } from "../contexts/DataContext";
 import { ExternalLink } from "lucide-react";
 import Button from "../components/Button";

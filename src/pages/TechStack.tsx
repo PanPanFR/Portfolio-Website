@@ -25,7 +25,7 @@ const techIcons: Record<string, React.ReactNode> = {
 };
 
 export default function TechStack() {
-	const { techStack, translations: { techStack: translations }, currentLang, currentlyLearning } = useData();
+	const { techStack, translations: { techStack: translations }, currentlyLearning } = useData();
 	
 	// Group tech stack by category
 	const groupedTechStack = useMemo(() => {
@@ -38,8 +38,10 @@ export default function TechStack() {
 		}, {} as Record<string, typeof techStack>);
 	}, [techStack]);
 
+	const categories = Object.keys(groupedTechStack);
+	
 	// Function to get color based on progress and theme
-	const getProgressColor = (progress: number) => {
+	const getProgressColor = () => {
 		// For light theme, use black; for dark theme, use white
 		return "bg-black dark:bg-white";
 	};
@@ -129,7 +131,7 @@ export default function TechStack() {
 															animate={{ width: `${item.progress}%` }}
 															exit={{ width: 0 }}
 															transition={{ duration: 0.3, delay: 0.1 * itemIndex }}
-															className={`h-full rounded-full ${getProgressColor(item.progress)}`}
+															className={`h-full rounded-full ${getProgressColor()}`}
 														/>
 													</AnimatePresence>
 												</div>
