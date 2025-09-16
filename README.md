@@ -76,7 +76,3 @@ This website is automatically deployed to GitHub Pages using GitHub Actions when
 ## License
 
 This project is released under the [MIT License](https://github.com/PanPanFR/PanPanFR.github.io/blob/main/LICENSE).
-
-## Acknowledgements
-
-The design is heavily inspired by <a href="https://reiiv.is-a.dev" target="_blank">ReiivanTheOnlyOne</a>. The API for contribution statistics is <a href="https://github.com/kiuyha/github-readme-stats" target="_blank">here</a>, forked from <a href="https://github.com/anuraghazra/github-readme-stats" target="_blank">anuraghazra/github-readme-stats</a>.
