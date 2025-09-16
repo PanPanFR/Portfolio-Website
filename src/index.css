@@ -5,3 +5,8 @@
 body {
   font-family: 'VCR OSD Mono', monospace;
 }
+
+/* Make text elements bold, but not icons or other non-text elements */
+p, h1, h2, h3, h4, h5, h6, span, div, a, li, td, th, label, input, textarea, button, select, option, mark {
+  font-weight: bold !important;
+}

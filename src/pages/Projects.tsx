@@ -1,34 +1,36 @@
 import { useState } from "react";
 import { useData } from "../contexts/DataContext";
 import ListCards from "../components/ListCards";
-import Button from "../components/Button";
+import DetailsModal from "../components/DetailsModal";
 import { IframeMedia } from "../components/IframeMedia";
 import ImagesSlider from "../components/ImagesSlider";
-import DetailsModal from "../components/DetailsModal";
-import { Globe, TerminalSquare, Info, ExternalLink, BrainCircuit } from "lucide-react";
+import {
+	Globe,
+	TerminalSquare,
+	Info,
+	ExternalLink,
+	BrainCircuit,
+} from "lucide-react";
 
 export default function Projects() {
-	const {
-		projects,
-		translations: { projects: translations, sorting },
-	} = useData();
+	const { projects, translations } = useData();
 	const [type, setType] = useState("");
 	const [techStack, setTechStack] = useState("");
-	const [sort, setSort] = useState("");
 
-	const types = [...new Set(projects.map((project) => project.type))].sort();
-	const techStacks = [
+	// Get unique types and tech stacks for filter options
+	const types: string[] = [...new Set(projects.map((project) => project.type))].sort();
+	const techStacks: string[] = [
 		...new Set(projects.flatMap((project) => project.tech_stack)),
 	].sort();
 
 	return (
 		<div className="mt-auto pb-4">
 			<ListCards
-				title={translations?.["projects-list"] || "Projects List"}
+				title={(translations?.["projects"]?.["projects-list"] as string) || "Projects List"}
 				dataSet={projects}
 				searchConfig={{
 					placeholder:
-						translations?.["search-placeholder"] || "Search by name",
+						(translations?.["projects"]?.["search-placeholder"] as string) || "Search by name",
 					fieldSearch: "name",
 				}}
 				filterConfig={{
@@ -36,7 +38,7 @@ export default function Projects() {
 					selectField: [
 						{
 							name: "type",
-							label: translations?.["type"] || "type",
+							label: (translations?.["projects"]?.["type"] as string) || "type",
 							ariaLabel: "choose type of project",
 							options: types.map((type) => ({
 								label: type,
@@ -47,102 +49,82 @@ export default function Projects() {
 						},
 						{
 							name: "tech_stack",
-							label: translations?.["tech-stack"] || "tech_stack",
-							ariaLabel: "choose tech stack",
-							options: techStacks.map((techStack) => ({
-								label: techStack,
-								value: techStack,
+							label: (translations?.["projects"]?.["tech-stack"] as string) || "tech_stack",
+							ariaLabel: "choose tech stack of project",
+							options: techStacks.map((tech) => ({
+								label: tech,
+								value: tech,
 							})),
 							setValue: setTechStack,
 							value: techStack,
 						},
-						{
-							name: "sort",
-							label: translations?.["sort-by"] || "sort by (default: newest)",
-							ariaLabel: translations?.["sort-projects-by"] || "sort projects by",
-							defaultValue: sorting?.["newest"] || translations?.["newest"] || "newest",
-							options: [
-								{
-									label: sorting?.["oldest"] || translations?.["oldest"] || "Oldest",
-									value: "oldest",
-								},
-								{
-									label: sorting?.["name-asc"] || translations?.["name-asc"] || "Name (A-Z)",
-									value: "name-asc",
-									sortingMethod: (a, b) => {
-										return a.name.localeCompare(b.name);
-									},
-								},
-								{
-									label: sorting?.["name-desc"] || translations?.["name-desc"] || "Name (Z-A)",
-									value: "name-desc",
-									sortingMethod: (a, b) => {
-										return b.name.localeCompare(a.name);
-									},
-								},
-							],
-							setValue: setSort,
-							value: sort,
-						},
 					],
 				}}
 				cardConfig={{
+					titleField: "name",
 					imageField: "thumbnail",
 					placeholderImage: "/placeholder_project.avif",
 					buttons: {
-						leftButton: (data) =>
-							(() => {
-								const Icon = (() => {
-									switch (data.type) {
-										case "website":
-											return Globe;
-										case "cli_tool":
-											return TerminalSquare;
-										case "ml_model":
-											return BrainCircuit;
-										default:
-											return Info;
-									}
-								})();
-								return (
-									<Button
-														ariaLabel="type of project"
-														tooltip={data.type}
-													>
-														<Icon size={20} />
-													</Button>
-								);
-							})(),
+						leftButton: (data) => {
+							const isAiProject = data.tech_stack.some((tech: string) =>
+								tech.toLowerCase().includes("ai")
+							);
+							return isAiProject ? (
+								<button
+									aria-label="ai project"
+									title={(translations?.["projects"]?.["ai-project"] as string) || "AI Project"}
+									className="cursor-pointer btn rounded-xs border-2 border-black text-base shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all duration-200 ease-in-out hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] flex-grow bg-base-300 btn-lg text-base flex items-center gap-2 justify-center w-10 h-10"
+								>
+									<BrainCircuit size={20} />
+								</button>
+							) : null;
+						},
 						rightButton: (data, setOpenModal) => (
 							<>
-								<Button
-											ariaLabel="view details of project"
-											onClick={() => setOpenModal(true)}
-										>
-											<Info size={12} />
-										</Button>
-										{data.github_link && (
-											<Button
-												href={data.github_link}
-												ariaLabel={`Github link for project ${data.name}`}
-											>
-												<img
-													src="/github.svg"
-													alt="github"
-													width={12}
-													height={12}
-													className="dark:invert"
-												/>
-											</Button>
-										)}
-										{data.link && (
-											<Button
-												href={data.link}
-												ariaLabel={`External link for project ${data.name}`}
-											>
-												<ExternalLink size={12} />
-											</Button>
-										)}
+								<a
+									href="#"
+									aria-label="view details of project"
+									onClick={(e) => {
+										e.preventDefault();
+										setOpenModal(true);
+									}}
+									className="cursor-pointer btn rounded-xs border-2 border-black text-base shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all duration-200 ease-in-out hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] flex-grow bg-base-300 btn-lg text-base flex items-center gap-2 justify-center w-10 h-10"
+								>
+									<Info size={12} />
+								</a>
+								{data.github_link && (
+									<a
+										href={data.github_link}
+										aria-label="external link to github"
+										target="_blank"
+										rel="noopener noreferrer"
+										className="cursor-pointer btn rounded-xs border-2 border-black text-base shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all duration-200 ease-in-out hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] flex-grow bg-base-300 btn-lg text-base flex items-center gap-2 justify-center w-10 h-10"
+									>
+										<Globe size={12} />
+									</a>
+								)}
+								{data.demo_link && (
+									<a
+										href={data.demo_link}
+										aria-label="external link to demo"
+										target="_blank"
+										rel="noopener noreferrer"
+										className="cursor-pointer btn rounded-xs border-2 border-black text-base shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all duration-200 ease-in-out hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] flex-grow bg-base-300 btn-lg text-base flex items-center gap-2 justify-center w-10 h-10"
+									>
+										<TerminalSquare size={12} />
+									</a>
+								)}
+								{data.link && (
+									<a
+										href={data.link}
+										aria-label="external link to project"
+										target="_blank"
+										rel="noopener noreferrer"
+										className="cursor-pointer btn rounded-xs border-2 border-black text-base shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all duration-200 ease-in-out hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] flex-grow bg-base-300 btn-lg text-base flex items-center gap-2 justify-center w-10 h-10"
+									>
+										<ExternalLink size={12} />
+									</a>
+								)}
 							</>
 						),
 					},
@@ -151,7 +133,7 @@ export default function Projects() {
 					<DetailsModal
 						close={() => setOpenModal(false)}
 						data={project}
-						translations={translations}
+						translations={translations?.["projects"] as Record<string, string> || {}}
 						descriptionField="description"
 						titleField="name"
 						tagsField="tech_stack"

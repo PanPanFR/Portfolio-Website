@@ -68,7 +68,7 @@ export default function TechStack() {
 					transition={{ duration: 0.3 }}
 					className="bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] p-6 mb-6 text-center"
 				>
-					<h2 className="text-xl font-semibold mb-4">No Tech Stack Data Available</h2>
+					<h2 className="text-xl font-bold mb-4">No Tech Stack Data Available</h2>
 					<p className="text-gray-600 dark:text-gray-300">
 						Tech stack data is currently unavailable. Please check back later.
 					</p>
@@ -82,8 +82,8 @@ export default function TechStack() {
 						animate={{ opacity: 1, y: 0 }}
 						transition={{ duration: 0.3, delay: 0.1 * categoryIndex }}
 						className="bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] p-6"
-					>
-							<h2 className="text-xl font-semibold mb-4 capitalize">{category}</h2>
+						>
+							<h2 className="text-xl font-bold mb-4 capitalize">{category}</h2>
 							<p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
 								{category === "frontend" && (translations?.["frontend-description"] || "Framework & libraries yang sering saya gunakan.")}
 								{category === "backend" && (translations?.["backend-description"] || "API, server & integrasi.")}
@@ -100,43 +100,43 @@ export default function TechStack() {
 										className="flex items-center justify-between"
 									>
 										<div className="flex items-center gap-3">
-												<div className="w-10 h-10 flex items-center justify-center text-base font-medium">
-													{item.logo ? (
-														<img 
-															src={item.logo} 
-															alt={item.name} 
-															className="w-6 h-6 object-contain"
-															onError={(e) => {
-																const target = e.target as HTMLImageElement;
-																target.style.display = 'none';
-															}}
-														/>
-													) : techIcons[item.name] ? (
-														techIcons[item.name]
-													) : (
-														item.name.substring(0, 2).toUpperCase()
-													)}
-												</div>
-												<div>
-													<div className="font-medium">{item.name}</div>
-													<div className="text-xs text-gray-500 dark:text-gray-400">{item.description}</div>
-												</div>
+											<div className="w-10 h-10 flex items-center justify-center text-base font-bold">
+												{item.logo ? (
+													<img 
+														src={item.logo} 
+														alt={item.name} 
+														className="w-6 h-6 object-contain"
+														onError={(e) => {
+															const target = e.target as HTMLImageElement;
+															target.style.display = 'none';
+														}}
+													/>
+												) : techIcons[item.name] ? (
+													techIcons[item.name]
+												) : (
+													item.name.substring(0, 2).toUpperCase()
+												)}
 											</div>
-											{/* Skill bar */}
-											<div className="w-32">
-												<div className="h-2.5 bg-gray-200 dark:bg-zinc-700 overflow-hidden rounded-full">
-													<AnimatePresence>
-														<motion.div 
-															initial={{ width: 0 }}
-															animate={{ width: `${item.progress}%` }}
-															exit={{ width: 0 }}
-															transition={{ duration: 0.3, delay: 0.1 * itemIndex }}
-															className={`h-full rounded-full ${getProgressColor()}`}
-														/>
-													</AnimatePresence>
-												</div>
-												<div className="text-xs text-right text-gray-500 dark:text-gray-400 mt-1 capitalize">{item.level}</div>
+											<div>
+												<div className="font-bold">{item.name}</div>
+												<div className="text-xs text-gray-500 dark:text-gray-400">{item.description}</div>
 											</div>
+										</div>
+										{/* Skill bar */}
+										<div className="w-32">
+											<div className="h-2.5 bg-gray-200 dark:bg-zinc-700 overflow-hidden rounded-full">
+												<AnimatePresence>
+													<motion.div 
+														initial={{ width: 0 }}
+														animate={{ width: `${item.progress}%` }}
+														exit={{ width: 0 }}
+														transition={{ duration: 0.3, delay: 0.1 * itemIndex }}
+														className={`h-full rounded-full ${getProgressColor()}`}
+													/>
+												</AnimatePresence>
+											</div>
+											<div className="text-xs text-right text-gray-500 dark:text-gray-400 mt-1 capitalize">{item.level}</div>
+										</div>
 									</motion.li>
 								))}
 							</ul>
@@ -152,7 +152,7 @@ export default function TechStack() {
 				transition={{ duration: 0.3, delay: 0.2 }}
 				className="bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] p-6 mb-6"
 			>
-				<h3 className="text-lg font-semibold mb-4">{translations?.["tools-title"] || "Tools"}</h3>
+				<h3 className="text-lg font-bold mb-4">{translations?.["tools-title"] || "Tools"}</h3>
 				<p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
 					{translations?.["tools-description"] || "Sekilas teknologi populer yang sering saya gunakan."}
 				</p>
@@ -169,7 +169,7 @@ export default function TechStack() {
 					transition={{ duration: 0.3, delay: 0.3 }}
 					className="bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] p-6"
 				>
-					<h4 className="text-lg font-semibold mb-3">{translations?.["currently-learning-title"] || "Currently Learning"}</h4>
+					<h4 className="text-lg font-bold mb-3">{translations?.["currently-learning-title"] || "Currently Learning"}</h4>
 					<p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
 						{translations?.["currently-learning-description"] || "Teknologi yang sedang saya pelajari untuk meningkatkan skill."}
 					</p>
@@ -183,7 +183,7 @@ export default function TechStack() {
 								className="flex items-center justify-between"
 							>
 								<div>
-									<div className="font-medium">{item.name}</div>
+									<div className="font-bold">{item.name}</div>
 									<div className="text-xs text-gray-500 dark:text-gray-400">{item.description}</div>
 								</div>
 								<div className="text-xs text-gray-500 dark:text-gray-400">{item.status}</div>
@@ -199,7 +199,7 @@ export default function TechStack() {
 					className="bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] p-6 flex flex-col justify-between"
 				>
 					<div>
-						<h4 className="text-lg font-semibold mb-3">{translations?.["open-to-opportunities-title"] || "Open to Opportunities"}</h4>
+						<h4 className="text-lg font-bold mb-3">{translations?.["open-to-opportunities-title"] || "Open to Opportunities"}</h4>
 						<p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
 							{translations?.["open-to-opportunities-description"] || "Saya terbuka untuk peluang kerja baru, kolaborasi proyek, atau diskusi teknis. Jangan ragu untuk menghubungi saya!"}
 						</p>

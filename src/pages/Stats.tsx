@@ -1,5 +1,7 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { useData } from "../contexts/DataContext";
+import Button from "../components/Button";
+import { ExternalLink } from "lucide-react";
 import {
 	BarChart,
 	Book,
@@ -43,13 +45,13 @@ ChartJS.register(
 	BarElement,
 );
 
-export default function Contributions() {
+export default function Stats() {
 	return (
-		<div className="mt-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4">
+		<div className="mt-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 px-2 md:px-0">
 			<ProfileCard />
 			<TopLangsCard />
 			<StatsCard />
-			<Repositories />
+			<StatsList />
 		</div>
 	);
 }
@@ -64,23 +66,17 @@ function ProfileStatsCard({
 	value: string | number;
 }) {
 	return (
-		<motion.div
-			whileHover={{
-				scale: 1.05,
-				transition: {
-					duration: 0.2,
-				},
-			}}
-			className="px-2 py-1.5 font-semibold flex flex-col items-center gap-2 border-2 dark:border-zinc-600 rounded shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+		<div
+			className="px-2 py-1.5 font-bold flex flex-col items-center gap-1.5 border-2 border-black dark:border-zinc-600 rounded-xs shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all duration-200 ease-in-out hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] active:shadow-none active:translate-x-[3px] active:translate-y-[3px] bg-white dark:bg-zinc-900 cursor-pointer"
 		>
-			<Icon size={25} />
+			<Icon size={22} />
 			<div className="flex flex-col items-center">
 				<span className="text-sm capitalize">{name}</span>
-				<span className="text-sm text-gray-500 dark:text-gray-400">
+				<span className="text-xs text-gray-500 dark:text-gray-400">
 					{value}
 				</span>
 			</div>
-		</motion.div>
+		</div>
 	);
 }
 
@@ -134,10 +130,10 @@ function ProfileCard() {
 			{/* stats cards */}
 			<div className="pt-18 flex flex-col items-center justify-center gap-2">
 				<div className="flex flex-col items-center gap-1">
-					<span className="font-semibold text-2xl">
+					<span className="font-bold text-2xl">
 						{contributions.profile.name}
 					</span>
-					<span className="font-semibold text-gray-500 dark:text-gray-400">
+					<span className="font-bold text-gray-500 dark:text-gray-400">
 						@{contributions.profile.username}
 					</span>
 				</div>
@@ -155,7 +151,7 @@ function ProfileCard() {
 					/>
 					<ProfileStatsCard
 						Icon={Book}
-						name={translations?.["repositories"] || "Repositories"}
+						name={translations?.["stats"] || "Repository"}
 						value={contributions.profile.totalRepos}
 					/>
 				</div>
@@ -213,7 +209,7 @@ function LanguagesDescription({
 						/>
 						<div className="flex min-w-0 flex-1 items-center justify-between gap-2">
 							<span
-								className="truncate font-semibold"
+								className="truncate font-bold"
 								title={lang.name}
 							>
 								{lang.name}
@@ -293,7 +289,7 @@ function TopLangsCard() {
 			<div className="p-4 flex items-center justify-between border-b-2 dark:border-zinc-600">
 				<div className="flex items-center gap-2">
 					<img src="/codeIcon.avifs" alt="code icon" width={25} height={25} />
-					<span className="font-semibold text-xl capitalize">
+					<span className="font-bold text-xl capitalize">
 						{translations?.["top-langs-title"] ||
 							"Most used languages"}
 					</span>
@@ -345,14 +341,14 @@ function GetStat({
 }) {
 	return (
 		<div
-			className={`flex items-center justify-between font-semibold ${className}`}
+			className={`flex items-center justify-between font-bold ${className}`}
 		>
 			<div className="flex items-center gap-2">
 				<Icon
 					size={20}
 					className="text-yellow-500 dark:text-yellow-400"
 				/>
-				<span className="font-semibold">{name}</span>
+				<span className="font-bold">{name}</span>
 			</div>
 			<span>{value}</span>
 		</div>
@@ -404,7 +400,7 @@ function StatsCard() {
 			{/* Header and Toggle Button */}
 			<div className="p-4 flex items-center gap-4 border-b-2 dark:border-zinc-600">
 				<AlignStartVertical size={25} />
-				<span className="font-semibold text-xl capitalize">
+				<span className="font-bold text-xl capitalize">
 					{(translations?.["stats-title"] || ":name Stats").replace(
 						":name",
 						contributions.profile.name,
@@ -472,7 +468,7 @@ function StatsCard() {
 	);
 }
 
-function Repositories() {
+function StatsList() {
 	const {
 		contributions,
 		translations: { contributions: translations, sorting },
@@ -491,7 +487,7 @@ function Repositories() {
 
 	return (
 		<ListCards
-			title={translations?.["repositories-list"] || "Repositories List"}
+			title={translations?.["stats-list"] || "Stats List"}
 			dataSet={contributions.repositories}
 			searchConfig={{
 				placeholder:
@@ -515,7 +511,7 @@ function Repositories() {
 					{
 							name: "sort",
 							label: sorting?.["sort-by"] || translations?.["sort-by"] || "sort by",
-							ariaLabel: translations?.["sort-repositories-by"] || "sort repositories by",
+							ariaLabel: translations?.["sort-stats-by"] || "sort stats by",
 							options: [
 								{
 									label: sorting?.["name-asc"] || translations?.["name-asc"] || "Name (A-Z)",
@@ -657,24 +653,70 @@ function Repositories() {
 					},
 				],
 			}}
-			CustomCard={(data, index, search) => (
-				<RepoCard data={data} index={index} search={search} />
+			cardConfig={{
+				titleField: "name",
+				imageField: "name",
+				placeholderImage: "/placeholder_project.avif",
+				buttons: {
+					leftButton: (data) =>
+						(() => {
+							const totalLangs = data.languages.length;
+							return (
+								<Button
+									ariaLabel="number of languages"
+									tooltip={`Total ${totalLangs} language${
+										totalLangs > 1 ? "s" : ""
+									}`}
+								>
+									<FileCode2 size={20} />
+								</Button>
+							);
+						})(),
+					rightButton: (data, setOpenModal) => (
+						<>
+							{data.url && (
+								<Button
+									href={data.url}
+									ariaLabel="external link to stats"
+								>
+									<ExternalLink size={15} />
+								</Button>
+							)}
+														<Button
+								ariaLabel="view details of stats"
+								onClick={() => setOpenModal(true)}
+							>
+								<Info size={15} />
+							</Button>
+						</>
+					),
+				},
+			}}
+			CustomCard={(data, index, search, modal) => (
+				<RepositoryCard
+					key={data.name}
+					data={data}
+					index={index}
+					search={search}
+					modal={modal}
+					translations={translations}
+				/>
 			)}
 		/>
 	);
 }
 
-interface RepoCardProps<T extends Contributions["repositories"][number]> {
-	data: T;
-	index: number;
-	search: string;
-}
-
-function RepoCard<T extends Contributions["repositories"][number]>({
+function RepositoryCard<T extends Contributions["repositories"][number]>({
 	data,
 	index,
 	search,
-}: RepoCardProps<T>) {
+}: {
+	data: T;
+	index: number;
+	search: string;
+	modal?: (data: T, setOpenModal: React.Dispatch<React.SetStateAction<boolean>>) => React.ReactNode;
+	translations: Record<string, string>;
+}) {
 	const {
 		translations: { contributions: translations },
 	} = useData();
@@ -712,7 +754,7 @@ function RepoCard<T extends Contributions["repositories"][number]>({
 
 	const processedLangs = useMemo(() => {
 		const totalSize = data.languages.reduce(
-			(sum, lang) => sum + lang.size,
+			(sum: number, lang: { name: string; color: string; size: number }) => sum + lang.size,
 			0,
 		);
 
@@ -720,7 +762,7 @@ function RepoCard<T extends Contributions["repositories"][number]>({
 			return [];
 		}
 
-		return data.languages.map((lang) => ({
+		return data.languages.map((lang: { name: string; color: string; size: number }) => ({
 			...lang,
 			percentage: (lang.size / totalSize) * 100,
 		}));
@@ -739,18 +781,18 @@ function RepoCard<T extends Contributions["repositories"][number]>({
 				<div className="flex items-center justify-between gap-4">
 					<div className="flex items-center gap-4">
 						<Book size={25} className="flex-shrink-0" />
-						{data.isPrivate ? (
-							<span className="font-semibold uppercase">
-								<Highlight text={data.name} />
-							</span>
-						) : (
+											{data.isPrivate ? (
+						<span className="font-bold uppercase">
+							<Highlight text={data.name} />
+						</span>
+					) : (
 							<a
 								href={data.url}
 								target="_blank"
 								rel="noopener noreferrer"
 								className="flex items-center justify-between hover:underline"
 							>
-								<span className="font-semibold uppercase">
+								<span className="font-bold uppercase">
 									<Highlight text={data.name} />
 								</span>
 							</a>
@@ -787,7 +829,7 @@ function RepoCard<T extends Contributions["repositories"][number]>({
 
 				<div className="flex items-center gap-2">
 					<FileCode2 size={20} />
-					<span className="text-sm font-semibold text-gray-500 dark:text-gray-400">
+					<span className="text-sm font-bold text-gray-500 dark:text-gray-400">
 						{formatSize(data.sizeInKB)}
 					</span>
 				</div>
@@ -811,13 +853,13 @@ function RepoCard<T extends Contributions["repositories"][number]>({
 			<div className="flex items-center justify-between">
 				<div className="flex items-center gap-2">
 					<Calendar size={20} />
-					<span className="text-xs font-semibold text-gray-500 dark:text-gray-400">
+					<span className="text-xs font-bold text-gray-500 dark:text-gray-400">
 						{new Date(data.createdAt).toLocaleString()}
 					</span>
 				</div>
 				<div className="flex items-center gap-2">
 					<Calendar size={20} />
-					<span className="text-xs font-semibold text-gray-500 dark:text-gray-400">
+					<span className="text-xs font-bold text-gray-500 dark:text-gray-400">
 						{new Date(data.updatedAt).toLocaleString()}
 					</span>
 				</div>

@@ -1,10 +1,10 @@
 import { createRoot } from "react-dom/client";
 import { StrictMode } from "react";
-import { DataProvider } from "./contexts/DataContext.tsx";
+import { DataProvider } from "./contexts/DataProvider.tsx";
 import { BrowserRouter } from "react-router-dom";
 import "./index.css";
 import App from "./App.tsx";
-import { ThemeProvider } from "./contexts/ThemeContext.tsx";
+import { ThemeProvider } from "./contexts/ThemeProvider.tsx";
 import { ErrorBoundary } from "react-error-boundary";
 import ErrorPage from "./pages/ErrorPage.tsx";
 

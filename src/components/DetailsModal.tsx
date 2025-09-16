@@ -79,7 +79,7 @@ export default function DetailsModal<TData extends Record<string, unknown>>({
 								{tags.map((tag: string) => (
 									<span
 										key={tag}
-										className="text-sm font-semibold px-3 py-1 rounded-full border-2 border-dashed dark:border-white bg-zinc-100 dark:bg-zinc-800"
+										className="text-sm font-bold px-3 py-1 rounded-full border-2 border-dashed dark:border-white bg-zinc-100 dark:bg-zinc-800"
 									>
 										{tag.trim()}
 									</span>

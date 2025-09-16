@@ -32,7 +32,7 @@ const techIcons: Record<string, React.ReactNode> = {
 
 export default function Profile() {
 	return (
-		<div className="mt-auto grid grid-cols-4 gap-4 pb-4">
+		<div className="mt-auto grid grid-cols-1 md:grid-cols-4 gap-4 pb-4 px-2 md:px-0">
 			<ProfileCard />
 			<DetailsCard />
 			<TechStackSection />
@@ -70,7 +70,7 @@ function TechStackSection() {
 				transition={{ duration: 0.5 }}
 				className="col-span-4 bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] p-4 md:p-6"
 			>
-				<h3 className="text-lg md:text-xl font-semibold mb-4">{translations?.["tech-stack-title"] || "Tech Stack"}</h3>
+				<h3 className="text-lg md:text-xl font-bold mb-4">{translations?.["tech-stack-title"] || "Tech Stack"}</h3>
 				<p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
 					{translations?.["tech-stack-description"] || "Teknologi dan tools yang saya gunakan untuk membangun aplikasi — terorganisir berdasarkan kategori dan level kenyamanan."}
 				</p>
@@ -90,7 +90,7 @@ function TechStackSection() {
 							transition={{ duration: 0.3, delay: 0.1 * categoryIndex }}
 							className="bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] p-4"
 						>
-							<h2 className="text-lg font-semibold mb-3 capitalize">{category}</h2>
+							<h2 className="text-lg font-bold mb-3 capitalize">{category}</h2>
 							<p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
 							{category === "frontend" && (translations?.["frontend-description"] || "Framework & libraries yang sering saya gunakan.")}
 							{category === "backend" && (translations?.["backend-description"] || "API, server & integrasi.")}
@@ -107,7 +107,7 @@ function TechStackSection() {
 										className="flex items-center justify-between"
 									>
 										<div className="flex items-center gap-2">
-											<div className="w-8 h-8 flex items-center justify-center text-sm font-medium">
+											<div className="w-8 h-8 flex items-center justify-center text-sm font-bold">
 												{item.logo ? (
 													<img 
 														src={item.logo} 
@@ -125,7 +125,7 @@ function TechStackSection() {
 												)}
 											</div>
 											<div>
-												<div className="font-medium text-sm">{item.name}</div>
+								<div className="font-bold text-sm">{item.name}</div>
 												<div className="text-xs text-gray-500 dark:text-gray-400">{item.description}</div>
 											</div>
 										</div>
@@ -159,7 +159,7 @@ function TechStackSection() {
 				transition={{ duration: 0.5 }}
 				className="col-span-4 bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] p-4 md:p-6"
 			>
-				<h3 className="text-lg md:text-xl font-semibold mb-4">{translations?.["currently-learning-title"] || "Currently Learning"}</h3>
+				<h3 className="text-lg md:text-xl font-bold mb-4">{translations?.["currently-learning-title"] || "Currently Learning"}</h3>
 				<p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
 					{translations?.["currently-learning-description"] || "Teknologi yang sedang saya pelajari untuk meningkatkan skill."}
 				</p>
@@ -173,7 +173,7 @@ function TechStackSection() {
 							className="flex items-center justify-between"
 						>
 							<div>
-								<div className="font-medium">{item.name}</div>
+							<div className="font-bold">{item.name}</div>
 								<div className="text-xs text-gray-500 dark:text-gray-400">{item.description}</div>
 							</div>
 							<div className="text-xs text-gray-500 dark:text-gray-400">{item.status}</div>
@@ -224,7 +224,7 @@ function ProfileCard() {
 				<h2 className="text-lg sm:text-xl md:text-2xl font-bold text-center overflow-hidden text-ellipsis max-w-full">
 					{import.meta.env.VITE_FULL_NAME || "Pandu Fatikha Rahmadana"}
 				</h2>
-				<h3 className="text-md sm:text-lg md:text-xl font-semibold mt-1 mb-3 text-center overflow-hidden text-ellipsis max-w-full">
+				<h3 className="text-md sm:text-lg md:text-xl font-bold mt-1 mb-3 text-center overflow-hidden text-ellipsis max-w-full">
 					[{import.meta.env.VITE_NICKNAME || "PanPanFR"}]
 				</h3>
 				<div className="w-full max-w-xs pt-2 pb-2">
@@ -263,7 +263,7 @@ function CollapsedContent({
 			>
 				<div className="flex items-center gap-4 md:gap-2">
 					<Icon size={20} />
-					<span className="font-semibold uppercase">{title}</span>
+					<span className="font-bold uppercase">{title}</span>
 				</div>
 				<ChevronDown
 					size={20}
@@ -404,7 +404,7 @@ function DetailsCard() {
 
 										{/* Text content */}
 										<div className="pl-5 md:pl-0 md:text-center md:mt-4">
-											<p className="text-sm font-semibold text-gray-700 dark:text-gray-300">
+											<p className="text-sm font-bold text-gray-700 dark:text-gray-300">
 												{translations?.[`education-${index}-year`] || "Year"}
 											</p>
 											<div className="mt-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 rounded-lg shadow-sm min-w-[220px]">

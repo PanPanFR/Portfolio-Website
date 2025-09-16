@@ -21,7 +21,7 @@ export default function ErrorPage({
 					{errorCode && (
 						<div className="mt-2 flex items-center gap-2">
 							<span>Error Code:</span>
-							<span className="font-semibold">{errorCode}</span>
+							<span className="font-bold">{errorCode}</span>
 						</div>
 					)}
 					<div className="mt-6">

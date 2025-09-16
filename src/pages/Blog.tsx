@@ -49,7 +49,7 @@ export default function Blog() {
       {/* Filters */}
       <div className="flex flex-col md:flex-row gap-4 mb-6">
         <div className="bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] p-4 flex-1">
-          <label className="block text-sm font-medium mb-2">
+          <label className="block text-sm font-bold mb-2">
             {translations?.["category-filter"] || "Filter by Category"}
           </label>
           <select
@@ -65,7 +65,7 @@ export default function Blog() {
         </div>
         
         <div className="bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] p-4 flex-1">
-          <label className="block text-sm font-medium mb-2">
+          <label className="block text-sm font-bold mb-2">
             {translations?.["sort-by"] || "Sort By"}
           </label>
           <select
@@ -87,13 +87,13 @@ export default function Blog() {
           transition={{ duration: 0.3 }}
           className="bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] p-6 mb-6 text-center"
         >
-          <h2 className="text-xl font-semibold mb-4">{translations?.["no-blog-posts"] || "No Blog Posts Found"}</h2>
+          <h2 className="text-xl font-bold mb-4">{translations?.["no-blog-posts"] || "No Blog Posts Found"}</h2>
           <p className="text-gray-600 dark:text-gray-300">
             {translations?.["no-blog-posts-message"] || "Check back later for new blog posts."}
           </p>
         </motion.div>
       ) : (
-        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-2 md:px-0">
           {processedPosts.map((post, index) => (
             <motion.div 
               key={post.title + post.date} // Use a more unique key

@@ -79,9 +79,9 @@ export default function ListCards<TData extends Record<string, unknown>>({
 			result.push(filterConfig.selectField.slice(i, i + chunkSize));
 		}
 		return result;
-	}, [filterConfig.selectField]);
+	}, [filterConfig.selectField, getValueByPath, searchConfig?.fieldSearch]);
 
-	function getValueByPath(obj: any, path: string | string[]): any {
+	function getValueByPath(obj: unknown, path: string | string[]): unknown {
 		// Convert path to an array if it's a string
 		const parts = Array.isArray(path) ? path : path.split(".");
 
@@ -98,14 +98,19 @@ export default function ListCards<TData extends Record<string, unknown>>({
 			if (!Array.isArray(obj)) {
 				return undefined;
 			}
-			// Map over the array and recursively call the function for each item
-			// with the rest of the path. This will collect the results.
+
+			// If there are no more parts, return the array
+			if (remainingParts.length === 0) {
+				return obj;
+			}
+
+			// Map over the array and get the value for each item
 			return obj.map((item) => getValueByPath(item, remainingParts));
 		}
 
 		// If it's a normal key, just move to the next level of the object
 		// and recurse with the rest of the path.
-		return getValueByPath(obj[currentPart], remainingParts);
+		return getValueByPath((obj as Record<string, unknown>)[currentPart], remainingParts);
 	}
 
 	const processedData = useMemo(() => {
@@ -118,13 +123,13 @@ export default function ListCards<TData extends Record<string, unknown>>({
 					select.value === "" ||
 					(checkIfArray
 						? (value as string[]).includes(select.value)
-						: value === select.value)
+						: (value as string) === select.value)
 				);
 			});
 
 			const inSearch =
 				search === "" ||
-				(data[searchConfig?.fieldSearch || "name"] as string)
+				((data as Record<string, unknown>)[(searchConfig?.fieldSearch as string) || "name"] as string)
 					.toLowerCase()
 					.includes(search.toLowerCase());
 
@@ -153,7 +158,9 @@ export default function ListCards<TData extends Record<string, unknown>>({
 	}, [
 		dataSet,
 		search,
-		...filterConfig.selectField.map((select) => select.value),
+		filterConfig.selectField,
+		getValueByPath,
+		searchConfig?.fieldSearch,
 	]);
 
 	return (
@@ -164,7 +171,7 @@ export default function ListCards<TData extends Record<string, unknown>>({
 				animate={{ rotateX: 0 }}
 				exit={{ rotateX: 90 }}
 				transition={{ duration: 0.5 }}
-				className="font-semibold  px-4 py-2 flex gap-2 items-center bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
+				className="font-bold  px-4 py-2 flex gap-2 items-center bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]"
 			>
 				<File size={25} />
 				<h1 className="text-md">{title}</h1>
@@ -189,7 +196,7 @@ export default function ListCards<TData extends Record<string, unknown>>({
 						<input
 							type="search"
 							placeholder={searchConfig.placeholder}
-							className="w-full bg-transparent outline-none font-semibold"
+							className="w-full bg-transparent outline-none font-bold"
 							value={search}
 							onChange={(e) => {
 								e.preventDefault();
@@ -225,7 +232,7 @@ export default function ListCards<TData extends Record<string, unknown>>({
 									(opt) => opt.value === field.value,
 								)?.label || field.label
 							}
-							className={`min-w-0 flex-1 text-sm lg:text-base truncate cursor-pointer px-2 py-2 font-semibold uppercase h-full dark:border-zinc-600 outline-none transition-all duration-200
+							className={`min-w-0 flex-1 text-sm lg:text-base truncate cursor-pointer px-2 py-2 font-bold uppercase h-full dark:border-zinc-600 outline-none transition-all duration-200
 								${searchConfig ? "lg:border-l-4" : ""} ${index === 1 ? "border-l-4" : ""}`}
 						>
 								<option value="" className="dark:bg-zinc-900">
@@ -269,7 +276,7 @@ export default function ListCards<TData extends Record<string, unknown>>({
 				))}
 			</div>
 
-			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 px-2 md:px-0">
 				<AnimatePresence>
 					{processedData.map((data, index) => {
 						const key = titleCardKey

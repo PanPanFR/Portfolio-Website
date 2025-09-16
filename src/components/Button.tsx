@@ -1,5 +1,5 @@
 import { motion, type Variants } from "framer-motion";
-import { tooltipVariants as defaultTooltipVariants } from "./NavBar";
+import { tooltipVariants as defaultTooltipVariants } from "./NavBarVariants";
 
 interface ButtonProps {
 	href?: string;
@@ -9,7 +9,8 @@ interface ButtonProps {
 	tooltip?: string;
 	children: React.ReactNode;
 	className?: string;
-	[rest: string]: any;
+	onClick?: () => void;
+	[key: string]: string | boolean | Variants | React.ReactNode | (() => void) | undefined;
 }
 const defaultParentVariance = {
 	hidden: {

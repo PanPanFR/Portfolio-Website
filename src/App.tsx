@@ -9,7 +9,7 @@ import ErrorPage from "./pages/ErrorPage";
 import Profile from "./pages/Profile";
 import Footer from "./components/Footer";
 import Achievements from "./pages/Achievements";
-import Contributions from "./pages/Contributions";
+import Stats from "./pages/Stats";
 import Projects from "./pages/Projects";
 import Blog from "./pages/Blog";
 
@@ -24,7 +24,7 @@ export default function App() {
 					<Route path="achievements" element={<Achievements />} />
 					<Route path="projects" element={<Projects />} />
 					<Route path="blog" element={<Blog />} />
-					<Route path="contributions" element={<Contributions />} />
+					<Route path="stats" element={<Stats />} />
 					<Route
 						path="*"
 						element={
@@ -68,7 +68,7 @@ function LanguageLayout() {
 		if (lang && isLangSupported) {
 			loadContentForLang(lang);
 		}
-	}, [lang, supportedLangs]);
+	}, [lang, supportedLangs, isLangSupported, loadContentForLang]);
 
 	// show error page
 	if (isLangSupported === false) {
@@ -87,8 +87,8 @@ function LanguageLayout() {
 		<div className="relative min-h-screen text-black dark:text-white">
 			<Background />
 			<Header />
-			<div className="max-w-8xl mx-auto px-8">
-				<main className="pt-25 pb-8 px-12 md:px-24">
+			<div className="max-w-8xl mx-auto px-4 md:px-8">
+				<main className="pt-25 pb-8 px-0 md:px-12 lg:px-24">
 					<Outlet />
 				</main>
 			</div>

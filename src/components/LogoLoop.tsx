@@ -275,9 +275,9 @@ export const LogoLoop = React.memo<LogoLoopProps>(
               scaleOnHover &&
                 'transition-transform duration-200 ease-linear group-hover/item:scale-120'
             )}
-            aria-hidden={!!(item as any).href && !(item as any).ariaLabel}
+            aria-hidden={!!(item as {href?: string, ariaLabel?: string}).href && !(item as {href?: string, ariaLabel?: string}).ariaLabel}
           >
-            {(item as any).node}
+            {(item as {node: React.ReactNode}).node}
           </span>
         ) : (
           <img
@@ -289,13 +289,13 @@ export const LogoLoop = React.memo<LogoLoopProps>(
               scaleOnHover &&
                 'transition-transform duration-200 ease-linear group-hover/item:scale-120'
             )}
-            src={(item as any).src}
-            srcSet={(item as any).srcSet}
-            sizes={(item as any).sizes}
-            width={(item as any).width}
-            height={(item as any).height}
-            alt={(item as any).alt ?? ''}
-            title={(item as any).title}
+            src={(item as {src: string}).src}
+            srcSet={(item as {srcSet?: string}).srcSet}
+            sizes={(item as {sizes?: string}).sizes}
+            width={(item as {width?: number}).width}
+            height={(item as {height?: number}).height}
+            alt={(item as {alt?: string}).alt ?? ''}
+            title={(item as {title?: string}).title}
             loading="lazy"
             decoding="async"
             draggable={false}
@@ -303,10 +303,10 @@ export const LogoLoop = React.memo<LogoLoopProps>(
         );
 
         const itemAriaLabel = isNodeItem
-          ? ((item as any).ariaLabel ?? (item as any).title)
-          : ((item as any).alt ?? (item as any).title);
+          ? (((item as {href?: string, ariaLabel?: string}).ariaLabel) ?? ((item as {href?: string, title?: string}).title))
+          : (((item as {alt?: string}).alt) ?? ((item as {title?: string}).title));
 
-        const inner = (item as any).href ? (
+        const inner = (item as {href?: string}).href ? (
           <a
             className={cx(
               'inline-flex items-center no-underline rounded',

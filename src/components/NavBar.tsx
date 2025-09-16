@@ -1,8 +1,9 @@
-import { motion, type Variants } from "framer-motion";
+import { motion } from "framer-motion";
 import { BookOpen, Trophy, User, Folder, GitBranch } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useData } from "../contexts/DataContext";
 import { useEffect, useRef, useState } from "react";
+import { parentVariants, tooltipVariants } from "./NavBarVariants";
 
 export default function NavBar() {
 	const {
@@ -63,39 +64,12 @@ const getMenus = (translations: Record<string, string>) => [
 		Icon: Folder,
 	},
 	{
-		name: translations?.["contributions"] || "Contributions",
-		path: "contributions",
+		name: translations?.["contributions"] || "Stats",
+		path: "stats",
 		Icon: GitBranch,
 	},
 ];
 
-export const parentVariants: Variants = {
-	hidden: {
-		scale: 1,
-		x: 0,
-		y: 0,
-		transition: { duration: 0.2 },
-	},
-	visible: {
-		scale: 0.95,
-		x: 2,
-		y: 2,
-		transition: { duration: 0.2 },
-	},
-};
-
-export const tooltipVariants: Variants = {
-	hidden: {
-		opacity: 0,
-		y: -10,
-		transition: { duration: 0.2 },
-	},
-	visible: {
-		opacity: 1,
-		y: 0,
-		transition: { duration: 0.2 },
-	},
-};
 
 function DekstopNavBar({
 	currentLang,
@@ -182,23 +156,22 @@ function MobileNavBar({
 	}, [basePath, menusRef]);
 	return (
 		<div className="relative">
-							<ul className="flex items-center justify-between mb-1">
+			<ul className="flex items-center justify-around mb-1">
 				{getMenus(translations).map(({ name, path, Icon }) => (
-					<motion.li key={name}>
+					<motion.li key={name} className="flex-1">
 						<Link
 							ref={(el) => {
 								menusRef.current[path] = el;
 							}}
 							aria-label={name}
 							to={`/${currentLang}${path ? `/${path}` : ""}`}
-							className="flex flex-col items-center"
+							className="flex flex-col items-center justify-center py-1"
 						>
-							<Icon size={25} />
-							<span className="text-sm font-bold">{name}</span>
+							<Icon size={19} />
+							<span className="text-[0.6rem] font-bold mt-0.5">{name}</span>
 						</Link>
 					</motion.li>
 				))}
-
 			</ul>
 			{/* Tab Indicator for small screens */}
 			<div
