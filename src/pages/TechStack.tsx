@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useData } from "../contexts/DataContext";
+import { useData } from "../contexts/DataProvider";
 import TechStackLogos from "../components/TechStackLogos";
 import { 
 	SiReact, SiTypescript, SiJavascript, SiHtml5, SiCss3, SiNodedotjs, 

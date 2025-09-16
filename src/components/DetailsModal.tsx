@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useData } from "../contexts/DataContext";
+import { useData } from "../contexts/DataProvider";
 import { AnimatePresence, motion } from "framer-motion";
 import {
 	ChevronDown,

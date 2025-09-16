@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { useData } from "../contexts/DataContext";
+import { useData } from "../contexts/DataProvider";
 import { ExternalLink } from "lucide-react";
 import Button from "../components/Button";
 

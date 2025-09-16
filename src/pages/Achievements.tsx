@@ -1,6 +1,6 @@
 import { useMemo, useState } from "react";
 import ListCards from "../components/ListCards";
-import { useData } from "../contexts/DataContext";
+import { useData } from "../contexts/DataProvider";
 import Button from "../components/Button";
 import {
 	Building2,

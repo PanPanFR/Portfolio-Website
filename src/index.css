@@ -2,6 +2,12 @@
 
 @custom-variant dark (&:where(.dark, .dark *));
 
+html, body {
+  height: 100%;
+  margin: 0;
+  padding: 0;
+}
+
 body {
   font-family: 'VCR OSD Mono', monospace;
 }
@@ -9,4 +15,14 @@ body {
 /* Make text elements bold, but not icons or other non-text elements */
 p, h1, h2, h3, h4, h5, h6, span, div, a, li, td, th, label, input, textarea, button, select, option, mark {
   font-weight: bold !important;
+}
+
+/* Prevent scrolling during loading */
+body.loading {
+  overflow: hidden;
+}
+
+/* Allow scrolling when content is loaded */
+body.loaded {
+  overflow: auto;
 }

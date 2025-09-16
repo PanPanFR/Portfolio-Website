@@ -1,13 +1,13 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Moon, Sun, Languages, Check } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { useTheme } from "../contexts/ThemeContext";
-import { useData } from "../contexts/DataContext";
+import { useTheme } from "../contexts/ThemeProvider";
+import { useData } from "../contexts/DataProvider";
 import { Link, useLocation } from "react-router-dom";
 
 export default function Header() {
 	return (
-		<header className="w-full fixed z-100 bg-white/95 dark:bg-zinc-800/95 shadow-2xl flex items-center px-8 py-4 justify-between border-b-2 border-zinc-900 dark:border-zinc-600">
+		<header className="w-full fixed z-40 bg-white/95 dark:bg-zinc-800/95 shadow-2xl flex items-center px-8 py-4 justify-between border-b-2 border-zinc-900 dark:border-zinc-600">
 			<div>
 				<LanguageSwitcher />
 			</div>

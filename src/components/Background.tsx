@@ -1,4 +1,4 @@
-import { useTheme } from "../contexts/ThemeContext";
+import { useTheme } from "../contexts/ThemeProvider";
 import Squares from "./Squares";
 
 export default function Background() {

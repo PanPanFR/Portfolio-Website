@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useData } from "../contexts/DataContext";
+import { useData } from "../contexts/DataProvider";
 import Button from "../components/Button";
 import { ExternalLink } from "lucide-react";
 import {

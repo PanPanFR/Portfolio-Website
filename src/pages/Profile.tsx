@@ -8,7 +8,7 @@ import {
 	type LucideIcon,
 } from "lucide-react";
 import { useMemo, useState } from "react";
-import { useData } from "../contexts/DataContext";
+import { useData } from "../contexts/DataProvider";
 import TechStackLogos from "../components/TechStackLogos";
 import Marquee from "react-fast-marquee";
 import { SiReact, SiTypescript, SiJavascript, SiHtml5, SiCss3, SiNodedotjs, SiPython, SiPostgresql, SiMongodb, SiDocker, SiGooglecloud, SiGit } from 'react-icons/si';

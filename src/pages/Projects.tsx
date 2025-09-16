@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useData } from "../contexts/DataContext";
+import { useData } from "../contexts/DataProvider";
 import ListCards from "../components/ListCards";
 import DetailsModal from "../components/DetailsModal";
 import { IframeMedia } from "../components/IframeMedia";
