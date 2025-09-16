@@ -5,6 +5,7 @@ import tailwindcss from "@tailwindcss/vite";
 // https://vite.dev/config/
 // Updated config to trigger redeployment
 export default defineConfig({
+	base: "/"
 	plugins: [
 		react(),
 		tailwindcss(),
