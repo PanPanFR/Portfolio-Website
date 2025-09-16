@@ -3,9 +3,10 @@ import react from "@vitejs/plugin-react-swc";
 import tailwindcss from "@tailwindcss/vite";
 
 // https://vite.dev/config/
-// Updated config to trigger redeployment
 export default defineConfig({
-	base: "/"
+	// Properti base ditambahkan di sini, dengan koma di akhir
+	base: "/",
+
 	plugins: [
 		react(),
 		tailwindcss(),
