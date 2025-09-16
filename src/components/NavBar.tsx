@@ -1,4 +1,4 @@
-import { House, Trophy, FolderOpen, BarChart2, Pencil, BookOpen, User, Folder, GitBranch } from "lucide-react";
+import { Trophy, BookOpen, User, Folder, GitBranch } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
 import { useData } from "../contexts/DataProvider";
 import { motion } from "framer-motion";
