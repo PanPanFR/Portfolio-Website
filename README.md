@@ -1,6 +1,6 @@
 # PanPan Portfolio Website
 
-This is my personal portfolio website created using Vite and React. You can view it at <a href="https://panpanfr.github.io/" target="_blank">https://panpanfr.github.io/</a>
+This is my personal portfolio website created using Vite and React. You can view it at <a href="https://panpanfr.my.id/" target="_blank">https://panpanfr.my.id/</a>
 
 ## Features
 
