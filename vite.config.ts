@@ -5,6 +5,9 @@ import { VitePWA } from "vite-plugin-pwa";
 
 // https://vite.dev/config/
 export default defineConfig({
+	// Properti base ditambahkan di sini, dengan koma di akhir
+	base: "/",
+
 	plugins: [
 		react(),
 		tailwindcss(),
