@@ -7,7 +7,6 @@ import Header from "./components/Header";
 import NavBar from "./components/NavBar";
 import ErrorPage from "./pages/ErrorPage";
 import Footer from "./components/Footer";
-import { SpeedInsights } from "@vercel/speed-insights/react";
 
 // Lazy load pages for better performance
 import { lazy } from "react";
@@ -106,7 +105,6 @@ export default function App() {
 					/>
 				</Route>
 			</Routes>
-			<SpeedInsights />
 		</div>
 	);
 }
@@ -180,7 +178,6 @@ function LanguageLayout() {
 					</div>
 					<NavBar />
 					<Footer />
-					<SpeedInsights />
 				</div>
 			);
 		}
@@ -196,7 +193,6 @@ function LanguageLayout() {
 			</div>
 			<NavBar />
 			<Footer />
-			<SpeedInsights />
 		</div>
 	);
 }

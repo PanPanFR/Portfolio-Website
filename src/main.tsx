@@ -7,6 +7,7 @@ import App from "./App.tsx";
 import { ThemeProvider } from "./contexts/ThemeProvider.tsx";
 import { ErrorBoundary } from "react-error-boundary";
 import ErrorPage from "./pages/ErrorPage.tsx";
+import { SpeedInsights } from "@vercel/speed-insights/react";
 
 // Register service worker
 if ('serviceWorker' in navigator) {
@@ -29,6 +30,7 @@ createRoot(document.getElementById("root")!).render(
 				<ErrorBoundary FallbackComponent={ErrorPage}>
 					<DataProvider>
 						<App />
+						<SpeedInsights />
 					</DataProvider>
 				</ErrorBoundary>
 			</ThemeProvider>
