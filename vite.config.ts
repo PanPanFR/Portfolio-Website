@@ -117,9 +117,23 @@ export default defineConfig({
 			},
 		},
 	],
+
 	server: {
 		allowedHosts: true,
+		// Add security headers to development server
+		headers: {
+			// Security headers
+			"X-Content-Type-Options": "nosniff",
+			"X-Frame-Options": "SAMEORIGIN",
+			"X-XSS-Protection": "1; mode=block",
+			"Referrer-Policy": "strict-origin-when-cross-origin",
+			"Permissions-Policy": "geolocation=(), microphone=(), camera=(), interest-cohort=()",
+			// Hide server information
+			"X-Powered-By": "",
+			"Server": ""
+		},
 	},
+	
 	build: {
 		minify: "terser", // Use Terser for better minification
 		sourcemap: false, // Disable sourcemaps for production
@@ -135,8 +149,26 @@ export default defineConfig({
 			},
 		},
 	},
+	
 	define: {
 		// Enable tree shaking for production
 		"process.env.NODE_ENV": JSON.stringify("production"),
 	},
+	
+	// Add security headers for production build
+	preview: {
+		headers: {
+			// Security headers
+			"Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://docs.google.com https://api.github.com; frame-ancestors 'none';",
+			"X-Content-Type-Options": "nosniff",
+			"X-Frame-Options": "SAMEORIGIN",
+			"X-XSS-Protection": "1; mode=block",
+			"Referrer-Policy": "strict-origin-when-cross-origin",
+			"Permissions-Policy": "geolocation=(), microphone=(), camera=(), interest-cohort=()",
+			"Strict-Transport-Security": "max-age=31536000; includeSubDomains; preload",
+			// Hide server information
+			"X-Powered-By": "",
+			"Server": ""
+		}
+	}
 });
