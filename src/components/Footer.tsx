@@ -8,7 +8,7 @@ export default function Footer() {
 	} = useData();
 
 	return (
-		<footer className="flex flex-col gap-8 items-center justify-center py-12 border-t-2 border-zinc-900 dark:border-zinc-600 bg-white/95 dark:bg-zinc-800/95 shadow-xl pb-17 mb-9 w-full mt-auto">
+		<footer className="flex flex-col gap-8 items-center justify-center py-16 border-t-2 border-zinc-900 dark:border-zinc-600 bg-white dark:bg-zinc-800 shadow-xl w-full mt-auto pb-28">
 			<div className="flex items-center gap-2">
 				<Button
 					href={

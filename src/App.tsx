@@ -7,12 +7,15 @@ import Background from "./components/Background";
 import Header from "./components/Header";
 import NavBar from "./components/NavBar";
 import ErrorPage from "./pages/ErrorPage";
-import Profile from "./pages/Profile";
 import Footer from "./components/Footer";
-import Achievements from "./pages/Achievements";
-import Stats from "./pages/Stats";
-import Projects from "./pages/Projects";
-import Blog from "./pages/Blog";
+
+// Lazy load pages for better performance
+import { lazy } from "react";
+const Profile = lazy(() => import("./pages/Profile"));
+const Achievements = lazy(() => import("./pages/Achievements"));
+const Stats = lazy(() => import("./pages/Stats"));
+const Projects = lazy(() => import("./pages/Projects"));
+const Blog = lazy(() => import("./pages/Blog"));
 
 // redirect to the first supported language
 function InitialRedirector() {
@@ -164,22 +167,18 @@ function LanguageLayout() {
 	// Show previous content while loading new content to prevent flickering
 		// Only show loading overlay when updating the same language
 		if (isLoading && isLangSupported === true && lang === currentLang) {
-			// Render previous content with a loading overlay instead of full screen
+			// Render previous content WITHOUT loading overlay to prevent double loading screen
 			return (
-				<div className="relative min-h-screen text-black dark:text-white">
+				<div className="relative min-h-screen text-black dark:text-white flex flex-col">
 					<Background />
 					<Header />
-					<div className="max-w-8xl mx-auto px-4 md:px-8">
-						<main className="pt-20 pb-24 px-0 md:px-12 lg:px-24">
+					<div className="max-w-8xl mx-auto px-4 md:px-8 flex-grow">
+						<main className="pt-24 pb-8 px-0 md:px-12 lg:px-24">
 							<Outlet />
 						</main>
 					</div>
 					<NavBar />
 					<Footer />
-					{/* Loading overlay */}
-					<div className="absolute inset-0 bg-black bg-opacity-30 flex items-center justify-center z-50">
-						<LoaderCircle size={50} className="animate-spin text-white" />
-					</div>
 				</div>
 			);
 		}

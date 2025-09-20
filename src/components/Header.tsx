@@ -69,13 +69,15 @@ function LanguageSwitcher() {
 						aria-orientation="vertical"
 						aria-labelledby="language-menu-button"
 					>
-						{supportedLangs.map(({ code, name }) => (
+						{supportedLangs.map(({ code, name }) => {
+						// Build the new path correctly
+						const basePath = currentPath.split('/').slice(2).join('/');
+						const newPath = `/${code}${basePath ? `/${basePath}` : ''}`;
+
+						return (
 							<Link
 								key={code}
-								to={currentPath.replace(
-									`/${currentLang}`,
-									`/${code}`,
-								)}
+								to={newPath}
 								className="w-full flex items-center justify-between gap-2 rounded-md px-3 py-2 text-sm text-gray-700 dark:text-gray-200 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700"
 								role="menuitem"
 							>
@@ -87,7 +89,8 @@ function LanguageSwitcher() {
 									/>
 								)}
 							</Link>
-						))}
+						);
+					})}
 					</motion.div>
 				)}
 			</AnimatePresence>

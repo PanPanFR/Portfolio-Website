@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { memo } from 'react';
 import LogoLoop from './LogoLoop';
 import { 
   SiHtml5, SiCss3, SiJavascript, SiTypescript, SiSass, SiTailwindcss,
@@ -65,7 +65,7 @@ const techLogos = [
   { node: <SiElasticsearch />, title: "Elasticsearch", href: "https://www.elastic.co/elasticsearch/" },
 ];
 
-const TechStackLogos: React.FC = () => {
+const TechStackLogosComponent: React.FC = () => {
   return (
     <div className="col-span-4 p-0.5 rounded mt-1">
       <div style={{ height: '80px', position: 'relative', overflow: 'hidden' }} className="flex items-center">
@@ -84,5 +84,7 @@ const TechStackLogos: React.FC = () => {
     </div>
   );
 };
+
+const TechStackLogos = memo(TechStackLogosComponent);
 
 export default TechStackLogos;

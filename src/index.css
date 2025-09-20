@@ -9,7 +9,8 @@ html, body {
 }
 
 body {
-  font-family: 'VCR OSD Mono', monospace;
+  /* System font stack with VCR OSD Mono as primary */
+  font-family: 'VCR OSD Mono', ui-monospace, SFMono-Regular, 'SF Mono', Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
 }
 
 /* Make text elements bold, but not icons or other non-text elements */

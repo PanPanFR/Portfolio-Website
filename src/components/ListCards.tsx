@@ -1,6 +1,8 @@
+import { memo } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { File, RefreshCcw, Search } from "lucide-react";
 import React, { useMemo, useState } from "react";
+import OptimizedImage from "./OptimizedImage";
 
 interface CardConfig<TData extends Record<string, unknown>> {
 	titleField?: keyof TData;
@@ -57,7 +59,7 @@ interface ListCardsProps<TData extends Record<string, unknown>> {
 	) => React.ReactNode;
 }
 
-export default function ListCards<TData extends Record<string, unknown>>({
+function ListCards<TData extends Record<string, unknown>>({
 	title,
 	dataSet,
 	searchConfig,
@@ -79,7 +81,7 @@ export default function ListCards<TData extends Record<string, unknown>>({
 			result.push(filterConfig.selectField.slice(i, i + chunkSize));
 		}
 		return result;
-	}, [filterConfig.selectField, getValueByPath, searchConfig?.fieldSearch]);
+	}, [filterConfig.selectField]);
 
 	function getValueByPath(obj: unknown, path: string | string[]): unknown {
 		// Convert path to an array if it's a string
@@ -159,8 +161,6 @@ export default function ListCards<TData extends Record<string, unknown>>({
 		dataSet,
 		search,
 		filterConfig.selectField,
-		getValueByPath,
-		searchConfig?.fieldSearch,
 	]);
 
 	return (
@@ -219,22 +219,22 @@ export default function ListCards<TData extends Record<string, unknown>>({
 					>
 						{group.map((field, index) => (
 							<motion.select
-							key={field.name + index}
-							whileTap={{ scale: 0.95 }}
-							value={field.value}
-							onChange={(e) => {
-								e.preventDefault();
-								field.setValue(e.target.value);
-							}}
-							aria-label={field.ariaLabel}
-							title={
-								field.options.find(
-									(opt) => opt.value === field.value,
-								)?.label || field.label
-							}
-							className={`min-w-0 flex-1 text-sm lg:text-base truncate cursor-pointer px-2 py-2 font-bold uppercase h-full dark:border-zinc-600 outline-none transition-all duration-200
-								${searchConfig ? "lg:border-l-4" : ""} ${index === 1 ? "border-l-4" : ""}`}
-						>
+								key={field.name + index}
+								whileTap={{ scale: 0.95 }}
+								value={field.value}
+								onChange={(e) => {
+									e.preventDefault();
+									field.setValue(e.target.value);
+								}}
+								aria-label={field.ariaLabel}
+								title={
+									field.options.find(
+										(opt) => opt.value === field.value,
+									)?.label || field.label
+								}
+								className={`min-w-0 flex-1 text-sm lg:text-base truncate cursor-pointer px-2 py-2 font-bold uppercase h-full dark:border-zinc-600 outline-none transition-all duration-200
+									${searchConfig ? "lg:border-l-4" : ""} ${index === 1 ? "border-l-4" : ""}`}
+							>
 								<option value="" className="dark:bg-zinc-900">
 									{(field.defaultValue || field.label)
 										.replace("_", " ")
@@ -255,22 +255,22 @@ export default function ListCards<TData extends Record<string, unknown>>({
 						{filterConfig.canReset &&
 							groupIndex === groupedSelectFields.length - 1 && (
 								<motion.button
-							onClick={(e) => {
-								e.preventDefault();
-								filterConfig.selectField.forEach(
-									(field) => {
-										field.setValue("");
-									},
-								);
-								setSearch("");
-							}}
-							whileHover={{ scale: 0.9 }}
-							whileTap={{ scale: 0.95, x: 2, y: 2 }}
-							aria-label="reset filters"
-							className="cursor-pointer border-l-4 px-4 py-2 dark:border-zinc-600 transition-all duration-200 hover:shadow-none"
-						>
-							<RefreshCcw size={25} />
-						</motion.button>
+									onClick={(e) => {
+										e.preventDefault();
+										filterConfig.selectField.forEach(
+											(field) => {
+												field.setValue("");
+											},
+										);
+										setSearch("");
+									}}
+									whileHover={{ scale: 0.9 }}
+									whileTap={{ scale: 0.95, x: 2, y: 2 }}
+									aria-label="reset filters"
+									className="cursor-pointer border-l-4 px-4 py-2 dark:border-zinc-600 transition-all duration-200 hover:shadow-none"
+								>
+									<RefreshCcw size={25} />
+								</motion.button>
 							)}
 					</motion.div>
 				))}
@@ -311,6 +311,15 @@ export default function ListCards<TData extends Record<string, unknown>>({
 	);
 }
 
+export default memo(ListCards, (prevProps, nextProps) => {
+	// Custom comparison function for memoization
+	return (
+		prevProps.title === nextProps.title &&
+		prevProps.dataSet === nextProps.dataSet &&
+		prevProps.searchConfig === nextProps.searchConfig
+	);
+}) as <TData extends Record<string, unknown>>(props: ListCardsProps<TData>) => React.JSX.Element;
+
 interface CardProps<T extends Record<string, unknown>> {
 	data: ListCardsProps<T>["dataSet"][number];
 	index: number;
@@ -329,7 +338,6 @@ function Card<T extends Record<string, unknown>>({
 	titleCardKey,
 }: CardProps<T>) {
 	const [openModal, setOpenModal] = useState(false);
-	const [imageLoading, setImageLoading] = useState(true);
 	function Highlight({ text }: { text: string }) {
 		if (!search.trim()) {
 			return <span>{text}</span>;
@@ -365,13 +373,7 @@ function Card<T extends Record<string, unknown>>({
 				className="group relative flex-1"
 				onClick={() => setOpenModal(true)}
 			>
-				{/* skeleton image */}
-				{imageLoading && (
-					<div className="absolute inset-0 animate-pulse bg-zinc-600 dark:bg-zinc-800" />
-				)}
-
-				{/* image */}
-				<img
+				<OptimizedImage
 					src={
 						(data?.[cardConfig.imageField] as string)?.trim() ||
 						cardConfig.placeholderImage
@@ -381,26 +383,9 @@ function Card<T extends Record<string, unknown>>({
 					height={250}
 					loading="lazy"
 					decoding="async"
-					className={`w-full h-full object-cover transition-opacity duration-300
-						${imageLoading ? "opacity-0" : "opacity-100"}`}
-					onError={(e) => {
-						setImageLoading(false);
-						e.currentTarget.src = cardConfig.placeholderImage;
-					}}
-					onLoad={() => setImageLoading(false)}
+					placeholder={cardConfig.placeholderImage}
+					className="w-full h-full object-cover"
 				/>
-
-				{/* Overlay on hover */}
-				{titleCardKey && (data?.[titleCardKey] as string) && (
-					<>
-						<div className="absolute inset-0 bg-black opacity-0 group-hover:opacity-50 transition-opacity duration-300" />
-						<div className="absolute inset-0 flex items-center justify-center text-white text-lg opacity-0 group-hover:opacity-100 transition-opacity duration-300 cursor-pointer">
-							<h1 className="font-bold text-xl text-center uppercase">
-								{data?.[titleCardKey] as string}
-							</h1>
-						</div>
-					</>
-				)}
 			</div>
 
 			{titleCardKey && (data?.[titleCardKey] as string) && (

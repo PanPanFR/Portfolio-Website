@@ -24,7 +24,7 @@ export default function Projects() {
 	].sort();
 
 	return (
-		<div className="mt-auto pb-4">
+		<div>
 			<ListCards
 				title={(translations?.["projects"]?.["projects-list"] as string) || "Projects List"}
 				dataSet={projects}

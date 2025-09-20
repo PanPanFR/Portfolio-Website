@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { motion, type Variants } from "framer-motion";
 import { tooltipVariants as defaultTooltipVariants } from "./NavBarVariants";
 
@@ -12,6 +13,7 @@ interface ButtonProps {
 	onClick?: () => void;
 	[key: string]: string | boolean | Variants | React.ReactNode | (() => void) | undefined;
 }
+
 const defaultParentVariance = {
 	hidden: {
 		scale: 1,
@@ -27,7 +29,7 @@ const defaultParentVariance = {
 	},
 };
 
-export default function Button(props: ButtonProps) {
+function Button(props: ButtonProps) {
 	const {
 		href,
 		children,
@@ -38,6 +40,7 @@ export default function Button(props: ButtonProps) {
 		tooltip,
 		...rest
 	} = props;
+	
 	const Component = href ? motion.a : motion.button;
 
 	return (
@@ -60,7 +63,7 @@ export default function Button(props: ButtonProps) {
 				<motion.div
 					variants={tooltipVariants || defaultTooltipVariants}
 					className="px-1.5 py-1 absolute -top-12 left-1/2 -translate-x-1/2 bg-white dark:bg-zinc-800 rounded-md border-2 border-zinc-900 dark:border-zinc-300
-										after:content-[''] after:absolute after:-bottom-1/2 after:left-1/2 after:-translate-x-1/2 after:border-8 after:border-transparent after:border-t-zinc-900 dark:after:border-t-zinc-300"
+									after:content-[''] after:absolute after:-bottom-1/2 after:left-1/2 after:-translate-x-1/2 after:border-8 after:border-transparent after:border-t-zinc-900 dark:after:border-t-zinc-300"
 				>
 					<span className="text-sm font-bold text-nowrap uppercase">
 						{tooltip}
@@ -72,3 +75,13 @@ export default function Button(props: ButtonProps) {
 		</Component>
 	);
 }
+
+export default memo(Button, (prevProps, nextProps) => {
+	// Custom comparison function for memoization
+	return (
+		prevProps.href === nextProps.href &&
+		prevProps.className === nextProps.className &&
+		prevProps.tooltip === nextProps.tooltip &&
+		prevProps.ariaLabel === nextProps.ariaLabel
+	);
+});

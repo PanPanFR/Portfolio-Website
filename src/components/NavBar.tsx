@@ -131,28 +131,45 @@ function MobileNavBar({
 }) {
 	const menusRef = useRef<Record<string, HTMLAnchorElement | null>>({});
 	const [underlineStyle, setUnderlineStyle] = useState({ left: 0, width: 0 });
+	const isInitialRender = useRef(true);
 
 	// This effect runs whenever the menu changes
 	useEffect(() => {
-		const handleResize = () => {
+		const updateIndicatorPosition = () => {
 			const activeMenuNode = menusRef.current[basePath];
 
 			if (activeMenuNode) {
-				setUnderlineStyle({
-					left: activeMenuNode.offsetLeft + 5,
-					width: activeMenuNode.offsetWidth - 10,
+				// Use requestAnimationFrame to ensure DOM is fully rendered
+				requestAnimationFrame(() => {
+					// Additional delay to ensure elements are properly positioned
+					setTimeout(() => {
+						if (activeMenuNode) {
+							setUnderlineStyle({
+								left: activeMenuNode.offsetLeft + 5,
+								width: activeMenuNode.offsetWidth - 10,
+							});
+						}
+					}, 50);
 				});
 			}
 		};
 
-		handleResize();
+		// For initial render, we may need a longer delay
+		if (isInitialRender.current) {
+			isInitialRender.current = false;
+			const timer = setTimeout(updateIndicatorPosition, 300);
+			return () => clearTimeout(timer);
+		} else {
+			// For subsequent updates, use a shorter delay
+			updateIndicatorPosition();
+		}
 
 		// Add event listener for window resize
-		window.addEventListener("resize", handleResize);
+		window.addEventListener("resize", updateIndicatorPosition);
 
 		// Cleanup function to remove the event listener
 		return () => {
-			window.removeEventListener("resize", handleResize);
+			window.removeEventListener("resize", updateIndicatorPosition);
 		};
 	}, [basePath, menusRef]);
 	return (

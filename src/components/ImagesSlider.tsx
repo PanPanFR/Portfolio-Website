@@ -1,5 +1,6 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { useEffect, useState } from "react";
+import OptimizedImage from "./OptimizedImage";
 
 export default function ImagesSlider({
 	images,
@@ -47,7 +48,7 @@ export default function ImagesSlider({
 				<div className="absolute inset-0 animate-pulse bg-zinc-600 dark:bg-zinc-800" />
 			)}
 
-			<img
+			<OptimizedImage
 				key={currentIndex}
 				src={images[currentIndex] || placeholderImage}
 				alt="project"
@@ -55,13 +56,8 @@ export default function ImagesSlider({
 				height={250}
 				loading="lazy"
 				decoding="async"
-				className={`w-full h-full object-contain transition-opacity duration-300
-						${imageLoading ? "opacity-0" : "opacity-100"}`}
-				onError={(e) => {
-					setImageLoading(false);
-					e.currentTarget.src = placeholderImage;
-				}}
-				onLoad={() => setImageLoading(false)}
+				placeholder={placeholderImage}
+				className="w-full h-full object-contain"
 			/>
 
 			{images.length > 1 && (

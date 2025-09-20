@@ -27,11 +27,11 @@ This is my personal portfolio website created using Vite and React. You can view
 
 If you want to create your own portfolio based on this template, follow these steps:
 
-1. Fork this repository. <img src="https://raw.githubusercontent.com/kiuyha/kiuyha.github.io/refs/heads/main/docs/ForkRepository.png">
+1. Fork this repository. <img src="https://raw.githubusercontent.com/PanPanFR/PanPanFR.github.io/refs/heads/main/docs/ForkRepository.png">
 
-2. Rename the repository to `your-username.github.io`. This will make your site live at your root URL (`https://your-username.github.io`). I strongly recommend this for your main portfolio because the URL is short and easy to remember. Alternatively, you can give the repository a different name (e.g., `my-portfolio`), but it will be accessed at `https://your-username.github.io/my-portfolio`. This is a fine option if you plan to use a custom domain later. <img src="https://raw.githubusercontent.com/kiuyha/kiuyha.github.io/refs/heads/main/docs/RenameRepository.png">
+2. Rename the repository to `your-username.github.io`. This will make your site live at your root URL (`https://your-username.github.io`). I strongly recommend this for your main portfolio because the URL is short and easy to remember. Alternatively, you can give the repository a different name (e.g., `my-portfolio`), but it will be accessed at `https://your-username.github.io/my-portfolio`. This is a fine option if you plan to use a custom domain later. <img src="https://raw.githubusercontent.com/PanPanFR/PanPanFR.github.io/refs/heads/main/docs/RenameRepository.png">
 
-3. Make a spreadsheet and add the data. You can check the format in <a href="https://docs.google.com/spreadsheets/d/1wiHW3SE8y8a6JosDY2538XPFa5Ydysw1yUb-qNMMbN4" target="_blank">here</a> and copy to your own. <img src="https://raw.githubusercontent.com/kiuyha/kiuyha.github.io/refs/heads/main/docs/CopySpreadsheet.png">
+3. Make a spreadsheet and add the data. You can check the format in <a href="https://docs.google.com/spreadsheets/d/1wiHW3SE8y8a6JosDY2538XPFa5Ydysw1yUb-qNMMbN4" target="_blank">here</a> and copy to your own. <img src="https://raw.githubusercontent.com/PanPanFR/PanPanFR.github.io/refs/heads/main/docs/CopySpreadsheet.png">
 
 4. Update the `.env` file with your own information:
    - `VITE_FULL_NAME` - Your full name
@@ -43,20 +43,20 @@ If you want to create your own portfolio based on this template, follow these st
 
 5. You can change the static files in public folder such as favicon, banner_profile, profile_picture, loading_animation, etc.
 
-6. Enable the github actions workflow since github by default disable it on forked repository. <img src="https://raw.githubusercontent.com/kiuyha/kiuyha.github.io/refs/heads/main/docs/EnableWorkflow.png">
+6. Enable the github actions workflow since github by default disable it on forked repository. <img src="https://raw.githubusercontent.com/PanPanFR/PanPanFR.github.io/refs/heads/main/docs/EnableWorkflow.png">
 
 7. Now just commit your changes, and the github action will handle the CI/CD pipeline.
 
-8. Remember to change the source of github pages to `github actions`. <img src="https://raw.githubusercontent.com/kiuyha/kiuyha.github.io/refs/heads/main/docs/ChangeSourcePages.png">
+8. Remember to change the source of github pages to `github actions`. <img src="https://raw.githubusercontent.com/PanPanFR/PanPanFR.github.io/refs/heads/main/docs/ChangeSourcePages.png">
 
-9. Optional: you can change the domain from `your-username`.github.io to your custom domain. But remember you should own the domain. <img src="https://raw.githubusercontent.com/kiuyha/kiuyha.github.io/refs/heads/main/docs/ChangeDomain.png">
+9. Optional: you can change the domain from `your-username`.github.io to your custom domain. But remember you should own the domain. <img src="https://raw.githubusercontent.com/PanPanFR/PanPanFR.github.io/refs/heads/main/docs/ChangeDomain.png">
 
 ## Notes
 
-- Ensure to format the data in spreadsheet into `plain text` format. Since it will make bug when fetch the data from the spreadsheet (because the google visualization api only support `plain text`). <img src="https://raw.githubusercontent.com/kiuyha/kiuyha.github.io/refs/heads/main/docs/EnsurePlainText.png">
+- Ensure to format the data in spreadsheet into `plain text` format. Since it will make bug when fetch the data from the spreadsheet (because the google visualization api only support `plain text`). <img src="https://raw.githubusercontent.com/PanPanFR/PanPanFR.github.io/refs/heads/main/docs/EnsurePlainText.png">
 - The website frame in info project only work if `X-Frame-Options` is not set to `SAMEORIGIN` or `DENY`. Also the header need to have `SameSite=None; Secure` in order to work properly.
 - For using contribution you need to change `VITE_GITHUB_LINK` in `.env`.
-- If you want to show your private repository, you need to setup api for it. Please follow this guide <a href="https://github.com/kiuyha/github-readme-stats?tab=readme-ov-file#deploy-on-your-own" target="_blank">here</a> and change the `VITE_GITHUB_API_LINK` with your host api in `.env`.
+- If you want to show your private repository, you need to setup api for it. Please follow this guide <a href="https://github.com/PanPanFR/github-readme-stats?tab=readme-ov-file#deploy-on-your-own" target="_blank">here</a> and change the `VITE_GITHUB_API_LINK` with your host api in `.env`.
 - You can change how many languages you want to show in the contribution section. You can change the `VITE_CONTRIBUTIONS_LANGS_COUNT` in `.env`.
 - If you want to include all commits in the contribution section instead from this year, you can change the `VITE_CONTRIBUTIONS_INCLUDE_ALL_COMMITS` in `.env`.
 

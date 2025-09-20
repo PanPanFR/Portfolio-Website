@@ -10,20 +10,42 @@
 		<link rel="author" href="https://github.com/PanPanFR" />
 		<meta
 			name="description"
-			content="This is a web for %VITE_FULL_NAME% (%VITE_NICKNAME%) portfolio"
+			content="Portfolio of %VITE_FULL_NAME% (%VITE_NICKNAME%) - %VITE_TITLE%. Showcasing projects, achievements, and technical skills."
 		/>
-		<meta property="og:title" content="%VITE_FULL_NAME% (%VITE_NICKNAME%) | %VITE_TITLE%" />
-		<meta property="og:description" content="This is a web for %VITE_FULL_NAME% (%VITE_NICKNAME%) portfolio" />
+		<meta name="keywords" content="%VITE_NICKNAME%, %VITE_FULL_NAME%, portfolio, software engineer, developer, projects, achievements" />
+		<meta name="robots" content="index, follow" />
+		<meta name="theme-color" content="#ffffff" />
+		
+		<!-- Open Graph / Facebook -->
 		<meta property="og:type" content="profile" />
-		<meta property="og:image" content="%VITE_WEBSITE_LINK%/homepage.png">
+		<meta property="og:title" content="%VITE_FULL_NAME% (%VITE_NICKNAME%) | %VITE_TITLE%" />
+		<meta property="og:description" content="Portfolio of %VITE_FULL_NAME% (%VITE_NICKNAME%) - %VITE_TITLE%. Showcasing projects, achievements, and technical skills." />
+		<meta property="og:image" content="%VITE_WEBSITE_LINK%/homepage.png" />
 		<meta property="og:image:width" content="1200" />
 		<meta property="og:image:height" content="630" />
+		<meta property="og:url" content="%VITE_WEBSITE_LINK%" />
+		<meta property="og:site_name" content="%VITE_FULL_NAME% Portfolio" />
+		
+		<!-- Twitter -->
+		<meta property="twitter:card" content="summary_large_image" />
+		<meta property="twitter:title" content="%VITE_FULL_NAME% (%VITE_NICKNAME%) | %VITE_TITLE%" />
+		<meta property="twitter:description" content="Portfolio of %VITE_FULL_NAME% (%VITE_NICKNAME%) - %VITE_TITLE%. Showcasing projects, achievements, and technical skills." />
+		<meta property="twitter:image" content="%VITE_WEBSITE_LINK%/homepage.png" />
+		<meta property="twitter:site" content="@PanPanFR" />
+		
+		<!-- LinkedIn -->
+		<meta property="og:profile:first_name" content="%VITE_FULL_NAME%" />
+		<meta property="og:profile:last_name" content="%VITE_NICKNAME%" />
+		<meta property="og:see_also" content="%VITE_GITHUB_LINK%" />
+		<meta property="og:see_also" content="%VITE_LINKEDIN_LINK%" />
+		
 		<link rel="preconnect" href="https://docs.google.com" crossorigin />
 		
-		<!-- VCR OSD Mono Font -->
+		<!-- Preload VCR OSD Mono Font -->
+		<link rel="preload" href="https://fonts.googleapis.com/css2?family=VCR+OSD+Mono&display=swap" as="style" fetchpriority="high">
 		<link href="https://fonts.googleapis.com/css2?family=VCR+OSD+Mono&display=swap" rel="stylesheet">
 		
-		<!-- Prevent theme flickering -->
+		<!-- Prevent theme flickering and critical CSS -->
 		<style>
 			html {
 				color-scheme: light dark;
@@ -34,6 +56,32 @@
 			.dark .theme-loading,
 			.theme-loading.theme-ready {
 				visibility: visible;
+			}
+			
+			/* Critical CSS for above-the-fold content */
+			body {
+				height: 100%;
+				margin: 0;
+				padding: 0;
+				font-family: 'VCR OSD Mono', ui-monospace, SFMono-Regular, 'SF Mono', Monaco, Consolas, 'Liberation Mono', 'Courier New', monospace;
+			}
+			
+			/* Make text elements bold */
+			p, h1, h2, h3, h4, h5, h6, span, div, a, li, td, th, label, input, textarea, button, select, option, mark {
+				font-weight: bold !important;
+			}
+			
+			/* Loading states */
+			body.loading {
+				overflow: hidden;
+			}
+			body.loaded {
+				overflow: auto;
+			}
+			
+			/* Basic layout for initial render */
+			#root {
+				min-height: 100vh;
 			}
 		</style>
 		

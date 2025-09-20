@@ -32,7 +32,7 @@ const techIcons: Record<string, React.ReactNode> = {
 
 export default function Profile() {
 	return (
-		<div className="mt-auto grid grid-cols-1 md:grid-cols-4 gap-4 pb-4 px-2 md:px-0">
+		<div className="grid grid-cols-1 md:grid-cols-4 gap-4 pb-4 px-2 md:px-0">
 			<ProfileCard />
 			<DetailsCard />
 			<TechStackSection />

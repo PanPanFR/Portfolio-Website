@@ -1,8 +1,9 @@
 import {
 	useState,
 	useEffect,
-	createContext,
+	useMemo,
 	useContext,
+	createContext,
 	type ReactNode,
 } from "react";
 
@@ -23,6 +24,11 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 		localStorage.setItem("theme", theme);
 	}, [darkMode]);
 
+	const contextValue = useMemo(() => ({
+		darkMode,
+		setDarkMode
+	}), [darkMode]);
+
 	// Listen for system theme changes
 	useEffect(() => {
 		const mediaQuery = window.matchMedia("(prefers-color-scheme: dark)");
@@ -37,7 +43,7 @@ export function ThemeProvider({ children }: { children: ReactNode }) {
 	}, []);
 
 	return (
-		<ThemeContext.Provider value={{ darkMode, setDarkMode }}>
+		<ThemeContext.Provider value={contextValue}>
 			{children}
 		</ThemeContext.Provider>
 	);

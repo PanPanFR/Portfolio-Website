@@ -47,7 +47,12 @@ export default function Blog() {
       </motion.div>
 
       {/* Filters */}
-      <div className="flex flex-col md:flex-row gap-4 mb-6">
+      <motion.div 
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.3, delay: 0.2 }}
+        className="flex flex-col md:flex-row gap-4 mb-6"
+      >
         <div className="bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] p-4 flex-1">
           <label className="block text-sm font-bold mb-2">
             {translations?.["category-filter"] || "Filter by Category"}
@@ -77,7 +82,7 @@ export default function Blog() {
             <option value="oldest">{translations?.["oldest"] || "Oldest"}</option>
           </select>
         </div>
-      </div>
+      </motion.div>
 
       {/* Blog posts grid */}
       {processedPosts.length === 0 ? (

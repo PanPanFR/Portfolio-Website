@@ -1,21 +1,25 @@
 import {
 	createContext,
 	useState,
+	useMemo,
+	useCallback,
 	type ReactNode,
 	useContext,
 	useEffect,
 } from "react";
 import {
-	fetchAchievements,
-	fetchProject,
-	fetchTranslations,
-	fetchTechStack,
-	fetchCurrentlyLearning,
-	fetchBlogPosts,
-	fetchSupportedLangs,
-} from "../lib/sheets";
+	useSupportedLangs,
+	useProjects,
+	useAchievements,
+	useTechStack,
+	useContributions,
+	useCurrentlyLearning,
+	useBlogPosts,
+	useTranslations,
+	invalidateAllCaches,
+	invalidateCache
+} from "../lib/hooks";
 import { useErrorBoundary } from "react-error-boundary";
-import { fetchContributions } from "../lib/github";
 import {
 	defaultContributions,
 	type Achievement,
@@ -41,7 +45,9 @@ interface Content {
 const DataContent = createContext<
 	| (Content & {
 			isLoading: boolean;
-			loadContentForLang: (langCode: string) => Promise<void>;
+			loadContentForLang: (langCode: string) => void;
+			invalidateAllCaches: () => void;
+			invalidateCache: (key: string) => void;
 	  })
 	| null
 >(null);
@@ -60,85 +66,164 @@ export function DataProvider({ children }: { children: ReactNode }) {
 	});
 	const [isLoading, setIsLoading] = useState(true);
 	const { showBoundary } = useErrorBoundary();
-
-	// Load supported languages on component mount
+	
+	// Fetch supported languages with SWR
+	const { data: supportedLangsData, error: supportedLangsError } = useSupportedLangs();
+	
+	// Fetch all content with SWR
+	const { data: projectsData, error: projectsError } = useProjects();
+	const { data: achievementsData, error: achievementsError } = useAchievements();
+	const { data: techStackData, error: techStackError } = useTechStack();
+	const { data: contributionsData, error: contributionsError } = useContributions();
+	const { data: currentlyLearningData, error: currentlyLearningError } = useCurrentlyLearning();
+	const { data: blogPostsData, error: blogPostsError } = useBlogPosts();
+	const { data: translationsData, error: translationsError } = useTranslations(content.currentLang);
+	
+	// Handle errors
 	useEffect(() => {
-		async function loadSupportedLangs() {
-			try {
-				const supportedLangs = await fetchSupportedLangs();
-				setContent(prev => ({
-					...prev,
-					supportedLangs
-				}));
-				// Always set isLoading to false after attempting to load
-				setIsLoading(false);
-			} catch (error) {
-				console.error("Error loading supported languages:", error);
-				showBoundary(error);
-				// Even on error, we need to stop loading to prevent infinite loading state
-				setIsLoading(false);
-			}
+		if (supportedLangsError) {
+			console.error("Error loading supported languages:", supportedLangsError);
+			showBoundary(supportedLangsError);
 		}
-		
-		// Only load if we don't already have supported languages
-		if (content.supportedLangs.length === 0) {
-			loadSupportedLangs();
-		} else {
+		if (projectsError) {
+			console.error("Error loading projects:", projectsError);
+			showBoundary(projectsError);
+		}
+		if (achievementsError) {
+			console.error("Error loading achievements:", achievementsError);
+			showBoundary(achievementsError);
+		}
+		if (techStackError) {
+			console.error("Error loading tech stack:", techStackError);
+			showBoundary(techStackError);
+		}
+		if (contributionsError) {
+			console.error("Error loading contributions:", contributionsError);
+			showBoundary(contributionsError);
+		}
+		if (currentlyLearningError) {
+			console.error("Error loading currently learning:", currentlyLearningError);
+			showBoundary(currentlyLearningError);
+		}
+		if (blogPostsError) {
+			console.error("Error loading blog posts:", blogPostsError);
+			showBoundary(blogPostsError);
+		}
+		if (translationsError) {
+			console.error("Error loading translations:", translationsError);
+			showBoundary(translationsError);
+		}
+	}, [
+		supportedLangsError,
+		projectsError,
+		achievementsError,
+		techStackError,
+		contributionsError,
+		currentlyLearningError,
+		blogPostsError,
+		translationsError,
+		showBoundary
+	]);
+	
+	// Update content when data changes
+	useEffect(() => {
+		if (supportedLangsData) {
+			setContent(prev => ({
+				...prev,
+				supportedLangs: supportedLangsData
+			}));
 			setIsLoading(false);
 		}
+	}, [supportedLangsData]);
+	
+	useEffect(() => {
+		if (projectsData) {
+			setContent(prev => ({
+				...prev,
+				projects: projectsData
+			}));
+		}
+	}, [projectsData]);
+	
+	useEffect(() => {
+		if (achievementsData) {
+			setContent(prev => ({
+				...prev,
+				achievements: achievementsData
+			}));
+		}
+	}, [achievementsData]);
+	
+	useEffect(() => {
+		if (techStackData) {
+			setContent(prev => ({
+				...prev,
+				techStack: techStackData
+			}));
+		}
+	}, [techStackData]);
+	
+	useEffect(() => {
+		if (contributionsData) {
+			setContent(prev => ({
+				...prev,
+				contributions: contributionsData
+			}));
+		}
+	}, [contributionsData]);
+	
+	useEffect(() => {
+		if (currentlyLearningData) {
+			setContent(prev => ({
+				...prev,
+				currentlyLearning: currentlyLearningData
+			}));
+		}
+	}, [currentlyLearningData]);
+	
+	useEffect(() => {
+		if (blogPostsData) {
+			setContent(prev => ({
+				...prev,
+				blogPosts: blogPostsData
+			}));
+		}
+	}, [blogPostsData]);
+	
+	useEffect(() => {
+		if (translationsData) {
+			setContent(prev => ({
+				...prev,
+				translations: translationsData
+			}));
+		}
+	}, [translationsData]);
+	
+	// Load content for a specific language
+	const loadContentForLang = useCallback((langCode: string) => {
+		// Update the current language - this will trigger the useTranslations hook to fetch new translations
+		setContent(prev => ({
+			...prev,
+			currentLang: langCode
+		}));
 	}, []);
-
-	// fetch content for a specific language
-	async function loadContentForLang(langCode: string) {
-		// If we're already loading this language or it's the current language, don't reload
-		if (isLoading || content.currentLang === langCode) {
-			return;
-		}
-		
-		try {
-			setIsLoading(true);
-			const [
-				projects,
-				achievements,
-				techStack,
-				translations,
-				contributions,
-				currentlyLearning,
-				blogPosts
-			] = await Promise.all([
-				fetchProject(),
-				fetchAchievements(),
-				fetchTechStack(),
-				fetchTranslations(langCode),
-				fetchContributions(),
-				fetchCurrentlyLearning(),
-				fetchBlogPosts()
-			]);
-
-			setContent({
-				supportedLangs: content.supportedLangs,
-				projects,
-				achievements,
-				techStack,
-				translations,
-				contributions,
-				currentLang: langCode,
-				currentlyLearning,
-				blogPosts
-			});
-			setIsLoading(false);
-		} catch (error) {
-			console.error("Error loading content for language:", langCode, error);
-			showBoundary(error);
-			setIsLoading(false);
-		}
-	}
-
-	const value = {
+	
+	// Cache invalidation functions
+	const invalidateAll = useCallback(() => {
+		invalidateAllCaches();
+	}, []);
+	
+	const invalidateSpecific = useCallback((key: string) => {
+		invalidateCache(key);
+	}, []);
+	
+	const value = useMemo(() => ({
 		...content,
 		isLoading,
 		loadContentForLang,
-	};
+		invalidateAllCaches: invalidateAll,
+		invalidateCache: invalidateSpecific,
+	}), [content, isLoading, loadContentForLang, invalidateAll, invalidateSpecific]);
 
 	return (
 		<DataContent.Provider value={value}>{children}</DataContent.Provider>
