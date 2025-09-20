@@ -1,7 +1,6 @@
 import { Navigate, Outlet, Route, Routes, useParams, useLocation } from "react-router-dom";
 import { useData } from "./contexts/DataProvider";
 import { useEffect, useMemo, useState } from "react";
-import { LoaderCircle } from "lucide-react";
 import LoadingScreen from "./components/LoadingScreen";
 import Background from "./components/Background";
 import Header from "./components/Header";
