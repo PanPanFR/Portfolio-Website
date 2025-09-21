@@ -84,7 +84,9 @@ export const ContributionsSchema = z.object({
 export const TechStackSchema = z.object({
 	category: z.string(),
 	name: z.string(),
-	description: z.string(),
+	description: z.string().optional(),
+	description_en: z.string().optional(),
+	description_id: z.string().optional(),
 	level: z.string(),
 	progress: z.number(),
 	logo: z.string().optional(),
@@ -121,4 +123,4 @@ export type SupportedLang = z.infer<typeof SupportedLangSchema>;
 export type Translations = z.infer<typeof TranslationsSchema>;
 export type Contributions = z.infer<typeof ContributionsSchema>;
 export type LanguagesRepo = z.infer<typeof LanguagesRepoSchema>;
-export type TechStack = z.infer<typeof TechStackSchema> & { logo?: string };
+export type TechStack = z.infer<typeof TechStackSchema> & { logo?: string; description_en?: string; description_id?: string };

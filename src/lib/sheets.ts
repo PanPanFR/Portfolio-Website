@@ -54,14 +54,17 @@ export async function fetchTranslations(
 	}
 
 	return validationResult.data.reduce((acc, item) => {
-		const { group, key, value } = item;
-
-		if (!acc[group]) {
-			// If the group doesn't exist, create it
-			acc[group] = {};
+		// Skip items with empty/undefined values
+		if (!item.group || !item.key || !item.value) {
+			return acc;
 		}
 
-		acc[group][key] = value;
+		if (!acc[item.group]) {
+			// If the group doesn't exist, create it
+			acc[item.group] = {};
+		}
+
+		acc[item.group][item.key] = item.value;
 		return acc;
 	}, {} as Translations);
 }
@@ -162,7 +165,9 @@ const ParseTechStackSchema = z.array(
 	z.object({
 		category: z.string(),
 		name: z.string(),
-		description: z.string(),
+		description: z.string().optional(),
+		description_en: z.string().optional(),
+		description_id: z.string().optional(),
 		level: z.string(),
 		progress: z.string().or(z.number()).transform((val) => {
 			const parsed = typeof val === 'string' ? parseFloat(val) : val;
@@ -170,7 +175,10 @@ const ParseTechStackSchema = z.array(
 		}),
 		logo: z.string().optional()
 	}).transform((item) => {
-		return item as TechStack & { logo?: string };
+		// If language-specific description exists, use it; otherwise fallback to general description
+		let description = item.description || "";
+		// We'll handle language-specific descriptions in the DataProvider
+		return { ...item, description } as TechStack & { logo?: string };
 	})
 );
 

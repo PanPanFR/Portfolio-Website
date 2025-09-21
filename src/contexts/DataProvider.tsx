@@ -156,12 +156,32 @@ export function DataProvider({ children }: { children: ReactNode }) {
 	
 	useEffect(() => {
 		if (techStackData) {
+			// Update tech stack descriptions based on current language
+			const updatedTechStack = techStackData.map(item => {
+				// Create a copy of the item
+				const updatedItem = { ...item };
+				
+				// Select the appropriate description based on the current language
+				if (content.currentLang === 'en' && item.description_en) {
+					updatedItem.description = item.description_en;
+				} else if (content.currentLang === 'id' && item.description_id) {
+					updatedItem.description = item.description_id;
+				}
+				// If no language-specific description exists, keep the original description
+				// If original description is also empty, provide a fallback
+				if (!updatedItem.description) {
+					updatedItem.description = "No description available";
+				}
+				
+				return updatedItem;
+			});
+			
 			setContent(prev => ({
 				...prev,
-				techStack: techStackData
+				techStack: updatedTechStack
 			}));
 		}
-	}, [techStackData]);
+	}, [techStackData, content.currentLang]);
 	
 	useEffect(() => {
 		if (contributionsData) {

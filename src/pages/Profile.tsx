@@ -42,6 +42,8 @@ export default function Profile() {
 
 function TechStackSection() {
 	const { techStack, translations: { techStack: translations }, currentlyLearning } = useData();
+	const [selectedCategory, setSelectedCategory] = useState<string>("frontend");
+	const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState<boolean>(true);
 	
 	// Group tech stack by category
 	const groupedTechStack = useMemo(() => {
@@ -62,6 +64,19 @@ function TechStackSection() {
 		return "bg-black dark:bg-white";
 	};
 
+	// Get description for category based on selected language
+	const getCategoryDescription = (category: string) => {
+		if (category === "frontend") {
+			return translations?.["frontend-description"] || "Framework & libraries yang sering saya gunakan.";
+		} else if (category === "backend") {
+			return translations?.["backend-description"] || "API, server & integrasi.";
+		} else if (category === "database") {
+			return translations?.["database-description"] || "Penyimpanan data & platform deployment.";
+		} else {
+			return translations?.["other-description"] || "Tools dan teknologi yang saya gunakan.";
+		}
+	};
+
 	return (
 		<>
 			<motion.div 
@@ -74,83 +89,119 @@ function TechStackSection() {
 				<p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
 					{translations?.["tech-stack-description"] || "Teknologi dan tools yang saya gunakan untuk membangun aplikasi — terorganisir berdasarkan kategori dan level kenyamanan."}
 				</p>
+				
+				{/* Logo Loop */}
 				<div className="py-4 overflow-hidden">
 					<TechStackLogos />
 				</div>
-			</motion.div>
 
-			{/* Categories grid */}
-			{techStack.length > 0 && (
-				<section className="col-span-4 grid grid-cols-1 md:grid-cols-3 gap-4">
-					{categories.map((category, categoryIndex) => (
-						<motion.div 
+				{/* Category Selection */}
+				<div className="flex flex-wrap gap-2 mb-6">
+					<button
+						onClick={() => {
+							if (selectedCategory === "all") {
+								// Jika tombol "All" diklik saat sudah aktif, toggle dropdown
+								setIsCategoryDropdownOpen(!isCategoryDropdownOpen);
+							} else {
+								// Jika tombol "All" diklik saat kategori lain aktif, aktifkan "All"
+								setSelectedCategory("all");
+								setIsCategoryDropdownOpen(true);
+							}
+						}}
+						className={`px-4 py-2 text-sm font-medium capitalize border-2 transition-all duration-200 ease-in-out ${
+							selectedCategory === "all"
+								? "bg-black text-white dark:bg-zinc-700 dark:text-white border-black dark:border-zinc-600 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_0px_rgba(255,255,255,0.2)] active:shadow-none active:translate-x-[3px] active:translate-y-[3px]"
+								: "bg-white text-black dark:bg-zinc-900 dark:text-white border-black dark:border-zinc-600 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] active:shadow-none active:translate-x-[3px] active:translate-y-[3px]"
+						}`}
+					>
+						All
+					</button>
+					{categories.map((category) => (
+						<button
 							key={category}
-							initial={{ opacity: 0, y: 20 }}
-							animate={{ opacity: 1, y: 0 }}
-							transition={{ duration: 0.3, delay: 0.1 * categoryIndex }}
-							className="bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] p-4"
+							onClick={() => {
+								if (selectedCategory === category) {
+									// Jika kategori yang sama diklik saat sudah aktif, toggle dropdown
+									setIsCategoryDropdownOpen(!isCategoryDropdownOpen);
+								} else {
+									// Jika kategori berbeda diklik, pilih kategori baru dan tampilkan dropdown
+									setSelectedCategory(category);
+									setIsCategoryDropdownOpen(true);
+								}
+							}}
+							className={`px-4 py-2 text-sm font-medium capitalize border-2 transition-all duration-200 ease-in-out ${
+								selectedCategory === category
+									? "bg-black text-white dark:bg-zinc-700 dark:text-white border-black dark:border-zinc-600 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_0px_rgba(255,255,255,0.2)] active:shadow-none active:translate-x-[3px] active:translate-y-[3px]"
+									: "bg-white text-black dark:bg-zinc-900 dark:text-white border-black dark:border-zinc-600 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] active:shadow-none active:translate-x-[3px] active:translate-y-[3px]"
+							}`}
 						>
-							<h2 className="text-lg font-bold mb-3 capitalize">{category}</h2>
-							<p className="text-xs text-gray-500 dark:text-gray-400 mb-3">
-							{category === "frontend" && (translations?.["frontend-description"] || "Framework & libraries yang sering saya gunakan.")}
-							{category === "backend" && (translations?.["backend-description"] || "API, server & integrasi.")}
-							{category === "database" && (translations?.["database-description"] || "Penyimpanan data & platform deployment.")}
-							{![`frontend`, `backend`, `database`].includes(category) && (translations?.["other-description"] || "Tools dan teknologi yang saya gunakan.")}
-						</p>
-							<ul className="space-y-2">
-								{groupedTechStack[category].map((item, itemIndex) => (
-									<motion.li 
-										key={item.name}
-										initial={{ opacity: 0, y: 10 }}
-										animate={{ opacity: 1, y: 0 }}
-										transition={{ duration: 0.2, delay: 0.1 * itemIndex }}
-										className="flex items-center justify-between"
-									>
-										<div className="flex items-center gap-2">
-											<div className="w-8 h-8 flex items-center justify-center text-sm font-bold">
-												{item.logo ? (
-													<img 
-														src={item.logo} 
-														alt={item.name} 
-														className="w-5 h-5 object-contain"
-														onError={(e) => {
-															const target = e.target as HTMLImageElement;
-															target.style.display = 'none';
-														}}
-													/>
-												) : techIcons[item.name] ? (
-													techIcons[item.name]
-												) : (
-													item.name.substring(0, 2).toUpperCase()
-												)}
-											</div>
-											<div>
-								<div className="font-bold text-sm">{item.name}</div>
-												<div className="text-xs text-gray-500 dark:text-gray-400">{item.description}</div>
-											</div>
-										</div>
-										{/* Skill bar */}
-										<div className="w-24">
-											<div className="h-2 bg-gray-200 dark:bg-zinc-700 overflow-hidden rounded-full">
-												<AnimatePresence>
-													<motion.div 
-														initial={{ width: 0 }}
-														animate={{ width: `${item.progress}%` }}
-														exit={{ width: 0 }}
-														transition={{ duration: 0.3, delay: 0.1 * itemIndex }}
-														className={`h-full rounded-full ${getProgressColor()}`}
-													/>
-												</AnimatePresence>
-											</div>
-											<div className="text-xs text-right text-gray-500 dark:text-gray-400 mt-1 capitalize">{item.level}</div>
-										</div>
-									</motion.li>
-								))}
-							</ul>
-						</motion.div>
+							{category}
+						</button>
 					))}
-				</section>
-			)}
+				</div>
+
+				{/* Category Description */}
+				{selectedCategory !== "all" && isCategoryDropdownOpen && (
+					<p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
+						{getCategoryDescription(selectedCategory)}
+					</p>
+				)}
+
+				{/* Tech Stack Items */}
+				<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+					{isCategoryDropdownOpen ? (
+						(selectedCategory === "all" 
+							? techStack 
+							: groupedTechStack[selectedCategory] || []
+						).map((item, index) => (
+							<motion.div
+								key={item.name}
+								initial={{ opacity: 0, y: 10 }}
+								animate={{ opacity: 1, y: 0 }}
+								transition={{ duration: 0.2, delay: 0.1 * index }}
+								className="flex items-center justify-between p-3 bg-gray-50 dark:bg-zinc-800 rounded-lg"
+							>
+								<div className="flex items-center gap-3">
+									<div className="w-10 h-10 flex items-center justify-center text-sm font-bold">
+										{item.logo ? (
+											<img 
+												src={item.logo} 
+												alt={item.name} 
+												className="w-6 h-6 object-contain"
+												onError={(e) => {
+													const target = e.target as HTMLImageElement;
+													target.style.display = 'none';
+												}}
+											/>
+										) : (
+											<div className="bg-gray-200 border-2 border-dashed rounded-xl w-6 h-6" />
+										)}
+									</div>
+									<div>
+										<div className="font-bold text-sm">{item.name}</div>
+										<div className="text-xs text-gray-500 dark:text-gray-400">{item.description}</div>
+									</div>
+								</div>
+								{/* Skill bar */}
+								<div className="w-24">
+									<div className="h-2 bg-gray-200 dark:bg-zinc-700 overflow-hidden rounded-full">
+										<AnimatePresence>
+											<motion.div 
+												initial={{ width: 0 }}
+												animate={{ width: `${item.progress}%` }}
+												exit={{ width: 0 }}
+												transition={{ duration: 0.3, delay: 0.1 * index }}
+												className={`h-full rounded-full ${getProgressColor()}`}
+											/>
+										</AnimatePresence>
+									</div>
+									<div className="text-xs text-right text-gray-500 dark:text-gray-400 mt-1 capitalize">{item.level}</div>
+								</div>
+							</motion.div>
+						))
+					) : null}
+				</div>
+			</motion.div>
 
 			{/* Currently Learning */}
 			<motion.div 
@@ -425,4 +476,3 @@ function DetailsCard() {
 		</motion.div>
 	);
 }
-
