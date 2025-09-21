@@ -11,24 +11,6 @@ import { useMemo, useState } from "react";
 import { useData } from "../contexts/DataProvider";
 import TechStackLogos from "../components/TechStackLogos";
 import Marquee from "react-fast-marquee";
-import { SiReact, SiTypescript, SiJavascript, SiHtml5, SiCss3, SiNodedotjs, SiPython, SiPostgresql, SiMongodb, SiDocker, SiGooglecloud, SiGit } from 'react-icons/si';
-
-// Mapping tech names to icons
-const techIcons: Record<string, React.ReactNode> = {
-	"React": <SiReact />,
-	"TypeScript": <SiTypescript />,
-	"JavaScript": <SiJavascript />,
-	"HTML5": <SiHtml5 />,
-	"CSS3": <SiCss3 />,
-	"Node.js": <SiNodedotjs />,
-	"Python": <SiPython />,
-	"PostgreSQL": <SiPostgresql />,
-	"MongoDB": <SiMongodb />,
-	"Docker": <SiDocker />,
-	"Google Cloud": <SiGooglecloud />,
-	"Git": <SiGit />,
-	// Add more mappings as needed
-};
 
 export default function Profile() {
 	return (
