@@ -159,7 +159,7 @@ export default defineConfig({
 	preview: {
 		headers: {
 			// Security headers
-			"Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://docs.google.com https://api.github.com; frame-ancestors 'none';",
+			"Content-Security-Policy": "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; style-src-elem 'self' 'unsafe-inline' https://fonts.googleapis.com; img-src 'self' data: https:; font-src 'self' https://fonts.gstatic.com; connect-src 'self' https://docs.google.com https://api.github.com https://github-stats-dusky-mu.vercel.app; frame-ancestors 'none';",
 			"X-Content-Type-Options": "nosniff",
 			"X-Frame-Options": "SAMEORIGIN",
 			"X-XSS-Protection": "1; mode=block",
