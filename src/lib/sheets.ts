@@ -33,9 +33,9 @@ export function fetchData(sheetName: string): Promise<Record<string, unknown>[]>
 
 const TranslationFromSourceSchema = z.array(
 	z.object({
-		group: z.string(),
-		key: z.string(),
-		value: z.string(),
+		group: z.string().optional(),
+		key: z.string().optional(),
+		value: z.string().optional(),
 	}),
 );
 
