@@ -42,6 +42,7 @@ interface ListCardsProps<TData extends Record<string, unknown>> {
 			setValue: React.Dispatch<React.SetStateAction<string>>;
 			value: string;
 		}[];
+		selectFieldClassName?: string;
 	};
 	cardConfig?: CardConfig<TData>;
 	CustomCard?: (
@@ -75,13 +76,16 @@ function ListCards<TData extends Record<string, unknown>>({
 			| undefined);
 	const [search, setSearch] = useState("");
 	const groupedSelectFields = useMemo(() => {
+		if (filterConfig.selectFieldClassName) {
+			return [filterConfig.selectField];
+		}
 		const result = [];
 		const chunkSize = 2;
 		for (let i = 0; i < filterConfig.selectField.length; i += chunkSize) {
 			result.push(filterConfig.selectField.slice(i, i + chunkSize));
 		}
 		return result;
-	}, [filterConfig.selectField]);
+	}, [filterConfig.selectField, filterConfig.selectFieldClassName]);
 
 	function getValueByPath(obj: unknown, path: string | string[]): unknown {
 		// Convert path to an array if it's a string
@@ -215,7 +219,7 @@ function ListCards<TData extends Record<string, unknown>>({
 						exit={{ rotateX: 90 }}
 						transition={{ duration: 0.5 }}
 						className={`flex gap-2 items-center bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]
-							${searchConfig ? "lg:border-0 lg:shadow-none" : ""}`}
+							${searchConfig ? "lg:border-0 lg:shadow-none" : ""} ${filterConfig.selectFieldClassName}`}
 					>
 						{group.map((field, index) => (
 							<motion.select

@@ -24,8 +24,7 @@ export default function Projects() {
 	].sort();
 
 	return (
-		<div>
-			<ListCards
+		<ListCards
 				title={(translations?.["projects"]?.["projects-list"] as string) || "Projects List"}
 				dataSet={projects}
 				searchConfig={{
@@ -35,6 +34,7 @@ export default function Projects() {
 				}}
 				filterConfig={{
 					canReset: true,
+					selectFieldClassName: "flex-col lg:flex-row",
 					selectField: [
 						{
 							name: "type",
@@ -151,6 +151,5 @@ export default function Projects() {
 					/>
 				)}
 			/>
-		</div>
 	);
 }
