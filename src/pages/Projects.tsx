@@ -4,6 +4,7 @@ import ListCards from "../components/ListCards";
 import DetailsModal from "../components/DetailsModal";
 import { IframeMedia } from "../components/IframeMedia";
 import ImagesSlider from "../components/ImagesSlider";
+import Button from "../components/Button";
 import {
 	Globe,
 	TerminalSquare,
@@ -70,13 +71,9 @@ export default function Projects() {
 								tech.toLowerCase().includes("ai")
 							);
 							return isAiProject ? (
-								<button
-									aria-label="ai project"
-									title={(translations?.["projects"]?.["ai-project"] as string) || "AI Project"}
-									className="cursor-pointer btn rounded-xs border-2 border-black text-base shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all duration-200 ease-in-out hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] flex-grow bg-base-300 btn-lg text-base flex items-center gap-2 justify-center w-10 h-10"
-								>
+								<Button ariaLabel="ai project" tooltip={(translations?.["projects"]?.["ai-project"] as string) || "AI Project"}>
 									<BrainCircuit size={20} />
-								</button>
+								</Button>
 							) : null;
 						},
 						rightButton: (data, setOpenModal) => (

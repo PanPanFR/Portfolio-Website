@@ -237,8 +237,7 @@ function ListCards<TData extends Record<string, unknown>>({
 												(opt) => opt.value === field.value,
 											)?.label || field.label
 										}
-										className={`w-auto text-sm lg:text-base cursor-pointer px-2 py-2 font-bold uppercase h-10 dark:border-zinc-600 outline-none transition-all duration-200 whitespace-nowrap
-											${searchConfig ? "lg:border-l-4" : ""} ${index === 1 ? "sm:border-l-4" : ""}`}
+										className="w-auto min-w-[9rem] sm:min-w-[12rem] text-xs sm:text-sm cursor-pointer px-2 py-2 font-bold uppercase h-9 sm:h-10 dark:border-zinc-600 outline-none transition-all duration-200 whitespace-nowrap"
 									>
 										<option value="" className="dark:bg-zinc-900">
 											{(field.defaultValue || field.label)

@@ -193,14 +193,9 @@ export default function Achievements() {
 							);
 						})(),
 					rightButton: (_, setOpenModal) => (
-													<button
-								type="button"
-								aria-label="view details of achievement"
-								onClick={() => setOpenModal(true)}
-								className="cursor-pointer btn rounded-xs border-2 border-black text-base shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all duration-200 ease-in-out hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] flex-grow bg-base-300 btn-lg text-base flex items-center gap-2 justify-center w-10 h-10"
-							>
-								<Info size={15} />
-							</button>
+						<Button ariaLabel="view details of achievement" onClick={() => setOpenModal(true)}>
+							<Info size={15} />
+						</Button>
 					),
 				},
 			}}
