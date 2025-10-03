@@ -59,6 +59,7 @@ export default function Achievements() {
 			}}
 			filterConfig={{
 				canReset: true,
+				selectFieldClassName: "flex-row flex-wrap",
 				selectField: [
 					{
 						name: "type",

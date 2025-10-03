@@ -194,7 +194,7 @@ function ListCards<TData extends Record<string, unknown>>({
 						transition={{ duration: 0.5 }}
 						whileTap={{ scale: 0.95 }}
 						aria-label="Search bar"
-						className="px-4 py-2 flex-1 flex gap-2 items-center bg-white dark:bg-zinc-900 border-2 lg:border-0 dark:border-zinc-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] lg:shadow-none"
+						className="px-4 py-2 w-full flex-1 flex gap-2 items-center bg-white dark:bg-zinc-900 border-2 lg:border-0 dark:border-zinc-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] lg:shadow-none relative z-10"
 					>
 						<Search size={25} />
 						<input
@@ -218,11 +218,12 @@ function ListCards<TData extends Record<string, unknown>>({
 						animate={{ rotateX: 0 }}
 						exit={{ rotateX: 90 }}
 						transition={{ duration: 0.5 }}
-						className={`flex gap-2 items-center bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]
-							${searchConfig ? "lg:border-0 lg:shadow-none" : ""} ${filterConfig.selectFieldClassName}`}
+						className={`flex flex-row gap-2 items-stretch ${filterConfig.selectFieldClassName || ""}`}
 					>
 						{group.map((field, index) => (
-							<motion.select
+							<div key={field.name + index} className="flex-1 min-w-[120px]">
+								<div className="bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+									<motion.select
 								key={field.name + index}
 								whileTap={{ scale: 0.95 }}
 								value={field.value}
@@ -236,8 +237,8 @@ function ListCards<TData extends Record<string, unknown>>({
 										(opt) => opt.value === field.value,
 									)?.label || field.label
 								}
-								className={`min-w-0 flex-1 text-sm lg:text-base truncate cursor-pointer px-2 py-2 font-bold uppercase h-full dark:border-zinc-600 outline-none transition-all duration-200
-									${searchConfig ? "lg:border-l-4" : ""} ${index === 1 ? "border-l-4" : ""}`}
+								className={`min-w-0 w-full sm:flex-1 text-sm lg:text-base truncate cursor-pointer px-2 py-2 font-bold uppercase h-10 dark:border-zinc-600 outline-none transition-all duration-200
+									${searchConfig ? "lg:border-l-4" : ""} ${index === 1 ? "sm:border-l-4" : ""}`}
 							>
 								<option value="" className="dark:bg-zinc-900">
 									{(field.defaultValue || field.label)
@@ -253,28 +254,34 @@ function ListCards<TData extends Record<string, unknown>>({
 									</option>
 								))}
 							</motion.select>
+							</div>
+						</div>
 						))}
 
 						{/* Reset filters */}
 						{filterConfig.canReset &&
 							groupIndex === groupedSelectFields.length - 1 && (
-								<motion.button
-									onClick={(e) => {
-										e.preventDefault();
-										filterConfig.selectField.forEach(
-											(field) => {
-												field.setValue("");
-											},
-										);
-										setSearch("");
-									}}
-									whileHover={{ scale: 0.9 }}
-									whileTap={{ scale: 0.95, x: 2, y: 2 }}
-									aria-label="reset filters"
-									className="cursor-pointer border-l-4 px-4 py-2 dark:border-zinc-600 transition-all duration-200 hover:shadow-none"
-								>
-									<RefreshCcw size={25} />
-								</motion.button>
+								<div className="flex-none">
+									<div className="bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center">
+										<motion.button
+												onClick={(e) => {
+													e.preventDefault();
+													filterConfig.selectField.forEach(
+														(field) => {
+															field.setValue("");
+														},
+													);
+													setSearch("");
+												}}
+												whileHover={{ scale: 0.9 }}
+												whileTap={{ scale: 0.95, x: 2, y: 2 }}
+												aria-label="reset filters"
+												className="cursor-pointer w-10 h-10 p-0 transition-all duration-200 hover:shadow-none"
+											>
+												<RefreshCcw size={20} />
+											</motion.button>
+										</div>
+								</div>
 							)}
 					</motion.div>
 				))}
@@ -284,7 +291,7 @@ function ListCards<TData extends Record<string, unknown>>({
 				<AnimatePresence>
 					{processedData.map((data, index) => {
 						const key = titleCardKey
-							? String(data?.[titleCardKey])
+							? `${String(data?.[titleCardKey])}-${index}`
 							: index;
 
 						if (CustomCard) {

@@ -34,7 +34,7 @@ export default function Projects() {
 				}}
 				filterConfig={{
 					canReset: true,
-					selectFieldClassName: "flex-col lg:flex-row",
+					selectFieldClassName: "flex-row flex-wrap", 
 					selectField: [
 						{
 							name: "type",

@@ -47,7 +47,7 @@ ChartJS.register(
 
 export default function Stats() {
 	return (
-		<div className="mt-auto grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 px-2 md:px-0">
+		<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 px-2 md:px-0">
 			<ProfileCard />
 			<TopLangsCard />
 			<StatsCard />

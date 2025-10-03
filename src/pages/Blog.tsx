@@ -35,10 +35,11 @@ export default function Blog() {
   return (
     <div className="mt-auto pb-4">
       <motion.div 
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.3 }}
-        className="bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] p-6 mb-6"
+        initial={{ rotateX: -90 }}
+        animate={{ rotateX: 0 }}
+        exit={{ rotateX: 90 }}
+        transition={{ duration: 0.5 }}
+        className="bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] p-6 mb-6"
       >
         <h1 className="text-3xl md:text-4xl font-extrabold mb-6">{translations?.["blog-title"] || "Blog"}</h1>
         <p className="text-gray-600 dark:text-gray-300 mb-8">
@@ -48,9 +49,10 @@ export default function Blog() {
 
       {/* Filters */}
       <motion.div 
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        transition={{ duration: 0.3, delay: 0.2 }}
+        initial={{ rotateX: -90 }}
+        animate={{ rotateX: 0 }}
+        exit={{ rotateX: 90 }}
+        transition={{ duration: 0.5 }}
         className="flex flex-col md:flex-row gap-4 mb-6"
       >
         <div className="bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] p-4 flex-1">
@@ -101,11 +103,13 @@ export default function Blog() {
         <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-2 md:px-0">
           {processedPosts.map((post, index) => (
             <motion.div 
-              key={post.title + post.date} // Use a more unique key
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ duration: 0.3, delay: 0.1 * index }}
-              className="bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] overflow-hidden flex flex-col"
+              key={post.title + post.date}
+              initial={{ rotateX: -90 }}
+              whileInView={{ rotateX: 0 }}
+              viewport={{ once: true }}
+              exit={{ rotateX: 90 }}
+              transition={{ duration: 0.5, delay: 0.1 * index }}
+              className="bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] overflow-hidden flex flex-col"
             >
               {/* Thumbnail */}
               <div className="relative h-48 overflow-hidden">
