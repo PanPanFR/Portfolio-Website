@@ -78,27 +78,13 @@ export default function Projects() {
 						},
 						rightButton: (data, setOpenModal) => (
 							<>
-								<a
-									href="#"
-									aria-label="view details of project"
-									onClick={(e) => {
-										e.preventDefault();
-										setOpenModal(true);
-									}}
-									className="cursor-pointer btn rounded-xs border-2 border-black text-base shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all duration-200 ease-in-out hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] flex-grow bg-base-300 btn-lg text-base flex items-center gap-2 justify-center w-10 h-10"
-								>
+								<Button ariaLabel="view details of project" onClick={() => setOpenModal(true)}>
 									<Info size={12} />
-								</a>
+								</Button>
 								{data.github_link && (
-									<a
-										href={data.github_link}
-										aria-label="external link to github"
-										target="_blank"
-										rel="noopener noreferrer"
-										className="cursor-pointer btn rounded-xs border-2 border-black text-base shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all duration-200 ease-in-out hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] flex-grow bg-base-300 btn-lg text-base flex items-center gap-2 justify-center w-10 h-10"
-									>
+									<Button href={data.github_link} ariaLabel="external link to github">
 										<Globe size={12} />
-									</a>
+									</Button>
 								)}
 								{data.demo_link && (
 									<a
@@ -112,15 +98,9 @@ export default function Projects() {
 									</a>
 								)}
 								{data.link && (
-									<a
-										href={data.link}
-										aria-label="external link to project"
-										target="_blank"
-										rel="noopener noreferrer"
-										className="cursor-pointer btn rounded-xs border-2 border-black text-base shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all duration-200 ease-in-out hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] flex-grow bg-base-300 btn-lg text-base flex items-center gap-2 justify-center w-10 h-10"
-									>
+									<Button href={data.link} ariaLabel="external link to project">
 										<ExternalLink size={12} />
-									</a>
+									</Button>
 								)}
 							</>
 						),
