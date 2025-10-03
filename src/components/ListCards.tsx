@@ -79,7 +79,7 @@ function ListCards<TData extends Record<string, unknown>>({
 		if (filterConfig.selectFieldClassName) {
 			return [filterConfig.selectField];
 		}
-		const result = [];
+		const result: typeof filterConfig.selectField[] = [];
 		const chunkSize = 2;
 		for (let i = 0; i < filterConfig.selectField.length; i += chunkSize) {
 			result.push(filterConfig.selectField.slice(i, i + chunkSize));
@@ -111,7 +111,7 @@ function ListCards<TData extends Record<string, unknown>>({
 			}
 
 			// Map over the array and get the value for each item
-			return obj.map((item) => getValueByPath(item, remainingParts));
+			return (obj as unknown[]).map((item) => getValueByPath(item, remainingParts));
 		}
 
 		// If it's a normal key, just move to the next level of the object
@@ -194,13 +194,13 @@ function ListCards<TData extends Record<string, unknown>>({
 						transition={{ duration: 0.5 }}
 						whileTap={{ scale: 0.95 }}
 						aria-label="Search bar"
-						className="px-4 py-2 w-full flex-1 flex gap-2 items-center bg-white dark:bg-zinc-900 border-2 lg:border-0 dark:border-zinc-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] lg:shadow-none relative z-10"
+						className="px-4 py-2 flex-none w-auto flex gap-2 items-center bg-white dark:bg-zinc-900 border-2 lg:border-0 dark:border-zinc-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] lg:shadow-none relative z-10"
 					>
 						<Search size={25} />
 						<input
 							type="search"
 							placeholder={searchConfig.placeholder}
-							className="w-full bg-transparent outline-none font-bold"
+							className="bg-transparent outline-none font-bold"
 							value={search}
 							onChange={(e) => {
 								e.preventDefault();
@@ -218,44 +218,44 @@ function ListCards<TData extends Record<string, unknown>>({
 						animate={{ rotateX: 0 }}
 						exit={{ rotateX: 90 }}
 						transition={{ duration: 0.5 }}
-						className={`flex flex-row gap-2 items-stretch ${filterConfig.selectFieldClassName || ""}`}
+						className={`flex flex-row flex-wrap gap-2 items-center ${filterConfig.selectFieldClassName || ""}`}
 					>
 						{group.map((field, index) => (
-							<div key={field.name + index} className="flex-1 min-w-[120px]">
+							<div key={field.name + index} className="flex-none w-auto min-w-fit">
 								<div className="bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
 									<motion.select
-								key={field.name + index}
-								whileTap={{ scale: 0.95 }}
-								value={field.value}
-								onChange={(e) => {
-									e.preventDefault();
-									field.setValue(e.target.value);
-								}}
-								aria-label={field.ariaLabel}
-								title={
-									field.options.find(
-										(opt) => opt.value === field.value,
-									)?.label || field.label
-								}
-								className={`min-w-0 w-full sm:flex-1 text-sm lg:text-base truncate cursor-pointer px-2 py-2 font-bold uppercase h-10 dark:border-zinc-600 outline-none transition-all duration-200
-									${searchConfig ? "lg:border-l-4" : ""} ${index === 1 ? "sm:border-l-4" : ""}`}
-							>
-								<option value="" className="dark:bg-zinc-900">
-									{(field.defaultValue || field.label)
-										.replace("_", " ")
-										.toUpperCase()}
-								</option>
+										key={field.name + index}
+										whileTap={{ scale: 0.95 }}
+										value={field.value}
+										onChange={(e) => {
+											e.preventDefault();
+											field.setValue(e.target.value);
+										}}
+										aria-label={field.ariaLabel}
+										title={
+											field.options.find(
+												(opt) => opt.value === field.value,
+											)?.label || field.label
+										}
+										className={`w-auto text-sm lg:text-base cursor-pointer px-2 py-2 font-bold uppercase h-10 dark:border-zinc-600 outline-none transition-all duration-200 whitespace-nowrap
+											${searchConfig ? "lg:border-l-4" : ""} ${index === 1 ? "sm:border-l-4" : ""}`}
+									>
+										<option value="" className="dark:bg-zinc-900">
+											{(field.defaultValue || field.label)
+												.replace("_", " ")
+												.toUpperCase()}
+										</option>
 
-								{field.options.map((option, index) => (
-									<option key={index} value={option.value} className="dark:bg-zinc-900">
-										{option.label
-											.replace("_", " ")
-											.toUpperCase()}
-									</option>
-								))}
-							</motion.select>
+										{field.options.map((option, index) => (
+											<option key={index} value={option.value} className="dark:bg-zinc-900">
+												{option.label
+													.replace("_", " ")
+													.toUpperCase()}
+											</option>
+										))}
+									</motion.select>
+								</div>
 							</div>
-						</div>
 						))}
 
 						{/* Reset filters */}
@@ -276,7 +276,7 @@ function ListCards<TData extends Record<string, unknown>>({
 												whileHover={{ scale: 0.9 }}
 												whileTap={{ scale: 0.95, x: 2, y: 2 }}
 												aria-label="reset filters"
-												className="cursor-pointer w-10 h-10 p-0 transition-all duration-200 hover:shadow-none"
+												className="cursor-pointer w-10 h-10 p-0 transition-all duration-200 hover:shadow-none flex items-center justify-center"
 											>
 												<RefreshCcw size={20} />
 											</motion.button>
