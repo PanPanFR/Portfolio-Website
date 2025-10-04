@@ -5,12 +5,57 @@ import {
 	type Contributions,
 } from "./schemas";
 
+const DEFAULT_GITHUB_USERNAME = "PanPanFR";
+const DEFAULT_GITHUB_LINK = `https://github.com/${DEFAULT_GITHUB_USERNAME}`;
+const DEFAULT_GITHUB_API_HOST = "https://github-stats-dusky-mu.vercel.app";
+
+function resolveGithubUsername(rawLink: string | undefined): string {
+	const candidateLink = rawLink?.trim() ? rawLink.trim() : DEFAULT_GITHUB_LINK;
+	const ensureProtocol = (link: string) => {
+		if (/^https?:\/\//i.test(link)) {
+			return link;
+		}
+		return `https://${link}`;
+	};
+
+	try {
+		const parsed = new URL(ensureProtocol(candidateLink));
+		const segment = parsed.pathname.split("/").filter(Boolean)[0];
+		if (segment) {
+			return segment;
+		}
+	} catch {
+		// Ignore parsing errors and try fallback logic below
+	}
+
+	const fallbackSegment = candidateLink.split("/").filter(Boolean).pop();
+	return fallbackSegment || DEFAULT_GITHUB_USERNAME;
+}
+
+function resolveGithubApiHost(rawHost: string | undefined): string {
+	if (!rawHost || !rawHost.trim()) {
+		return DEFAULT_GITHUB_API_HOST;
+	}
+
+	const trimmedHost = rawHost.trim();
+	const normalisedHost = /^https?:\/\//i.test(trimmedHost)
+		? trimmedHost
+		: `https://${trimmedHost}`;
+
+	try {
+		const parsed = new URL(normalisedHost);
+		return `${parsed.origin}${parsed.pathname.replace(/\/$/, "")}`;
+	} catch {
+		return DEFAULT_GITHUB_API_HOST;
+	}
+}
+
 async function fetchGithubContributions(): Promise<unknown> {
-	const username = import.meta.env.VITE_GITHUB_LINK.split("/")[3];
-	const baseHost = import.meta.env.VITE_GITHUB_API_LINK || "https://github-stats-dusky-mu.vercel.app";
+	const username = resolveGithubUsername(import.meta.env.VITE_GITHUB_LINK);
+	const baseHost = resolveGithubApiHost(import.meta.env.VITE_GITHUB_API_LINK);
 	const basePath = `/api/portfolio-data`;
 	const queryParams = new URLSearchParams({
-		username: username,
+		username,
 		langs_count: import.meta.env.VITE_CONTRIBUTIONS_LANGS_COUNT || "10",
 		include_all_commits:
 			import.meta.env.VITE_CONTRIBUTIONS_INCLUDE_ALL_COMMITS || "false",
