@@ -9,8 +9,8 @@ import { ErrorBoundary } from "react-error-boundary";
 import ErrorPage from "./pages/ErrorPage.tsx";
 import { SpeedInsights } from "@vercel/speed-insights/react";
 
-// Register service worker
-if ('serviceWorker' in navigator) {
+// Register service worker only in production (vite dev serves HTML at /sw.js)
+if (import.meta.env.PROD && 'serviceWorker' in navigator) {
   window.addEventListener('load', () => {
     navigator.serviceWorker.register('/sw.js')
       .then((registration) => {

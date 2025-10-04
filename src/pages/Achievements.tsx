@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import ListCards from "../components/ListCards";
 import { useData } from "../contexts/DataProvider";
 import Button from "../components/Button";
@@ -20,109 +20,48 @@ export default function Achievements() {
 		translations: { achievements: translations, sorting },
 		achievements,
 	} = useData();
-	const [type, setType] = useState("");
-	const [category, setCategory] = useState("");
-	const [scope, setScope] = useState("");
-	const [skill, setSkill] = useState("");
 	const [sort, setSort] = useState("");
-	const types = useMemo(() => {
-		return [
-			...new Set(achievements.map((achievement) => achievement.type)),
-		].sort();
-	}, [achievements]);
-	const categories = useMemo(() => {
-		return [
-			...new Set(achievements.map((achievement) => achievement.category)),
-		].sort();
-	}, [achievements]);
-	const scopes = useMemo(() => {
-		return [
-			...new Set(achievements.map((achievement) => achievement.scope)),
-		].sort();
-	}, [achievements]);
-	const skills = useMemo(() => {
-		return [
-			...new Set(
-				achievements.flatMap((achievement) => achievement.skills),
-			),
-		].sort();
-	}, [achievements]);
 
 	return (
 		<ListCards
 			title={translations?.["achievements-list"] || "Achievements List"}
 			dataSet={achievements}
 			searchConfig={{
-				placeholder:
-					translations?.["search-placeholder"] || "Search by name",
+				placeholder: "Search",
 				fieldSearch: "name",
 			}}
 			filterConfig={{
-				canReset: true,
+				canReset: false,
+				selectFieldClassName: "flex-row flex-wrap items-center",
 				selectField: [
-					{
-						name: "type",
-						label: translations?.["type"] || "type",
-						ariaLabel: "choose type of achievement",
-						options: types.map((type) => ({
-							label: type,
-							value: type,
-						})),
-						setValue: setType,
-						value: type,
-					},
-					{
-						name: "category",
-						label: translations?.["category"] || "category",
-						ariaLabel: "choose category of achievement",
-						options: categories.map((category) => ({
-							label: category,
-							value: category,
-						})),
-						setValue: setCategory,
-						value: category,
-					},
-					{
-						name: "scope",
-						label: translations?.["scope"] || "scope",
-						ariaLabel: "choose scope of achievement",
-						options: scopes.map((scope) => ({
-							label: scope,
-							value: scope,
-						})),
-						setValue: setScope,
-						value: scope,
-					},
-					{
-						name: "skills",
-						label: translations?.["skill"] || "skill",
-						ariaLabel: "choose type of achievement",
-						options: skills.map((skill) => ({
-							label: skill,
-							value: skill,
-						})),
-						setValue: setSkill,
-						value: skill,
-					},
 					{
 						name: "sort",
 						label: translations?.["sort-by"] || "sort by (default: newest)",
-						ariaLabel: translations?.["sort-achievements-by"] || "sort achievements by",
-						defaultValue: sorting?.["newest"] || translations?.["newest"] || "newest",
+						ariaLabel:
+							translations?.["sort-achievements-by"] || "sort achievements by",
+						defaultValue:
+							sorting?.["newest"] || translations?.["newest"] || "newest",
 						options: [
 							{
-								label: sorting?.["oldest"] || translations?.["oldest"] || "Oldest",
+								label:
+									sorting?.["oldest"] || translations?.["oldest"] || "Oldest",
 								value: "oldest",
 							},
 							{
-								label: sorting?.["name-asc"] || translations?.["name-asc"] || "Name (A-Z)",
+								label:
+									sorting?.["name-asc"] ||
+									translations?.["name-asc"] ||
+									"Name (A-Z)",
 								value: "name-asc",
 								sortingMethod: (a, b) => {
 									return a.name.localeCompare(b.name);
 								},
 							},
 							{
-								label: sorting?.["name-desc"] || translations?.["name-desc"] || "Name (Z-A)",
+								label:
+									sorting?.["name-desc"] ||
+									translations?.["name-desc"] ||
+									"Name (Z-A)",
 								value: "name-desc",
 								sortingMethod: (a, b) => {
 									return b.name.localeCompare(a.name);
@@ -131,7 +70,7 @@ export default function Achievements() {
 						],
 						setValue: setSort,
 						value: sort,
-					}
+					},
 				],
 			}}
 			cardConfig={{
@@ -192,14 +131,9 @@ export default function Achievements() {
 							);
 						})(),
 					rightButton: (_, setOpenModal) => (
-													<button
-								type="button"
-								aria-label="view details of achievement"
-								onClick={() => setOpenModal(true)}
-								className="cursor-pointer btn rounded-xs border-2 border-black text-base shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all duration-200 ease-in-out hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] flex-grow bg-base-300 btn-lg text-base flex items-center gap-2 justify-center w-10 h-10"
-							>
-								<Info size={15} />
-							</button>
+						<Button ariaLabel="view details of achievement" onClick={() => setOpenModal(true)}>
+							<Info size={15} />
+						</Button>
 					),
 				},
 			}}

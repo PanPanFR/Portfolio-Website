@@ -23,8 +23,7 @@ export default function NavBar() {
 
 	return (
 		<motion.nav
-			className="z-50 fixed w-full md:w-auto px-4 py-2 bottom-0 md:bottom-8 md:rounded-lg left-1/2 -translate-x-1/2 bg-white dark:bg-zinc-800 shadow-lg md:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]
-			border-t-1 md:border-l-1 border-zinc-900 dark:border-zinc-600"
+			className="z-50 fixed w-full md:w-auto px-4 py-2 bottom-0 md:bottom-8 left-1/2 -translate-x-1/2 bg-white dark:bg-zinc-800 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] md:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] border-2 border-zinc-900 dark:border-zinc-600"
 		>
 			{isDesktop ? (
 				<DesktopNavBar
