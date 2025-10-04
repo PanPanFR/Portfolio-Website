@@ -310,7 +310,7 @@ function CollapsedContent({
 						animate={{ opacity: 1, y: 0 }}
 						exit={{ opacity: 0, y: 10 }}
 						transition={{ duration: 0.2 }}
-						className="mt-4 ml-2"
+						className="mt-4 w-full px-2 md:px-0"
 					>
 						{children}
 					</motion.div>
@@ -381,78 +381,76 @@ function DetailsCard() {
 				title={translations?.["education"] || "Education"}
 				Icon={GraduationCap}
 			>
-				<div className="flex flex-col md:flex-row w-full justify-center gap-12">
+				<div className="flex w-full flex-col items-center gap-0.5 sm:gap-1.5 md:grid md:grid-cols-3 md:items-start md:justify-items-center md:gap-2.5">
 					{educationLength &&
-						Array.from({
-							length: educationLength,
-						}).map((_, index) => {
+						Array.from({ length: educationLength }).map((_, index) => {
 							const first = index === 0;
 							const last = index === educationLength - 1;
 							return (
-								<motion.div
+							<motion.div
 									key={index}
-									className="relative"
-									initial={{ opacity: 0, y: 20 }}
-									animate={{ opacity: 1, y: 0 }}
+								className="relative flex w-full justify-center"
+								initial={{ opacity: 0, y: 20 }}
+								animate={{ opacity: 1, y: 0 }}
+								transition={{
+									duration: 0.5,
+									delay: index * 0.2,
+								}}
+							>
+								{/* VERTICAL line for mobile view */}
+								<motion.div
+									initial={{ height: 0 }}
+									animate={{ height: "100%" }}
 									transition={{
 										duration: 0.5,
-										delay: index * 0.2,
+										delay: index * 0.2 + 0.5,
 									}}
-								>
-									{/* VERTICAL line for mobile view */}
-									<motion.div
-										initial={{ height: 0 }}
-										animate={{ height: "100%" }}
-										transition={{
-											duration: 0.5,
-											delay: index * 0.2 + 0.5,
-										}}
-										className={`md:hidden absolute left-5 w-0.5 bg-gray-300
-											${first ? "top-1/2 h-1/2" : last ? "-top-1/2 h-1/2" : "top-0 h-full"}
-											`}
-									/>
+									className={`md:hidden absolute left-5 w-0.5 bg-gray-300
+										${first ? "top-1/2 h-1/2" : last ? "-top-1/2 h-1/2" : "top-0 h-full"}
+									`}
+								/>
 
-									{/* HORIZONTAL line for desktop view */}
-									<motion.div
-										initial={{ width: 0 }}
-										animate={{ width: "100%" }}
-										transition={{
-											duration: 0.5,
-											delay: index * 0.2 + 0.5,
-										}}
-										className={`hidden md:block absolute top-5 h-0.5 bg-gray-300
-									${first ? "left-1/2 w-1/2" : last ? "-left-1/2 w-1/2" : "left-0 w-full"}`}
-									/>
+								{/* HORIZONTAL line for desktop view */}
+								<motion.div
+									initial={{ width: 0 }}
+									animate={{ width: "100%" }}
+									transition={{
+										duration: 0.5,
+										delay: index * 0.2 + 0.5,
+									}}
+									className={`hidden md:block absolute top-5 h-0.5 bg-gray-300 dark:bg-zinc-700
+										${first ? "left-1/2 w-1/2" : last ? "-left-1/2 w-1/2" : "left-0 w-full"}`}
+								/>
 
-									{/* The Icon and Content Container */}
-									<div className="relative flex flex-row md:flex-col items-center z-10">
-										{/* Icon with background to "cut" the line */}
-										<div className="bg-white dark:bg-zinc-900 p-1 rounded-full border-2 border-zinc-200 dark:border-zinc-800 md:mx-auto">
-											<CircleCheck
-												className="text-blue-600 dark:text-blue-500"
-												size={30}
-												strokeWidth={2}
-											/>
-										</div>
+								{/* The Icon and Content Container */}
+								<div className="relative z-10 flex w-full max-w-xs flex-row items-start md:max-w-none md:flex-col md:items-center md:px-2">
+									{/* Icon with background to "cut" the line */}
+									<div className="bg-white dark:bg-zinc-900 p-1 rounded-full border-2 border-black dark:border-zinc-600 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] md:mx-auto">
+										<CircleCheck
+											className="text-blue-600 dark:text-blue-500"
+											size={30}
+											strokeWidth={2}
+										/>
+									</div>
 
-										{/* Text content */}
-										<div className="pl-5 md:pl-0 md:text-center md:mt-4">
-											<p className="text-sm font-bold text-gray-700 dark:text-gray-300">
-												{translations?.[`education-${index}-year`] || "Year"}
+									{/* Text content */}
+								<div className="w-full pl-5 mt-1 md:mt-1 md:pl-0 md:text-center">
+										<p className="text-sm font-bold text-gray-700 dark:text-gray-300">
+											{translations?.[`education-${index}-year`] || "Year"}
+										</p>
+									<div className="mt-1 flex h-[132px] w-full flex-col justify-between gap-1.5 border-2 border-black bg-white px-3 py-3 text-left shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:border-zinc-600 dark:bg-zinc-900 md:h-[126px] md:px-4 md:text-center md:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+											<h3 className="text-sm font-bold md:text-base">
+												{translations?.[`education-${index}-title`] || "Title"}
+											</h3>
+											<p className="text-[10px] uppercase text-gray-500 dark:text-gray-400 sm:text-xs md:text-xs">
+												{translations?.[`education-${index}-institution`] || "Institution"}
 											</p>
-											<div className="mt-2 border border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-900 p-4 rounded-lg shadow-sm min-w-[220px]">
-												<h3 className="font-bold">
-													{translations?.[`education-${index}-title`] || "Title"}
-												</h3>
-												<p className="text-xs text-gray-500 dark:text-gray-400 uppercase mt-1">
-													{translations?.[`education-${index}-institution`] || "Institution"}
-												</p>
-											</div>
 										</div>
 									</div>
-								</motion.div>
-							);
-						})}
+								</div>
+							</motion.div>
+						);
+					})}
 				</div>
 			</CollapsedContent>
 		</motion.div>
