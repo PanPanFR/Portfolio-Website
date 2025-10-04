@@ -183,7 +183,7 @@ function ListCards<TData extends Record<string, unknown>>({
 			</motion.div>
 
 			<div
-				className={`flex flex-col gap-2 ${searchConfig ? "lg:flex-row lg:bg-white lg:dark:bg-zinc-900 lg:border-2 dark:border-zinc-600 lg:shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]" : ""}`}
+				className={`flex flex-row flex-wrap gap-2`}
 			>
 				{/* Search bar */}
 				{searchConfig && (
@@ -194,7 +194,7 @@ function ListCards<TData extends Record<string, unknown>>({
 						transition={{ duration: 0.5 }}
 						whileTap={{ scale: 0.95 }}
 						aria-label="Search bar"
-						className="px-4 py-2 flex-none w-auto flex gap-2 items-center bg-white dark:bg-zinc-900 border-2 lg:border-0 dark:border-zinc-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] lg:shadow-none relative z-10"
+						className="px-4 py-2 basis-1/2 md:basis-1/2 w-full min-w-0 flex gap-2 items-center bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all duration-200 ease-in-out hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] relative z-10"
 					>
 						<Search size={25} />
 						<input
@@ -218,11 +218,11 @@ function ListCards<TData extends Record<string, unknown>>({
 						animate={{ rotateX: 0 }}
 						exit={{ rotateX: 90 }}
 						transition={{ duration: 0.5 }}
-						className={`flex flex-row flex-wrap gap-2 items-center ${filterConfig.selectFieldClassName || ""}`}
+						className={`basis-1/2 md:basis-1/2 flex flex-row flex-wrap gap-2 items-center ${filterConfig.selectFieldClassName || ""}`}
 					>
 						{group.map((field, index) => (
-							<div key={field.name + index} className="flex-none w-auto min-w-fit">
-								<div className="bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)]">
+							<div key={field.name + index} className="w-full min-w-0">
+								<div className="bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all duration-200 ease-in-out hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] active:shadow-none active:translate-x-[2px] active:translate-y-[2px]">
 									<motion.select
 										key={field.name + index}
 										whileTap={{ scale: 0.95 }}
@@ -237,7 +237,7 @@ function ListCards<TData extends Record<string, unknown>>({
 												(opt) => opt.value === field.value,
 											)?.label || field.label
 										}
-										className="w-auto min-w-[9rem] sm:min-w-[12rem] text-xs sm:text-sm cursor-pointer px-2 py-2 font-bold uppercase h-9 sm:h-10 dark:border-zinc-600 outline-none transition-all duration-200 whitespace-nowrap"
+										className="w-full text-xs sm:text-sm cursor-pointer px-2 py-2 font-bold uppercase h-9 sm:h-10 dark:border-zinc-600 outline-none transition-all duration-200 whitespace-nowrap"
 									>
 										<option value="" className="dark:bg-zinc-900">
 											{(field.defaultValue || field.label)
@@ -286,7 +286,7 @@ function ListCards<TData extends Record<string, unknown>>({
 				))}
 			</div>
 
-			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 px-2 md:px-0">
+			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 px-4 md:px-0">
 				<AnimatePresence>
 					{processedData.map((data, index) => {
 						const key = titleCardKey
@@ -394,7 +394,7 @@ function Card<T extends Record<string, unknown>>({
 					loading="lazy"
 					decoding="async"
 					placeholder={cardConfig.placeholderImage}
-					className="w-full h-full object-cover"
+					className="w-full h-auto aspect-[16/10] object-cover"
 				/>
 			</div>
 

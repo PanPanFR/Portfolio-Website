@@ -16,25 +16,20 @@ import {
 export default function Projects() {
 	const { projects, translations } = useData();
 	const [type, setType] = useState("");
-	const [techStack, setTechStack] = useState("");
 
-	// Get unique types and tech stacks for filter options
+	// Get unique types for filter options
 	const types: string[] = [...new Set(projects.map((project) => project.type))].sort();
-	const techStacks: string[] = [
-		...new Set(projects.flatMap((project) => project.tech_stack)),
-	].sort();
 
 	return (
 		<ListCards
 				title={(translations?.["projects"]?.["projects-list"] as string) || "Projects List"}
 				dataSet={projects}
 				searchConfig={{
-					placeholder:
-						(translations?.["projects"]?.["search-placeholder"] as string) || "Search by name",
+					placeholder: "Search",
 					fieldSearch: "name",
 				}}
 				filterConfig={{
-					canReset: true,
+					canReset: false,
 					selectFieldClassName: "flex-row flex-wrap items-center",
 					selectField: [
 						{
@@ -47,17 +42,6 @@ export default function Projects() {
 							})),
 							setValue: setType,
 							value: type,
-						},
-						{
-							name: "tech_stack",
-							label: (translations?.["projects"]?.["tech-stack"] as string) || "tech_stack",
-							ariaLabel: "choose tech stack of project",
-							options: techStacks.map((tech) => ({
-								label: tech,
-								value: tech,
-							})),
-							setValue: setTechStack,
-							value: techStack,
 						},
 					],
 				}}

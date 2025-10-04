@@ -1,4 +1,4 @@
-import { useMemo, useState } from "react";
+import { useState } from "react";
 import ListCards from "../components/ListCards";
 import { useData } from "../contexts/DataProvider";
 import Button from "../components/Button";
@@ -20,110 +20,48 @@ export default function Achievements() {
 		translations: { achievements: translations, sorting },
 		achievements,
 	} = useData();
-	const [type, setType] = useState("");
-	const [category, setCategory] = useState("");
-	const [scope, setScope] = useState("");
-	const [skill, setSkill] = useState("");
 	const [sort, setSort] = useState("");
-	const types = useMemo(() => {
-		return [
-			...new Set(achievements.map((achievement) => achievement.type)),
-		].sort();
-	}, [achievements]);
-	const categories = useMemo(() => {
-		return [
-			...new Set(achievements.map((achievement) => achievement.category)),
-		].sort();
-	}, [achievements]);
-	const scopes = useMemo(() => {
-		return [
-			...new Set(achievements.map((achievement) => achievement.scope)),
-		].sort();
-	}, [achievements]);
-	const skills = useMemo(() => {
-		return [
-			...new Set(
-				achievements.flatMap((achievement) => achievement.skills),
-			),
-		].sort();
-	}, [achievements]);
 
 	return (
 		<ListCards
 			title={translations?.["achievements-list"] || "Achievements List"}
 			dataSet={achievements}
 			searchConfig={{
-				placeholder:
-					translations?.["search-placeholder"] || "Search by name",
+				placeholder: "Search",
 				fieldSearch: "name",
 			}}
 			filterConfig={{
-				canReset: true,
-				selectFieldClassName: "flex-row flex-wrap",
+				canReset: false,
+				selectFieldClassName: "flex-row flex-wrap items-center",
 				selectField: [
-					{
-						name: "type",
-						label: translations?.["type"] || "type",
-						ariaLabel: "choose type of achievement",
-						options: types.map((type) => ({
-							label: type,
-							value: type,
-						})),
-						setValue: setType,
-						value: type,
-					},
-					{
-						name: "category",
-						label: translations?.["category"] || "category",
-						ariaLabel: "choose category of achievement",
-						options: categories.map((category) => ({
-							label: category,
-							value: category,
-						})),
-						setValue: setCategory,
-						value: category,
-					},
-					{
-						name: "scope",
-						label: translations?.["scope"] || "scope",
-						ariaLabel: "choose scope of achievement",
-						options: scopes.map((scope) => ({
-							label: scope,
-							value: scope,
-						})),
-						setValue: setScope,
-						value: scope,
-					},
-					{
-						name: "skills",
-						label: translations?.["skill"] || "skill",
-						ariaLabel: "choose type of achievement",
-						options: skills.map((skill) => ({
-							label: skill,
-							value: skill,
-						})),
-						setValue: setSkill,
-						value: skill,
-					},
 					{
 						name: "sort",
 						label: translations?.["sort-by"] || "sort by (default: newest)",
-						ariaLabel: translations?.["sort-achievements-by"] || "sort achievements by",
-						defaultValue: sorting?.["newest"] || translations?.["newest"] || "newest",
+						ariaLabel:
+							translations?.["sort-achievements-by"] || "sort achievements by",
+						defaultValue:
+							sorting?.["newest"] || translations?.["newest"] || "newest",
 						options: [
 							{
-								label: sorting?.["oldest"] || translations?.["oldest"] || "Oldest",
+								label:
+									sorting?.["oldest"] || translations?.["oldest"] || "Oldest",
 								value: "oldest",
 							},
 							{
-								label: sorting?.["name-asc"] || translations?.["name-asc"] || "Name (A-Z)",
+								label:
+									sorting?.["name-asc"] ||
+									translations?.["name-asc"] ||
+									"Name (A-Z)",
 								value: "name-asc",
 								sortingMethod: (a, b) => {
 									return a.name.localeCompare(b.name);
 								},
 							},
 							{
-								label: sorting?.["name-desc"] || translations?.["name-desc"] || "Name (Z-A)",
+								label:
+									sorting?.["name-desc"] ||
+									translations?.["name-desc"] ||
+									"Name (Z-A)",
 								value: "name-desc",
 								sortingMethod: (a, b) => {
 									return b.name.localeCompare(a.name);
@@ -132,7 +70,7 @@ export default function Achievements() {
 						],
 						setValue: setSort,
 						value: sort,
-					}
+					},
 				],
 			}}
 			cardConfig={{
