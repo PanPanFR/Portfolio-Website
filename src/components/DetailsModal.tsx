@@ -73,23 +73,24 @@ export default function DetailsModal<TData extends Record<string, unknown>>({
 				{/* Main Content Grid */}
 				<div className="p-4 grid grid-cols-1 md:grid-cols-2 gap-4">
 					{/* Left Panel (Details) */}
-					<div className="flex flex-col border-2 dark:border-zinc-600 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-						{tags.length > 0 && (
-							<div className="flex flex-wrap items-center gap-2 px-4 py-2 border-b-2 dark:border-zinc-600">
-								{tags.map((tag: string) => (
-									<span
-										key={tag}
-										className="text-sm font-bold px-3 py-1 rounded-full border-2 border-dashed dark:border-white bg-zinc-100 dark:bg-zinc-800"
-									>
-										{tag.trim()}
-									</span>
-								))}
-							</div>
-						)}
+					{(tags.length > 0 || !!description) && (
+						<div className="flex flex-col border-2 dark:border-zinc-600 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+							{tags.length > 0 && (
+								<div className="flex flex-wrap items-center gap-2 px-4 py-2 border-b-2 dark:border-zinc-600">
+									{tags.map((tag: string) => (
+										<span
+											key={tag}
+											className="text-sm font-bold px-3 py-1 rounded-full border-2 border-dashed dark:border-white bg-zinc-100 dark:bg-zinc-800"
+										>
+											{tag.trim()}
+										</span>
+									))}
+								</div>
+							)}
 
-						{description && (
-							<div className="flex flex-col flex-1">
-								<button
+							{description && (
+								<div className="flex flex-col flex-1">
+									<button
 						type="button"
 						aria-label="Toggle collapsed content"
 						onClick={() =>
@@ -97,31 +98,32 @@ export default function DetailsModal<TData extends Record<string, unknown>>({
 						}
 						className="px-4 py-2 cursor-pointer flex items-center justify-between gap-2 w-full"
 					>
-							<h2 className="text-2xl font-bold">
-								{translations?.["description"] ||
-									"Description"}
-							</h2>
-							<ChevronDown
-								size={20}
-								className={`${isDescriptionOpen ? "rotate-180" : ""} transition-transform duration-300 ease-in-out`}
-							/>
-						</button>
-								<AnimatePresence>
-									{isDescriptionOpen && (
-										<motion.span
-											initial={{ opacity: 0, y: 10 }}
-											animate={{ opacity: 1, y: 0 }}
-											exit={{ opacity: 0, y: 10 }}
-											transition={{ duration: 0.2 }}
-											className="text-justify px-4 py-2 border-t-2 md:border-none dark:border-zinc-600 pt-4"
-										>
-											{description}
-										</motion.span>
-									)}
-								</AnimatePresence>
-							</div>
-						)}
-					</div>
+								<h2 className="text-2xl font-bold">
+									{translations?.["description"] ||
+										"Description"}
+								</h2>
+								<ChevronDown
+									size={20}
+									className={`${isDescriptionOpen ? "rotate-180" : ""} transition-transform duration-300 ease-in-out`}
+								/>
+							</button>
+									<AnimatePresence>
+										{isDescriptionOpen && (
+											<motion.span
+												initial={{ opacity: 0, y: 10 }}
+												animate={{ opacity: 1, y: 0 }}
+												exit={{ opacity: 0, y: 10 }}
+												transition={{ duration: 0.2 }}
+												className="text-justify px-4 py-2 border-t-2 md:border-none dark:border-zinc-600 pt-4"
+											>
+												{description}
+											</motion.span>
+										)}
+									</AnimatePresence>
+								</div>
+							)}
+						</div>
+					)}
 
 					{/* Right Panel (Media) */}
 					<div className="p-4 border-2 dark:border-zinc-600 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">

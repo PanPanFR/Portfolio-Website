@@ -231,22 +231,61 @@ export async function fetchCurrentlyLearning(): Promise<{name: string, descripti
 	}
 }
 
-// Schema for blog posts
-const BlogPostSchema = z.array(
+// Blog posts: accept minimal columns (name, url) and normalize
+const BlogPostSchema = z.object({
+	 title: z.string(),
+	 description: z.string(),
+	 link: z.string(),
+	 thumbnail: z.string(),
+	 date: z.string(),
+	 category: z.string(),
+});
+
+const ParseBlogPostSchema = z.array(
 	z.object({
-		title: z.string(),
-		description: z.string(),
-		link: z.string(),
-		thumbnail: z.string(),
-		date: z.string(),
-		category: z.string(),
+		title: z.string().optional(),
+		name: z.string().optional(),
+		description: z.string().optional(),
+		link: z.string().optional(),
+		url: z.string().optional(),
+		thumbnail: z.string().optional(),
+		date: z.string().optional(),
+		category: z.string().optional(),
 	})
+	.transform((item) => {
+		const rawLink = (item.link || item.url || "").trim();
+		let derivedTitle = (item.title || item.name || "").trim();
+		if (!derivedTitle) {
+			try {
+				derivedTitle = rawLink ? new URL(rawLink).hostname : "Untitled";
+			} catch {
+				derivedTitle = rawLink || "Untitled";
+			}
+		}
+		const description = (item.description || "").trim();
+		const category = (item.category || "Uncategorized").trim();
+		const date = item.date && item.date.trim() ? item.date : new Date().toISOString();
+		let thumbnail = (item.thumbnail || "").trim();
+		if (!thumbnail && rawLink) {
+			const encoded = encodeURIComponent(rawLink);
+			thumbnail = `https://s.wordpress.com/mshots/v1/${encoded}?w=800`;
+		}
+		return {
+			title: derivedTitle,
+			description,
+			link: rawLink,
+			thumbnail,
+			date,
+			category,
+		};
+	})
+	.pipe(BlogPostSchema)
 );
 
 export async function fetchBlogPosts(): Promise<{title: string, description: string, link: string, thumbnail: string, date: string, category: string}[]> {
 	try {
 		const data = await fetchData("Blog");
-		const validResult = BlogPostSchema.safeParse(data);
+		const validResult = ParseBlogPostSchema.safeParse(data);
 
 		if (!validResult.success) {
 			console.error(

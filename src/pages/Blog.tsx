@@ -1,13 +1,17 @@
 import { useMemo, useState } from "react";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useData } from "../contexts/DataProvider";
 import { ExternalLink } from "lucide-react";
 import Button from "../components/Button";
+import DetailsModal from "../components/DetailsModal";
+import { IframeMedia } from "../components/IframeMedia";
 
 export default function Blog() {
   const { translations: { blog: translations }, blogPosts } = useData();
   const [category, setCategory] = useState("");
   const [sort, setSort] = useState("");
+  const [openModal, setOpenModal] = useState(false);
+  const [selectedPost, setSelectedPost] = useState<(typeof blogPosts)[number] | null>(null);
 
   // Get unique categories for filtering
   const categories = [...new Set(blogPosts.map(post => post.category))].sort();
@@ -112,7 +116,12 @@ export default function Blog() {
               className="bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] overflow-hidden flex flex-col"
             >
               {/* Thumbnail */}
-              <div className="relative h-48 overflow-hidden">
+              <button
+                type="button"
+                aria-label={`Preview ${post.title}`}
+                className="relative h-48 overflow-hidden"
+                onClick={() => { setSelectedPost(post); setOpenModal(true); }}
+              >
                 <img 
                   src={post.thumbnail} 
                   alt={post.title} 
@@ -125,7 +134,7 @@ export default function Blog() {
                 <div className="absolute top-2 right-2 bg-black dark:bg-white text-white dark:text-black text-xs px-2 py-1 rounded">
                   {post.category}
                 </div>
-              </div>
+              </button>
               
               {/* Content */}
               <div className="p-4 flex-grow flex flex-col">
@@ -153,6 +162,21 @@ export default function Blog() {
           ))}
         </section>
       )}
+
+      {/* Modal preview */}
+      <AnimatePresence>
+        {openModal && selectedPost && (
+          <DetailsModal
+            close={() => setOpenModal(false)}
+            data={selectedPost}
+            translations={translations || {}}
+            descriptionField="description"
+            titleField="title"
+            externalLinkField="link"
+            mediaPanel={<IframeMedia link={selectedPost.link} />}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 }
