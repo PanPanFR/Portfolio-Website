@@ -10,7 +10,9 @@ const DEFAULT_GITHUB_LINK = `https://github.com/${DEFAULT_GITHUB_USERNAME}`;
 const DEFAULT_GITHUB_API_HOST = "https://github-stats-dusky-mu.vercel.app";
 
 function resolveGithubUsername(rawLink: string | undefined): string {
-	const candidateLink = rawLink?.trim() ? rawLink.trim() : DEFAULT_GITHUB_LINK;
+	const candidateLink = rawLink?.trim()
+		? rawLink.trim()
+		: DEFAULT_GITHUB_LINK;
 	const ensureProtocol = (link: string) => {
 		if (/^https?:\/\//i.test(link)) {
 			return link;
@@ -61,7 +63,9 @@ async function fetchGithubContributions(): Promise<unknown> {
 			import.meta.env.VITE_CONTRIBUTIONS_INCLUDE_ALL_COMMITS || "false",
 	});
 
-	const response = await fetch(`${baseHost}${basePath}?${queryParams.toString()}`);
+	const response = await fetch(
+		`${baseHost}${basePath}?${queryParams.toString()}`,
+	);
 	if (!response.ok) {
 		throw new Error(`HTTP error! status: ${response.status}`);
 	}
