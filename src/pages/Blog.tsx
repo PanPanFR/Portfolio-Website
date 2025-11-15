@@ -1,7 +1,7 @@
 import { useMemo, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useData } from "../contexts/DataProvider";
-import { ExternalLink } from "lucide-react";
+import { useData } from "../contexts/useData";
+import { ArrowUpRight } from "lucide-react";
 import Button from "../components/Button";
 import DetailsModal from "../components/DetailsModal";
 import { IframeMedia } from "../components/IframeMedia";
@@ -63,10 +63,10 @@ export default function Blog() {
           <label className="block text-sm font-bold mb-2">
             {translations?.["category-filter"] || "Filter by Category"}
           </label>
-          <select
+		<select
             value={category}
             onChange={(e) => setCategory(e.target.value)}
-            className="w-full p-2 border border-gray-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 rounded"
+			className="w-full h-12 p-2 border border-gray-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 rounded cursor-pointer"
           >
             <option value="">{translations?.["all-categories"] || "All Categories"}</option>
             {categories.map(cat => (
@@ -79,10 +79,10 @@ export default function Blog() {
           <label className="block text-sm font-bold mb-2">
             {translations?.["sort-by"] || "Sort By"}
           </label>
-          <select
+		<select
             value={sort}
             onChange={(e) => setSort(e.target.value)}
-            className="w-full p-2 border border-gray-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 rounded"
+			className="w-full h-12 p-2 border border-gray-300 dark:border-zinc-600 bg-white dark:bg-zinc-800 rounded cursor-pointer"
           >
             <option value="">{translations?.["newest"] || "Newest"}</option>
             <option value="oldest">{translations?.["oldest"] || "Oldest"}</option>
@@ -104,7 +104,7 @@ export default function Blog() {
           </p>
         </motion.div>
       ) : (
-        <section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 px-2 md:px-0">
+		<section className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6 auto-rows-fr">
           {processedPosts.map((post, index) => (
             <motion.div 
               key={post.title + post.date}
@@ -113,13 +113,15 @@ export default function Blog() {
               viewport={{ once: true }}
               exit={{ rotateX: 90 }}
               transition={{ duration: 0.5, delay: 0.1 * index }}
-              className="bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] overflow-hidden flex flex-col"
+			  whileHover={{ translateX: -4, translateY: -4 }}
+			  whileTap={{ translateX: -2, translateY: -2 }}
+			  className="bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] overflow-hidden flex flex-col h-full transition-transform duration-200"
             >
               {/* Thumbnail */}
               <button
                 type="button"
                 aria-label={`Preview ${post.title}`}
-                className="relative h-48 overflow-hidden"
+				className="relative h-48 overflow-hidden cursor-pointer"
                 onClick={() => { setSelectedPost(post); setOpenModal(true); }}
               >
                 <img 
@@ -150,10 +152,9 @@ export default function Blog() {
                     <Button
                       href={post.link}
                       ariaLabel={`Read more about ${post.title}`}
-                      className="flex items-center gap-1"
+                      className="flex items-center justify-center"
                     >
-                      <ExternalLink size={16} />
-                      <span>{translations?.["read-more"] || "Read More"}</span>
+                      <ArrowUpRight size={18} />
                     </Button>
                   </div>
                 </div>

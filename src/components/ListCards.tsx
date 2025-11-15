@@ -1,8 +1,31 @@
 import { memo } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { File, RefreshCcw, Search } from "lucide-react";
-import React, { useMemo, useState } from "react";
+import React, { useMemo, useRef, useState } from "react";
 import OptimizedImage from "./OptimizedImage";
+
+function getValueByPath(obj: unknown, path: string | string[]): unknown {
+  const parts = Array.isArray(path) ? path : path.split(".");
+  const [currentPart, ...remainingParts] = parts;
+
+  if (obj == null || currentPart === undefined) {
+    return obj;
+  }
+
+  if (currentPart === "*") {
+    if (!Array.isArray(obj)) {
+      return undefined;
+    }
+
+    if (remainingParts.length === 0) {
+      return obj;
+    }
+
+    return (obj as unknown[]).map((item) => getValueByPath(item, remainingParts));
+  }
+
+  return getValueByPath((obj as Record<string, unknown>)[currentPart], remainingParts);
+}
 
 interface CardConfig<TData extends Record<string, unknown>> {
 	titleField?: keyof TData;
@@ -26,6 +49,8 @@ interface ListCardsProps<TData extends Record<string, unknown>> {
 	searchConfig?: {
 		placeholder: string;
 		fieldSearch: keyof TData;
+		wrapperClassName?: string;
+		inputClassName?: string;
 	};
 	filterConfig: {
 		canReset?: boolean;
@@ -41,8 +66,16 @@ interface ListCardsProps<TData extends Record<string, unknown>> {
 			}[];
 			setValue: React.Dispatch<React.SetStateAction<string>>;
 			value: string;
+			wrapperClassName?: string;
+			selectClassName?: string;
 		}[];
 		selectFieldClassName?: string;
+		wrapperClassName?: string;
+		groupClassName?: string;
+		selectWrapperClassName?: string;
+		selectClassName?: string;
+		resetWrapperClassName?: string;
+		resetButtonClassName?: string;
 	};
 	cardConfig?: CardConfig<TData>;
 	CustomCard?: (
@@ -58,6 +91,7 @@ interface ListCardsProps<TData extends Record<string, unknown>> {
 		data: TData,
 		setOpenModal: React.Dispatch<React.SetStateAction<boolean>>,
 	) => React.ReactNode;
+	controlsClassName?: string;
 }
 
 function ListCards<TData extends Record<string, unknown>>({
@@ -68,12 +102,14 @@ function ListCards<TData extends Record<string, unknown>>({
 	cardConfig,
 	CustomCard,
 	modal,
+	controlsClassName,
 }: ListCardsProps<TData>) {
 	const titleCardKey =
 		cardConfig &&
 		((cardConfig.titleField || searchConfig?.fieldSearch) as
 			| string
 			| undefined);
+	const searchField = searchConfig?.fieldSearch as string | undefined;
 	const [search, setSearch] = useState("");
 	const groupedSelectFields = useMemo(() => {
 		if (filterConfig.selectFieldClassName) {
@@ -85,40 +121,13 @@ function ListCards<TData extends Record<string, unknown>>({
 			result.push(filterConfig.selectField.slice(i, i + chunkSize));
 		}
 		return result;
-	}, [filterConfig.selectField, filterConfig.selectFieldClassName]);
+	}, [filterConfig]);
 
-	function getValueByPath(obj: unknown, path: string | string[]): unknown {
-		// Convert path to an array if it's a string
-		const parts = Array.isArray(path) ? path : path.split(".");
+	const groupContainerClassName = filterConfig.groupClassName
+		? `${filterConfig.groupClassName} ${filterConfig.selectFieldClassName || ""}`.trim()
+		: `flex flex-row flex-wrap items-center gap-2 ${filterConfig.selectFieldClassName || ""} w-full`.trim();
 
-		// Destructure the first part and the rest of the path
-		const [currentPart, ...remainingParts] = parts;
-
-		// If the object is null/undefined or the path is exhausted, return the object
-		if (obj == null || currentPart === undefined) {
-			return obj;
-		}
-
-		if (currentPart === "*") {
-			// If we hit a wildcard, the current value must be an array
-			if (!Array.isArray(obj)) {
-				return undefined;
-			}
-
-			// If there are no more parts, return the array
-			if (remainingParts.length === 0) {
-				return obj;
-			}
-
-			// Map over the array and get the value for each item
-			return (obj as unknown[]).map((item) => getValueByPath(item, remainingParts));
-		}
-
-		// If it's a normal key, just move to the next level of the object
-		// and recurse with the rest of the path.
-		return getValueByPath((obj as Record<string, unknown>)[currentPart], remainingParts);
-	}
-
+	const searchInputRef = useRef<HTMLInputElement | null>(null);
 	const processedData = useMemo(() => {
 		const filtered = dataSet.filter((data) => {
 			const inFilter = filterConfig.selectField.every((select) => {
@@ -135,7 +144,7 @@ function ListCards<TData extends Record<string, unknown>>({
 
 			const inSearch =
 				search === "" ||
-				((data as Record<string, unknown>)[(searchConfig?.fieldSearch as string) || "name"] as string)
+				((data as Record<string, unknown>)[searchField || "name"] as string)
 					.toLowerCase()
 					.includes(search.toLowerCase());
 
@@ -161,11 +170,12 @@ function ListCards<TData extends Record<string, unknown>>({
 			// For any other case (including the default 'newest-default'), reverse.
 			return filtered.reverse();
 		}
-	}, [
-		dataSet,
-		search,
-		filterConfig.selectField,
-	]);
+	}, [dataSet, filterConfig, search, searchField]);
+
+	const controlBoxBaseClass =
+		"relative z-10 flex min-w-0 items-center bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all duration-200 ease-in-out hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] active:shadow-none active:translate-x-[1px] active:translate-y-[1px] h-12 cursor-pointer";
+	const searchControlClass = `${controlBoxBaseClass} gap-2 px-4 py-2`;
+	const selectControlClass = `${controlBoxBaseClass} px-0`;
 
 	return (
 		<div className="col-span-full flex flex-col gap-4">
@@ -182,111 +192,112 @@ function ListCards<TData extends Record<string, unknown>>({
 				<p>({processedData.length})</p>
 			</motion.div>
 
-			<div
-				className={`flex flex-row flex-wrap gap-2`}
+	<div className={controlsClassName ?? "flex flex-row flex-wrap gap-2 w-full"}>
+		{/* Search bar */}
+		{searchConfig && (
+			<motion.div
+				initial={{ rotateX: -90 }}
+				animate={{ rotateX: 0 }}
+				exit={{ rotateX: 90 }}
+				transition={{ duration: 0.5 }}
+				whileTap={{ scale: 0.98, x: 1, y: 1 }}
+				onClick={() => {
+					searchInputRef.current?.focus();
+				}}
+				aria-label="Search bar"
+				className={`${searchControlClass} ${searchConfig.wrapperClassName ?? "w-full"}`.trim()}
 			>
-				{/* Search bar */}
-				{searchConfig && (
-					<motion.div
-						initial={{ rotateX: -90 }}
-						animate={{ rotateX: 0 }}
-						exit={{ rotateX: 90 }}
-						transition={{ duration: 0.5 }}
-						whileTap={{ scale: 0.95 }}
-						aria-label="Search bar"
-						className="px-4 py-2 basis-1/2 md:basis-1/2 w-full min-w-0 flex gap-2 items-center bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all duration-200 ease-in-out hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] relative z-10"
+				<Search size={25} />
+				<input
+					type="search"
+					placeholder={searchConfig.placeholder}
+					ref={searchInputRef}
+					className={`bg-transparent outline-none font-bold text-zinc-900 dark:text-zinc-100 placeholder:text-zinc-500 dark:placeholder:text-zinc-300 cursor-text w-full ${searchConfig.inputClassName ?? ""}`.trim()}
+					value={search}
+					onChange={(e) => {
+						e.preventDefault();
+						setSearch(e.target.value);
+					}}
+				/>
+			</motion.div>
+		)}
+
+		{/* Filters */}
+		{groupedSelectFields.map((group, groupIndex) => (
+			<motion.div
+				key={groupIndex}
+				initial={{ rotateX: -90 }}
+				animate={{ rotateX: 0 }}
+				exit={{ rotateX: 90 }}
+				transition={{ duration: 0.5 }}
+				className={groupContainerClassName}
+			>
+			{group.map((field, index) => (
+				<motion.div
+					key={field.name + index}
+					whileTap={{ scale: 0.98, x: 1, y: 1 }}
+					className={`min-w-0 ${selectControlClass} ${filterConfig.selectWrapperClassName || "w-full"} ${field.wrapperClassName || ""}`.trim()}
+				>
+					<motion.select
+						key={field.name + index}
+						value={field.value}
+						onChange={(e) => {
+							e.preventDefault();
+							field.setValue(e.target.value);
+						}}
+						aria-label={field.ariaLabel}
+						title={
+							field.options.find(
+								(opt) => opt.value === field.value,
+							)?.label || field.label
+						}
+						className={`w-full h-full cursor-pointer bg-transparent px-4 font-bold uppercase outline-none transition-all duration-200 whitespace-nowrap text-xs sm:text-sm ${filterConfig.selectClassName || ""} ${field.selectClassName || ""}`.trim()}
 					>
-						<Search size={25} />
-						<input
-							type="search"
-							placeholder={searchConfig.placeholder}
-							className="bg-transparent outline-none font-bold"
-							value={search}
-							onChange={(e) => {
-								e.preventDefault();
-								setSearch(e.target.value);
-							}}
-						/>
-					</motion.div>
-				)}
+								<option value="" className="dark:bg-zinc-900">
+									{(field.defaultValue || field.label)
+										.replace("_", " ")
+										.toUpperCase()}
+								</option>
 
-				{/* Filters */}
-				{groupedSelectFields.map((group, groupIndex) => (
-					<motion.div
-						key={groupIndex}
-						initial={{ rotateX: -90 }}
-						animate={{ rotateX: 0 }}
-						exit={{ rotateX: 90 }}
-						transition={{ duration: 0.5 }}
-						className={`basis-1/2 md:basis-1/2 flex flex-row flex-wrap gap-2 items-center ${filterConfig.selectFieldClassName || ""}`}
-					>
-						{group.map((field, index) => (
-							<div key={field.name + index} className="w-full min-w-0">
-								<div className="bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all duration-200 ease-in-out hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] active:shadow-none active:translate-x-[2px] active:translate-y-[2px]">
-									<motion.select
-										key={field.name + index}
-										whileTap={{ scale: 0.95 }}
-										value={field.value}
-										onChange={(e) => {
-											e.preventDefault();
-											field.setValue(e.target.value);
-										}}
-										aria-label={field.ariaLabel}
-										title={
-											field.options.find(
-												(opt) => opt.value === field.value,
-											)?.label || field.label
-										}
-										className="w-full text-xs sm:text-sm cursor-pointer px-2 py-2 font-bold uppercase h-9 sm:h-10 dark:border-zinc-600 outline-none transition-all duration-200 whitespace-nowrap"
-									>
-										<option value="" className="dark:bg-zinc-900">
-											{(field.defaultValue || field.label)
-												.replace("_", " ")
-												.toUpperCase()}
-										</option>
-
-										{field.options.map((option, index) => (
-											<option key={index} value={option.value} className="dark:bg-zinc-900">
-												{option.label
-													.replace("_", " ")
-													.toUpperCase()}
-											</option>
-										))}
-									</motion.select>
-								</div>
-							</div>
-						))}
-
-						{/* Reset filters */}
-						{filterConfig.canReset &&
-							groupIndex === groupedSelectFields.length - 1 && (
-								<div className="flex-none">
-									<div className="bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center">
-										<motion.button
-												onClick={(e) => {
-													e.preventDefault();
-													filterConfig.selectField.forEach(
-														(field) => {
-															field.setValue("");
-														},
-													);
-													setSearch("");
-												}}
-												whileHover={{ scale: 0.9 }}
-												whileTap={{ scale: 0.95, x: 2, y: 2 }}
-												aria-label="reset filters"
-												className="cursor-pointer w-10 h-10 p-0 transition-all duration-200 hover:shadow-none flex items-center justify-center"
-											>
-												<RefreshCcw size={20} />
-											</motion.button>
-										</div>
-								</div>
-							)}
-					</motion.div>
+								{field.options.map((option, optionIndex) => (
+									<option key={optionIndex} value={option.value} className="dark:bg-zinc-900">
+										{option.label
+											.replace("_", " ")
+											.toUpperCase()}
+									</option>
+								))}
+						</motion.select>
+				</motion.div>
 				))}
-			</div>
 
-			<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 px-4 md:px-0">
+				{/* Reset filters */}
+		{filterConfig.canReset &&
+					groupIndex === groupedSelectFields.length - 1 && (
+						<div className={`${filterConfig.resetWrapperClassName || "flex-none"}`}>
+							<div className="bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center">
+								<motion.button
+									onClick={(e) => {
+										e.preventDefault();
+										filterConfig.selectField.forEach((field) => {
+											field.setValue("");
+										});
+										setSearch("");
+									}}
+									whileHover={{ scale: 0.9 }}
+									whileTap={{ scale: 0.95, x: 2, y: 2 }}
+									aria-label="reset filters"
+									className={`cursor-pointer transition-all duration-200 hover:shadow-none flex items-center justify-center h-12 ${filterConfig.resetButtonClassName || "w-12"}`.trim()}
+								>
+									<RefreshCcw size={20} />
+								</motion.button>
+							</div>
+						</div>
+					)}
+			</motion.div>
+		))}
+	</div>
+
+		<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
 				<AnimatePresence>
 					{processedData.map((data, index) => {
 						const key = titleCardKey
@@ -379,10 +390,10 @@ function Card<T extends Record<string, unknown>>({
 			transition={{ duration: 0.2, delay: index * 0.08 }}
 			className="flex flex-col bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]"
 		>
-			<div
-				className="group relative flex-1"
-				onClick={() => setOpenModal(true)}
-			>
+		<div
+			className="group relative flex-1 cursor-pointer"
+			onClick={() => setOpenModal(true)}
+		>
 				<OptimizedImage
 					src={
 						(data?.[cardConfig.imageField] as string)?.trim() ||

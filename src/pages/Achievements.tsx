@@ -1,6 +1,6 @@
 import { useState } from "react";
 import ListCards from "../components/ListCards";
-import { useData } from "../contexts/DataProvider";
+import { useData } from "../contexts/useData";
 import Button from "../components/Button";
 import {
 	Building2,
@@ -29,10 +29,11 @@ export default function Achievements() {
 			searchConfig={{
 				placeholder: "Search",
 				fieldSearch: "name",
+				wrapperClassName: "col-span-1",
 			}}
 			filterConfig={{
 				canReset: false,
-				selectFieldClassName: "flex-row flex-wrap items-center",
+				groupClassName: "col-span-1",
 				selectField: [
 					{
 						name: "sort",
@@ -70,9 +71,11 @@ export default function Achievements() {
 						],
 						setValue: setSort,
 						value: sort,
+						wrapperClassName: "w-full",
 					},
 				],
 			}}
+			controlsClassName="grid grid-cols-1 sm:grid-cols-2 gap-2 w-full"
 			cardConfig={{
 				titleField: "name",
 				imageField: "thumbnail",

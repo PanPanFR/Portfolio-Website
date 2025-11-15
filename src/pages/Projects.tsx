@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useData } from "../contexts/DataProvider";
+import { useData } from "../contexts/useData";
 import ListCards from "../components/ListCards";
 import DetailsModal from "../components/DetailsModal";
 import { IframeMedia } from "../components/IframeMedia";
@@ -27,10 +27,11 @@ export default function Projects() {
 				searchConfig={{
 					placeholder: "Search",
 					fieldSearch: "name",
+					wrapperClassName: "col-span-1",
 				}}
 				filterConfig={{
 					canReset: false,
-					selectFieldClassName: "flex-row flex-wrap items-center",
+					groupClassName: "col-span-1",
 					selectField: [
 						{
 							name: "type",
@@ -42,9 +43,11 @@ export default function Projects() {
 							})),
 							setValue: setType,
 							value: type,
+							wrapperClassName: "w-full",
 						},
 					],
 				}}
+				controlsClassName="grid grid-cols-1 sm:grid-cols-2 gap-2 w-full"
 				cardConfig={{
 					titleField: "name",
 					imageField: "thumbnail",

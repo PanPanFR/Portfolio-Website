@@ -1,5 +1,5 @@
 import { AnimatePresence, motion } from "framer-motion";
-import { useData } from "../contexts/DataProvider";
+import { useData } from "../contexts/useData";
 import Button from "../components/Button";
 import { ExternalLink } from "lucide-react";
 import {
@@ -46,6 +46,22 @@ ChartJS.register(
 );
 
 export default function Stats() {
+	const { contributions, isLoading } = useData();
+	const isFallbackData =
+		contributions.profile.username === "N/A" &&
+		contributions.repositories.length === 0;
+
+	if (!isLoading && isFallbackData) {
+		return (
+			<div className="min-h-[60vh] flex flex-col items-center justify-center gap-4 text-center px-6">
+				<h2 className="text-3xl font-bold">GitHub statistics unavailable</h2>
+				<p className="max-w-xl text-base text-black/70 dark:text-white/70">
+					Unable to load contribution data. Ensure `VITE_GITHUB_API_LINK` points to a proxy with CORS enabled or try again later.
+				</p>
+			</div>
+		);
+	}
+
 	return (
 		<div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-6 gap-4 px-2 md:px-0">
 			<ProfileCard />
@@ -67,11 +83,13 @@ function ProfileStatsCard({
 }) {
 	return (
 		<div
-			className="px-2 py-1.5 font-bold flex flex-col items-center gap-1.5 border-2 border-black dark:border-zinc-600 rounded-xs shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all duration-200 ease-in-out hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] active:shadow-none active:translate-x-[3px] active:translate-y-[3px] bg-white dark:bg-zinc-900 cursor-pointer"
+			className="flex-1 min-w-0 px-2 py-2 font-bold flex flex-col items-center gap-1 border-2 border-black dark:border-zinc-600 rounded-lg shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all duration-200 ease-in-out hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:-translate-y-0.5 active:shadow-none active:translate-x-[1px] active:translate-y-[1px] bg-white dark:bg-zinc-900 cursor-pointer"
 		>
-			<Icon size={22} />
-			<div className="flex flex-col items-center">
-				<span className="text-sm capitalize">{name}</span>
+			<Icon size={18} />
+			<div className="flex flex-col items-center text-center">
+				<span className="text-[0.7rem] uppercase tracking-wide text-center leading-tight">
+					{name}
+				</span>
 				<span className="text-xs text-gray-500 dark:text-gray-400">
 					{value}
 				</span>
@@ -129,8 +147,8 @@ function ProfileCard() {
 
 			{/* stats cards */}
 			<div className="pt-18 flex flex-col items-center justify-center gap-2">
-				<div className="flex flex-col items-center gap-1">
-					<span className="font-bold text-2xl">
+			<div className="flex flex-col items-center gap-1">
+				<span className="font-bold text-[1.4rem] sm:text-2xl">
 						{contributions.profile.name}
 					</span>
 					<span className="font-bold text-gray-500 dark:text-gray-400">
@@ -138,7 +156,7 @@ function ProfileCard() {
 					</span>
 				</div>
 
-				<div className="p-4 flex items-center justify-center gap-4">
+			<div className="p-4 flex items-stretch justify-center gap-3 sm:gap-4 w-full flex-nowrap">
 					<ProfileStatsCard
 						Icon={Users}
 						name={translations?.["followers"] || "Followers"}
@@ -493,9 +511,14 @@ function StatsList() {
 				placeholder:
 					translations?.["search-placeholder"] || "Search by name",
 				fieldSearch: "name",
+				wrapperClassName: "col-span-12",
 			}}
-			filterConfig={{
-				canReset: true,
+		filterConfig={{
+			canReset: false,
+				groupClassName: "col-span-12 grid grid-cols-12 gap-2 items-center",
+				selectClassName: "h-12 text-xs sm:text-sm",
+				resetWrapperClassName: "col-span-2 flex items-center justify-end",
+				resetButtonClassName: "w-full sm:w-12",
 				selectField: [
 					{
 						name: "languages.*.name",
@@ -507,12 +530,13 @@ function StatsList() {
 						})),
 						setValue: setLanguage,
 						value: language,
+					wrapperClassName: "col-span-6",
 					},
 					{
-							name: "sort",
-							label: sorting?.["sort-by"] || translations?.["sort-by"] || "sort by",
-							ariaLabel: translations?.["sort-stats-by"] || "sort stats by",
-							options: [
+						name: "sort",
+						label: sorting?.["sort-by"] || translations?.["sort-by"] || "sort by",
+						ariaLabel: translations?.["sort-stats-by"] || "sort stats by",
+						options: [
 								{
 									label: sorting?.["name-asc"] || translations?.["name-asc"] || "Name (A-Z)",
 									value: "name-asc",
@@ -650,9 +674,11 @@ function StatsList() {
 						],
 						setValue: setSort,
 						value: sort,
+					wrapperClassName: "col-span-6",
 					},
 				],
 			}}
+			controlsClassName="grid grid-cols-12 gap-2 w-full items-stretch"
 			cardConfig={{
 				titleField: "name",
 				imageField: "name",
