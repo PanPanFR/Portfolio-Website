@@ -92,6 +92,19 @@ export const TechStackSchema = z.object({
 	logo: z.string().optional(),
 });
 
+export const CurrentlyLearningItemSchema = z.object({
+	name: z.string(),
+	description: z.string(),
+	link: z
+		.string()
+		.url()
+		.optional(),
+	icon: z
+		.string()
+		.url()
+		.optional(),
+});
+
 export const defaultContributions: Contributions = {
 	profile: {
 		username: "N/A",
@@ -124,3 +137,4 @@ export type Translations = z.infer<typeof TranslationsSchema>;
 export type Contributions = z.infer<typeof ContributionsSchema>;
 export type LanguagesRepo = z.infer<typeof LanguagesRepoSchema>;
 export type TechStack = z.infer<typeof TechStackSchema> & { logo?: string; description_en?: string; description_id?: string };
+export type CurrentlyLearningItem = z.infer<typeof CurrentlyLearningItemSchema>;
