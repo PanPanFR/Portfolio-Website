@@ -7,10 +7,32 @@ import {
 	UserSearch,
 	type LucideIcon,
 } from "lucide-react";
-import { useMemo, useState } from "react";
-import { useData } from "../contexts/DataProvider";
+import { useState } from "react";
+import { useData } from "../contexts/useData";
 import TechStackLogos from "../components/TechStackLogos";
 import Marquee from "react-fast-marquee";
+import { Link } from "react-router-dom";
+import { useTheme } from "../contexts/useTheme";
+
+function getThemedIconUrl(baseUrl: string | undefined, darkMode: boolean) {
+	if (!baseUrl) {
+		return undefined;
+	}
+
+	try {
+		const url = new URL(baseUrl);
+		const colorParam = darkMode ? "000000" : "FFFFFF";
+		if (url.searchParams.has("color")) {
+			url.searchParams.set("color", colorParam);
+		} else {
+			url.searchParams.append("color", colorParam);
+		}
+		return url.toString();
+	} catch (error) {
+		console.warn("Invalid currently learning icon URL:", baseUrl, error);
+		return undefined;
+	}
+}
 
 export default function Profile() {
 	return (
@@ -23,197 +45,152 @@ export default function Profile() {
 }
 
 function TechStackSection() {
-	const { techStack, translations: { techStack: translations }, currentlyLearning } = useData();
-	const [selectedCategory, setSelectedCategory] = useState<string>("frontend");
-	const [isCategoryDropdownOpen, setIsCategoryDropdownOpen] = useState<boolean>(true);
-	
-	// Group tech stack by category
-	const groupedTechStack = useMemo(() => {
-		return techStack.reduce((acc, item) => {
-			if (!acc[item.category]) {
-				acc[item.category] = [];
-			}
-			acc[item.category].push(item);
-			return acc;
-		}, {} as Record<string, typeof techStack>);
-	}, [techStack]);
-
-	const categories = Object.keys(groupedTechStack);
-	
-	// Function to get color based on progress and theme
-	const getProgressColor = () => {
-		// For light theme, use black; for dark theme, use white
-		return "bg-black dark:bg-white";
-	};
-
-	// Get description for category based on selected language
-	const getCategoryDescription = (category: string) => {
-		if (category === "frontend") {
-			return translations?.["frontend-description"] || "Framework & libraries yang sering saya gunakan.";
-		} else if (category === "backend") {
-			return translations?.["backend-description"] || "API, server & integrasi.";
-		} else if (category === "database") {
-			return translations?.["database-description"] || "Penyimpanan data & platform deployment.";
-		} else {
-			return translations?.["other-description"] || "Tools dan teknologi yang saya gunakan.";
-		}
-	};
+    const { translations, currentlyLearning, currentLang } = useData();
+    const { darkMode } = useTheme();
+	const techTranslations = (translations?.["techStack"] as Record<string, string>) || {};
+	const detailsTranslations = (translations?.["details"] as Record<string, string>) || {};
+	const email = detailsTranslations?.["personal-info-email-value"] || "ketutshridhara@gmail.com";
+	const projectsHref = `/${currentLang || "en"}/projects`;
+	const connectHref = `mailto:${email}`;
 
 	return (
 		<>
-			<motion.div 
+			<motion.div
 				initial={{ opacity: 0, y: 20 }}
 				animate={{ opacity: 1, y: 0 }}
 				transition={{ duration: 0.5 }}
 				className="col-span-4 bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] p-4 md:p-6"
 			>
-				<h3 className="text-lg md:text-xl font-bold mb-4">{translations?.["tech-stack-title"] || "Tech Stack"}</h3>
-				<p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-					{translations?.["tech-stack-description"] || "Teknologi dan tools yang saya gunakan untuk membangun aplikasi — terorganisir berdasarkan kategori dan level kenyamanan."}
-				</p>
-				
-				{/* Logo Loop */}
+				<h3 className="text-lg md:text-xl font-bold mb-4">
+					{techTranslations?.["tech-stack-title"] || "Tech Stack"}
+				</h3>
 				<div className="py-4 overflow-hidden">
 					<TechStackLogos />
 				</div>
-
-				{/* Category Selection */}
-				<div className="flex flex-wrap gap-2 mb-6">
-					<button
-						onClick={() => {
-							if (selectedCategory === "all") {
-								// Jika tombol "All" diklik saat sudah aktif, toggle dropdown
-								setIsCategoryDropdownOpen(!isCategoryDropdownOpen);
-							} else {
-								// Jika tombol "All" diklik saat kategori lain aktif, aktifkan "All"
-								setSelectedCategory("all");
-								setIsCategoryDropdownOpen(true);
-							}
-						}}
-						className={`px-4 py-2 text-sm font-medium capitalize border-2 transition-all duration-200 ease-in-out ${
-							selectedCategory === "all"
-								? "bg-black text-white dark:bg-zinc-700 dark:text-white border-black dark:border-zinc-600 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_0px_rgba(255,255,255,0.2)] active:shadow-none active:translate-x-[3px] active:translate-y-[3px]"
-								: "bg-white text-black dark:bg-zinc-900 dark:text-white border-black dark:border-zinc-600 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] active:shadow-none active:translate-x-[3px] active:translate-y-[3px]"
-						}`}
-					>
-						All
-					</button>
-					{categories.map((category) => (
-						<button
-							key={category}
-							onClick={() => {
-								if (selectedCategory === category) {
-									// Jika kategori yang sama diklik saat sudah aktif, toggle dropdown
-									setIsCategoryDropdownOpen(!isCategoryDropdownOpen);
-								} else {
-									// Jika kategori berbeda diklik, pilih kategori baru dan tampilkan dropdown
-									setSelectedCategory(category);
-									setIsCategoryDropdownOpen(true);
-								}
-							}}
-							className={`px-4 py-2 text-sm font-medium capitalize border-2 transition-all duration-200 ease-in-out ${
-								selectedCategory === category
-									? "bg-black text-white dark:bg-zinc-700 dark:text-white border-black dark:border-zinc-600 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] dark:shadow-[3px_3px_0px_0px_rgba(255,255,255,0.2)] active:shadow-none active:translate-x-[3px] active:translate-y-[3px]"
-									: "bg-white text-black dark:bg-zinc-900 dark:text-white border-black dark:border-zinc-600 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] active:shadow-none active:translate-x-[3px] active:translate-y-[3px]"
-							}`}
-						>
-							{category}
-						</button>
-					))}
-				</div>
-
-				{/* Category Description */}
-				{selectedCategory !== "all" && isCategoryDropdownOpen && (
-					<p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-						{getCategoryDescription(selectedCategory)}
-					</p>
-				)}
-
-				{/* Tech Stack Items */}
-				<div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-					{isCategoryDropdownOpen ? (
-						(selectedCategory === "all" 
-							? techStack 
-							: groupedTechStack[selectedCategory] || []
-						).map((item, index) => (
-							<motion.div
-								key={item.name}
-								initial={{ opacity: 0, y: 10 }}
-								animate={{ opacity: 1, y: 0 }}
-								transition={{ duration: 0.2, delay: 0.1 * index }}
-								className="flex items-center justify-between p-3 bg-gray-50 dark:bg-zinc-800 rounded-lg"
-							>
-								<div className="flex items-center gap-3">
-									<div className="w-10 h-10 flex items-center justify-center text-sm font-bold">
-										{item.logo ? (
-											<img 
-												src={item.logo} 
-												alt={item.name} 
-												className="w-6 h-6 object-contain"
-												onError={(e) => {
-													const target = e.target as HTMLImageElement;
-													target.style.display = 'none';
-												}}
-											/>
-										) : (
-											<div className="bg-gray-200 border-2 border-dashed rounded-xl w-6 h-6" />
-										)}
-									</div>
-									<div>
-										<div className="font-bold text-sm">{item.name}</div>
-										<div className="text-xs text-gray-500 dark:text-gray-400">{item.description}</div>
-									</div>
-								</div>
-								{/* Skill bar */}
-								<div className="w-24">
-									<div className="h-2 bg-gray-200 dark:bg-zinc-700 overflow-hidden rounded-full">
-										<AnimatePresence>
-											<motion.div 
-												initial={{ width: 0 }}
-												animate={{ width: `${item.progress}%` }}
-												exit={{ width: 0 }}
-												transition={{ duration: 0.3, delay: 0.1 * index }}
-												className={`h-full rounded-full ${getProgressColor()}`}
-											/>
-										</AnimatePresence>
-									</div>
-									<div className="text-xs text-right text-gray-500 dark:text-gray-400 mt-1 capitalize">{item.level}</div>
-								</div>
-							</motion.div>
-						))
-					) : null}
-				</div>
 			</motion.div>
 
-			{/* Currently Learning */}
-			<motion.div 
-				initial={{ opacity: 0, y: 20 }}
-				animate={{ opacity: 1, y: 0 }}
-				transition={{ duration: 0.5 }}
-				className="col-span-4 bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] p-4 md:p-6"
-			>
-				<h3 className="text-lg md:text-xl font-bold mb-4">{translations?.["currently-learning-title"] || "Currently Learning"}</h3>
-				<p className="text-sm text-gray-500 dark:text-gray-400 mb-4">
-					{translations?.["currently-learning-description"] || "Teknologi yang sedang saya pelajari untuk meningkatkan skill."}
-				</p>
-				<ul className="space-y-2">
-					{currentlyLearning.map((item, index) => (
-						<motion.li 
-							key={item.name}
+			<section className="col-span-4 grid grid-cols-1 lg:grid-cols-2 gap-4">
+				<motion.div
+					initial={{ opacity: 0, y: 20 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.5, delay: 0.1 }}
+					className="bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] p-4 md:p-6 flex flex-col gap-4"
+				>
+					<div>
+						<h3 className="text-lg md:text-xl font-bold">
+							{techTranslations?.["currently-learning-title"] || "Currently Learning"}
+						</h3>
+						<p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+							{techTranslations?.["currently-learning-description"] || "Latest technologies I'm exploring to sharpen my skills."}
+						</p>
+					</div>
+                    {currentlyLearning.length > 0 ? (
+                        <ul className="space-y-3">
+                            {currentlyLearning.map((item, index) => {
+                                const themedIcon = getThemedIconUrl(item.icon, darkMode);
+
+                                const content = (
+                                    <div className="flex items-start gap-3">
+                                        {themedIcon ? (
+                                            <img
+                                                src={themedIcon}
+                                                alt={item.name}
+                                                loading="lazy"
+                                                decoding="async"
+                                                className="h-10 w-10 flex-shrink-0 rounded-md border border-black/20 bg-white object-contain p-1 dark:border-white/30"
+                                            />
+                                        ) : null}
+                                        <div className="flex flex-col">
+                                            <span className="font-bold text-sm md:text-base leading-tight">
+                                                {item.name}
+                                            </span>
+                                            <p className="text-xs md:text-sm text-gray-600 dark:text-gray-300 mt-1 leading-snug">
+                                                {item.description}
+                                            </p>
+                                        </div>
+                                    </div>
+                                );
+
+                                if (!item.link) {
+					return (
+						<motion.li
+							key={`${item.name}-${index}`}
 							initial={{ opacity: 0, y: 10 }}
 							animate={{ opacity: 1, y: 0 }}
-							transition={{ duration: 0.2, delay: 0.1 * index }}
-							className="flex items-center justify-between"
+							whileHover={{ y: -4 }}
+							transition={{ duration: 0.2, delay: 0.15 + index * 0.08 }}
+							className="rounded-lg border-2 border-black dark:border-zinc-600 bg-gray-50 dark:bg-zinc-800 p-3 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)]"
 						>
-							<div>
-							<div className="font-bold">{item.name}</div>
-								<div className="text-xs text-gray-500 dark:text-gray-400">{item.description}</div>
-							</div>
-							<div className="text-xs text-gray-500 dark:text-gray-400">{item.status}</div>
+							{content}
 						</motion.li>
-					))}
-				</ul>
-			</motion.div>
+					);
+                                }
+
+                                return (
+                                    <motion.li
+                                        key={`${item.name}-${index}`}
+                                        initial={{ opacity: 0, y: 10 }}
+                                        animate={{ opacity: 1, y: 0 }}
+                                        transition={{ duration: 0.2, delay: 0.15 + index * 0.08 }}
+                                        whileHover={{ y: -4 }}
+                                        whileTap={{ y: 0 }}
+                                        className="rounded-lg border-2 border-black dark:border-zinc-600 bg-gray-50 dark:bg-zinc-800 shadow-[3px_3px_0px_0px_rgba(0,0,0,1)] transition-all duration-200"
+                                    >
+                                        <a
+                                            href={item.link}
+                                            target="_blank"
+                                            rel="noopener noreferrer"
+                                            className="flex h-full w-full items-start gap-3 rounded-md p-3 cursor-pointer transition-all duration-200 hover:translate-x-[1px] hover:translate-y-[1px] hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] active:translate-x-[2px] active:translate-y-[2px] active:shadow-none focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus-visible:ring-offset-gray-50 dark:hover:shadow-[2px_2px_0px_0px_rgba(255,255,255,1)] dark:focus-visible:ring-white dark:focus-visible:ring-offset-zinc-800"
+                                        >
+                                            {content}
+                                        </a>
+                                    </motion.li>
+                                );
+                            })}
+                        </ul>
+					) : (
+						<p className="text-sm text-gray-500 dark:text-gray-400">
+							No active learning items at the moment.
+						</p>
+					)}
+				</motion.div>
+
+				<motion.div
+					initial={{ opacity: 0, y: 20 }}
+					animate={{ opacity: 1, y: 0 }}
+					transition={{ duration: 0.5, delay: 0.2 }}
+					className="bg-white dark:bg-zinc-900 border-2 dark:border-zinc-600 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] p-4 md:p-6 flex flex-col gap-4"
+				>
+					<div>
+						<h3 className="text-lg md:text-xl font-bold">Let's Collaborate</h3>
+						<p className="text-sm text-gray-500 dark:text-gray-400 mt-2">
+							Looking for a teammate or curious about my work? Pick a button below and let's make something great.
+						</p>
+					</div>
+					<div className="flex flex-col sm:flex-row sm:flex-wrap gap-3">
+						<Link
+							to={projectsHref}
+					className="flex-1 min-w-[160px] px-4 py-3 text-center font-bold border-2 border-black dark:border-white bg-white dark:bg-zinc-900 shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all duration-200 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] active:shadow-none active:translate-x-[3px] active:translate-y-[3px] cursor-pointer"
+						>
+							View My Projects
+						</Link>
+						<button
+							type="button"
+							onClick={() => console.info("Download CV placeholder: attach your resume link when ready.")}
+					className="flex-1 min-w-[160px] px-4 py-3 font-bold border-2 border-dashed border-black dark:border-white bg-white dark:bg-zinc-900 text-center shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] cursor-not-allowed"
+							aria-disabled
+						>
+							Download CV
+						</button>
+						<a
+							href={connectHref}
+					className="flex-1 min-w-[160px] px-4 py-3 text-center font-bold border-2 border-black dark:border-white bg-white text-black dark:bg-zinc-900 dark:text-white shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] transition-all duration-200 hover:bg-yellow-200/40 dark:hover:bg-yellow-300/20 hover:shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[2px] hover:translate-y-[2px] active:shadow-none active:translate-x-[3px] active:translate-y-[3px] cursor-pointer"
+						>
+							Let’s Connect
+						</a>
+					</div>
+				</motion.div>
+			</section>
 		</>
 	);
 }

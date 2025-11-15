@@ -4,9 +4,11 @@ import {
 	AchievementSchema,
 	BaseAchievementSchema,
 	BaseProjectSchema,
+	CurrentlyLearningItemSchema,
 	ProjectSchema,
 	SupportedLangSchema,
 	type Achievement,
+	type CurrentlyLearningItem,
 	type Project,
 	type SupportedLang,
 	type TechStack,
@@ -176,7 +178,7 @@ const ParseTechStackSchema = z.array(
 		logo: z.string().optional()
 	}).transform((item) => {
 		// If language-specific description exists, use it; otherwise fallback to general description
-		let description = item.description || "";
+		const description = item.description || "";
 		// We'll handle language-specific descriptions in the DataProvider
 		return { ...item, description } as TechStack & { logo?: string };
 	})
@@ -184,8 +186,41 @@ const ParseTechStackSchema = z.array(
 
 export async function fetchTechStack(): Promise<TechStack[]> {
 	try {
-		const data = await fetchData("Tech_stack");
-		const validResult = ParseTechStackSchema.safeParse(data);
+		const raw = await fetchData("Tech_stack");
+		if (import.meta.env.DEV) {
+			// @ts-expect-error debug assignment for development diagnostics
+			globalThis.__techStackRaw = raw;
+		}
+		const sanitized = raw
+			.filter((item) => {
+				const category = typeof item.category === "string" ? item.category.trim() : "";
+				const name = typeof item.name === "string" ? item.name.trim() : "";
+				const level = typeof item.level === "string" ? item.level.trim() : "";
+				return category.length > 0 && name.length > 0 && level.length > 0;
+			})
+			.map((item) => {
+				const progressValue =
+					typeof item.progress === "string" || typeof item.progress === "number"
+						? item.progress
+						: "0";
+				return {
+					...item,
+					category: typeof item.category === "string" ? item.category.trim() : "",
+					name: typeof item.name === "string" ? item.name.trim() : "",
+					description: typeof item.description === "string" ? item.description.trim() : item.description,
+					description_en: typeof item.description_en === "string" ? item.description_en.trim() : item.description_en,
+					description_id: typeof item.description_id === "string" ? item.description_id.trim() : item.description_id,
+					level: typeof item.level === "string" ? item.level.trim() : item.level,
+					progress: progressValue,
+					logo: typeof item.logo === "string" ? item.logo.trim() : item.logo,
+				};
+			});
+
+		if (import.meta.env.DEV) {
+			// @ts-expect-error debug assignment for development diagnostics
+			globalThis.__techStackSanitized = sanitized;
+		}
+		const validResult = ParseTechStackSchema.safeParse(sanitized);
 
 		if (!validResult.success) {
 			console.error(
@@ -202,19 +237,45 @@ export async function fetchTechStack(): Promise<TechStack[]> {
 	}
 }
 
-// Schema for currently learning items
-const CurrentlyLearningSchema = z.array(
-	z.object({
-		name: z.string(),
-		description: z.string(),
-		status: z.string(),
-	})
-);
-
-export async function fetchCurrentlyLearning(): Promise<{name: string, description: string, status: string}[]> {
+export async function fetchCurrentlyLearning(): Promise<CurrentlyLearningItem[]> {
 	try {
 		const data = await fetchData("Currently_learning");
-		const validResult = CurrentlyLearningSchema.safeParse(data);
+		let statusColumnDetected = false;
+
+		const sanitizeUrl = (value: unknown) => {
+			if (typeof value !== "string") {
+				return undefined;
+			}
+			const trimmed = value.trim();
+			if (!trimmed) {
+				return undefined;
+			}
+			try {
+				return new URL(trimmed).toString();
+			} catch (error) {
+				console.warn("[Currently Learning] Invalid URL detected:", trimmed, error);
+				return undefined;
+			}
+		};
+
+		const sanitized = data.map((item) => {
+			const name = typeof item.name === "string" ? item.name.trim() : "";
+			const description =
+				typeof item.description === "string" ? item.description.trim() : "";
+			const link = sanitizeUrl((item as Record<string, unknown>).link);
+			const icon =
+				sanitizeUrl((item as Record<string, unknown>).icons ?? (item as Record<string, unknown>).icon);
+			if (
+				!statusColumnDetected &&
+				Object.prototype.hasOwnProperty.call(item, "status")
+			) {
+				statusColumnDetected = true;
+			}
+
+			return { name, description, link, icon } satisfies CurrentlyLearningItem;
+		});
+
+		const validResult = z.array(CurrentlyLearningItemSchema).safeParse(sanitized);
 
 		if (!validResult.success) {
 			console.error(
@@ -222,6 +283,12 @@ export async function fetchCurrentlyLearning(): Promise<{name: string, descripti
 				z.prettifyError(validResult.error),
 			);
 			return [];
+		}
+
+		if (statusColumnDetected) {
+			console.info(
+				"[Currently Learning] The 'status' column is no longer used. Please remove it from the spreadsheet to avoid future warnings.",
+			);
 		}
 
 		return validResult.data;

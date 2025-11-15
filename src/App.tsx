@@ -1,5 +1,5 @@
 import { Navigate, Outlet, Route, Routes, useParams, useLocation } from "react-router-dom";
-import { useData } from "./contexts/DataProvider";
+import { useData } from "./contexts/useData";
 import { useEffect, useMemo, useState } from "react";
 import LoadingScreen from "./components/LoadingScreen";
 import Background from "./components/Background";

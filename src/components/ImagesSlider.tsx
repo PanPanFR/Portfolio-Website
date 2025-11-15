@@ -1,5 +1,5 @@
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import OptimizedImage from "./OptimizedImage";
 
 export default function ImagesSlider({
@@ -17,9 +17,9 @@ export default function ImagesSlider({
 	};
 
 	// Function to show the next image
-	const handleNext = () => {
+	const handleNext = useCallback(() => {
 		setCurrentIndex((prev) => (prev === images.length - 1 ? 0 : prev + 1));
-	};
+	}, [images.length]);
 
 	useEffect(() => {
 		setImageLoading(true);
@@ -35,7 +35,7 @@ export default function ImagesSlider({
 		return () => {
 			clearInterval(automaticChange);
 		};
-	}, [images]);
+	}, [images, handleNext]);
 
 	if (!images || images.length === 0) {
 		return null;

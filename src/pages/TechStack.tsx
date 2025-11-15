@@ -1,6 +1,6 @@
 import React, { useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useData } from "../contexts/DataProvider";
+import { useData } from "../contexts/useData";
 import TechStackLogos from "../components/TechStackLogos";
 import { 
 	SiReact, SiTypescript, SiJavascript, SiHtml5, SiCss3, SiNodedotjs, 
@@ -174,21 +174,18 @@ export default function TechStack() {
 						{translations?.["currently-learning-description"] || "Teknologi yang sedang saya pelajari untuk meningkatkan skill."}
 					</p>
 					<ul className="space-y-2">
-						{currentlyLearning.map((item, index) => (
-							<motion.li 
-								key={item.name}
-								initial={{ opacity: 0, y: 10 }}
-								animate={{ opacity: 1, y: 0 }}
-								transition={{ duration: 0.2, delay: 0.4 + index * 0.1 }}
-								className="flex items-center justify-between"
-							>
-								<div>
-									<div className="font-bold">{item.name}</div>
-									<div className="text-xs text-gray-500 dark:text-gray-400">{item.description}</div>
-								</div>
-								<div className="text-xs text-gray-500 dark:text-gray-400">{item.status}</div>
-							</motion.li>
-						))}
+					{currentlyLearning.map((item, index) => (
+						<motion.li 
+							key={item.name}
+							initial={{ opacity: 0, y: 10 }}
+							animate={{ opacity: 1, y: 0 }}
+							transition={{ duration: 0.2, delay: 0.4 + index * 0.1 }}
+							className="space-y-1"
+						>
+							<div className="font-bold">{item.name}</div>
+							<div className="text-xs text-gray-500 dark:text-gray-400">{item.description}</div>
+						</motion.li>
+					))}
 					</ul>
 				</motion.div>
 

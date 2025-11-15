@@ -49,7 +49,7 @@ function Button(props: ButtonProps) {
       aria-label={ariaLabel}
       whileHover="visible"
       variants={parentVariance || defaultParentVariance}
-      className={`inline-flex items-center justify-center rounded-sm border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all duration-200 ease-in-out hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] bg-white dark:bg-zinc-900 text-black dark:text-white w-9 h-9 sm:w-10 sm:h-10 text-xs sm:text-sm gap-1 sm:gap-2 ${className || ""}`}
+      className={`inline-flex items-center justify-center rounded-sm border-2 border-black shadow-[2px_2px_0px_0px_rgba(0,0,0,1)] transition-all duration-200 ease-in-out hover:shadow-[1px_1px_0px_0px_rgba(0,0,0,1)] hover:translate-x-[1px] hover:translate-y-[1px] active:shadow-none active:translate-x-[2px] active:translate-y-[2px] bg-white dark:bg-zinc-900 text-black dark:text-white w-9 h-9 sm:w-10 sm:h-10 text-xs sm:text-sm gap-1 sm:gap-2 cursor-pointer focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-black focus-visible:ring-offset-2 focus-visible:ring-offset-white dark:focus-visible:ring-white dark:focus-visible:ring-offset-zinc-900 ${className || ""}`}
       {...(href
         ? {
             href,

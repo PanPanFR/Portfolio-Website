@@ -1,8 +1,8 @@
 import { AnimatePresence, motion } from "framer-motion";
 import { Moon, Sun, Languages, Check } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { useTheme } from "../contexts/ThemeProvider";
-import { useData } from "../contexts/DataProvider";
+import { useTheme } from "../contexts/useTheme";
+import { useData } from "../contexts/useData";
 import { Link, useLocation } from "react-router-dom";
 
 export default function Header() {
@@ -75,10 +75,10 @@ function LanguageSwitcher() {
 						const newPath = `/${code}${basePath ? `/${basePath}` : ''}`;
 
 						return (
-							<Link
+				<Link
 								key={code}
 								to={newPath}
-								className="w-full flex items-center justify-between gap-2 rounded-md px-3 py-2 text-sm text-gray-700 dark:text-gray-200 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700"
+					className="w-full flex items-center justify-between gap-2 rounded-md px-3 py-2 text-sm text-gray-700 dark:text-gray-200 transition-colors hover:bg-gray-100 dark:hover:bg-gray-700 focus:outline-none focus:bg-gray-100 dark:focus:bg-gray-700 cursor-pointer"
 								role="menuitem"
 							>
 								<span>{name}</span>

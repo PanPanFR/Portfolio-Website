@@ -1,4 +1,4 @@
-import { useData } from "../contexts/DataProvider";
+import { useData } from "../contexts/useData";
 import { Mail } from "lucide-react";
 import Button from "./Button";
 

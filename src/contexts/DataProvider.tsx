@@ -1,12 +1,4 @@
-import {
-	createContext,
-	useState,
-	useMemo,
-	useCallback,
-	type ReactNode,
-	useContext,
-	useEffect,
-} from "react";
+import { useState, useMemo, useCallback, type ReactNode, useEffect } from "react";
 import {
 	useSupportedLangs,
 	useProjects,
@@ -28,7 +20,10 @@ import {
 	type SupportedLang,
 	type Translations,
 	type TechStack,
+	type CurrentlyLearningItem,
 } from "../lib/schemas";
+import { DataContent, type DataContextValue } from "./DataContext";
+
 
 interface Content {
 	supportedLangs: SupportedLang[];
@@ -38,20 +33,9 @@ interface Content {
 	translations: Translations;
 	contributions: Contributions;
 	currentLang: string;
-	currentlyLearning: {name: string, description: string, status: string}[];
+	currentlyLearning: CurrentlyLearningItem[];
 	blogPosts: {title: string, description: string, link: string, thumbnail: string, date: string, category: string}[];
 }
-
-const DataContent = createContext<
-	| (Content & {
-			isLoading: boolean;
-			loadContentForLang: (langCode: string) => void;
-			invalidateAllCaches: () => void;
-			invalidateCache: (key: string) => void;
-	  })
-	| null
->(null);
-
 export function DataProvider({ children }: { children: ReactNode }) {
 	const [content, setContent] = useState<Content>({
 		supportedLangs: [],
@@ -81,38 +65,37 @@ export function DataProvider({ children }: { children: ReactNode }) {
 	
 	// Handle errors
 	useEffect(() => {
-		if (supportedLangsError) {
-			console.error("Error loading supported languages:", supportedLangsError);
-			showBoundary(supportedLangsError);
-		}
-		if (projectsError) {
-			console.error("Error loading projects:", projectsError);
-			showBoundary(projectsError);
-		}
-		if (achievementsError) {
-			console.error("Error loading achievements:", achievementsError);
-			showBoundary(achievementsError);
-		}
-		if (techStackError) {
-			console.error("Error loading tech stack:", techStackError);
-			showBoundary(techStackError);
-		}
-		if (contributionsError) {
-			console.error("Error loading contributions:", contributionsError);
-			showBoundary(contributionsError);
-		}
+	if (supportedLangsError) {
+		console.error("Error loading supported languages:", supportedLangsError);
+		showBoundary(supportedLangsError);
+	}
+	if (projectsError) {
+		console.error("Error loading projects:", projectsError);
+		showBoundary(projectsError);
+	}
+	if (achievementsError) {
+		console.error("Error loading achievements:", achievementsError);
+		showBoundary(achievementsError);
+	}
+	if (techStackError) {
+		console.error("Error loading tech stack:", techStackError);
+		showBoundary(techStackError);
+	}
+	if (contributionsError) {
+		console.error("Error loading contributions:", contributionsError);
+	}
 		if (currentlyLearningError) {
-			console.error("Error loading currently learning:", currentlyLearningError);
-			showBoundary(currentlyLearningError);
-		}
-		if (blogPostsError) {
-			console.error("Error loading blog posts:", blogPostsError);
-			showBoundary(blogPostsError);
-		}
-		if (translationsError) {
-			console.error("Error loading translations:", translationsError);
-			showBoundary(translationsError);
-		}
+		console.error("Error loading currently learning:", currentlyLearningError);
+		showBoundary(currentlyLearningError);
+	}
+	if (blogPostsError) {
+		console.error("Error loading blog posts:", blogPostsError);
+		showBoundary(blogPostsError);
+	}
+	if (translationsError) {
+		console.error("Error loading translations:", translationsError);
+		showBoundary(translationsError);
+	}
 	}, [
 		supportedLangsError,
 		projectsError,
@@ -128,10 +111,10 @@ export function DataProvider({ children }: { children: ReactNode }) {
 	// Update content when data changes
 	useEffect(() => {
 		if (supportedLangsData) {
-			setContent(prev => ({
-				...prev,
-				supportedLangs: supportedLangsData
-			}));
+		setContent((prev) => ({
+			...prev,
+			supportedLangs: supportedLangsData,
+		}));
 			setIsLoading(false);
 		}
 	}, [supportedLangsData]);
@@ -155,11 +138,10 @@ export function DataProvider({ children }: { children: ReactNode }) {
 	}, [achievementsData]);
 	
 	useEffect(() => {
-		if (techStackData) {
-			// Update tech stack descriptions based on current language
-			const updatedTechStack = techStackData.map(item => {
+	if (techStackData) {
+		const updatedTechStack = techStackData.map((item) => {
 				// Create a copy of the item
-				const updatedItem = { ...item };
+			const updatedItem = { ...item };
 				
 				// Select the appropriate description based on the current language
 				if (content.currentLang === 'en' && item.description_en) {
@@ -173,59 +155,59 @@ export function DataProvider({ children }: { children: ReactNode }) {
 					updatedItem.description = "No description available";
 				}
 				
-				return updatedItem;
-			});
+			return updatedItem;
+		});
 			
-			setContent(prev => ({
-				...prev,
-				techStack: updatedTechStack
-			}));
+		setContent((prev) => ({
+			...prev,
+			techStack: updatedTechStack,
+		}));
 		}
 	}, [techStackData, content.currentLang]);
 	
 	useEffect(() => {
-		if (contributionsData) {
-			setContent(prev => ({
-				...prev,
-				contributions: contributionsData
-			}));
+	if (contributionsData) {
+		setContent((prev) => ({
+			...prev,
+			contributions: contributionsData,
+		}));
 		}
 	}, [contributionsData]);
 	
 	useEffect(() => {
-		if (currentlyLearningData) {
-			setContent(prev => ({
-				...prev,
-				currentlyLearning: currentlyLearningData
-			}));
+	if (currentlyLearningData) {
+		setContent((prev) => ({
+			...prev,
+			currentlyLearning: currentlyLearningData,
+		}));
 		}
 	}, [currentlyLearningData]);
 	
 	useEffect(() => {
-		if (blogPostsData) {
-			setContent(prev => ({
-				...prev,
-				blogPosts: blogPostsData
-			}));
+	if (blogPostsData) {
+		setContent((prev) => ({
+			...prev,
+			blogPosts: blogPostsData,
+		}));
 		}
 	}, [blogPostsData]);
 	
 	useEffect(() => {
-		if (translationsData) {
-			setContent(prev => ({
-				...prev,
-				translations: translationsData
-			}));
+	if (translationsData) {
+		setContent((prev) => ({
+			...prev,
+			translations: translationsData,
+		}));
 		}
 	}, [translationsData]);
 	
 	// Load content for a specific language
 	const loadContentForLang = useCallback((langCode: string) => {
 		// Update the current language - this will trigger the useTranslations hook to fetch new translations
-		setContent(prev => ({
-			...prev,
-			currentLang: langCode
-		}));
+	setContent((prev) => ({
+		...prev,
+		currentLang: langCode,
+	}));
 	}, []);
 	
 	// Cache invalidation functions
@@ -237,23 +219,18 @@ export function DataProvider({ children }: { children: ReactNode }) {
 		invalidateCache(key);
 	}, []);
 	
-	const value = useMemo(() => ({
+	const value: DataContextValue = useMemo(
+	() => ({
 		...content,
 		isLoading,
 		loadContentForLang,
 		invalidateAllCaches: invalidateAll,
 		invalidateCache: invalidateSpecific,
-	}), [content, isLoading, loadContentForLang, invalidateAll, invalidateSpecific]);
+	}),
+	[content, isLoading, loadContentForLang, invalidateAll, invalidateSpecific],
+);
 
 	return (
 		<DataContent.Provider value={value}>{children}</DataContent.Provider>
 	);
-}
-
-export function useData() {
-	const context = useContext(DataContent);
-	if (!context) {
-		throw new Error("useData must be used within a DataProvider");
-	}
-	return context;
 }

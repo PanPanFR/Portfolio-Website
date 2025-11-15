@@ -1,22 +1,25 @@
 import React, { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 
-export type LogoItem =
-  | {
-      node: React.ReactNode;
-      href?: string;
-      title?: string;
-      ariaLabel?: string;
-    }
-  | {
-      src: string;
-      alt?: string;
-      href?: string;
-      title?: string;
-      srcSet?: string;
-      sizes?: string;
-      width?: number;
-      height?: number;
-    };
+interface BaseLogoItem {
+  href?: string;
+  title?: string;
+  ariaLabel?: string;
+}
+
+export interface NodeLogoItem extends BaseLogoItem {
+  node: React.ReactNode;
+}
+
+export interface ImageLogoItem extends BaseLogoItem {
+  src: string;
+  alt?: string;
+  srcSet?: string;
+  sizes?: string;
+  width?: number;
+  height?: number;
+}
+
+export type LogoItem = NodeLogoItem | ImageLogoItem;
 
 export interface LogoLoopProps {
   logos: LogoItem[];
@@ -70,7 +73,7 @@ const useResizeObserver = (
     return () => {
       observers.forEach(observer => observer?.disconnect());
     };
-  }, dependencies);
+  }, [callback, elements, dependencies]);
 };
 
 const useImageLoader = (
@@ -110,7 +113,7 @@ const useImageLoader = (
         img.removeEventListener('error', handleImageLoad);
       });
     };
-  }, dependencies);
+  }, [seqRef, onLoad, dependencies]);
 };
 
 const useAnimationLoop = (
@@ -180,8 +183,10 @@ const useAnimationLoop = (
       }
       lastTimestampRef.current = null;
     };
-  }, [targetVelocity, seqWidth, isHovered, pauseOnHover]);
+  }, [trackRef, targetVelocity, seqWidth, isHovered, pauseOnHover]);
 };
+
+const isNodeItem = (item: LogoItem): item is NodeLogoItem => 'node' in item;
 
 export const LogoLoop = React.memo<LogoLoopProps>(
   ({
@@ -202,6 +207,9 @@ export const LogoLoop = React.memo<LogoLoopProps>(
     const containerRef = useRef<HTMLDivElement>(null);
     const trackRef = useRef<HTMLDivElement>(null);
     const seqRef = useRef<HTMLUListElement>(null);
+    const resizeObserverTargets = useMemo(() => [containerRef, seqRef], []);
+    const resizeDependencies = useMemo(() => [logos, gap, logoHeight], [logos, gap, logoHeight]);
+    const imageLoaderDependencies = useMemo(() => [logos], [logos]);
 
     const [seqWidth, setSeqWidth] = useState<number>(0);
     const [copyCount, setCopyCount] = useState<number>(ANIMATION_CONFIG.MIN_COPIES);
@@ -225,9 +233,9 @@ export const LogoLoop = React.memo<LogoLoopProps>(
       }
     }, []);
 
-    useResizeObserver(updateDimensions, [containerRef, seqRef], [logos, gap, logoHeight]);
+    useResizeObserver(updateDimensions, resizeObserverTargets, resizeDependencies);
 
-    useImageLoader(seqRef, updateDimensions, [logos, gap, logoHeight]);
+    useImageLoader(seqRef, updateDimensions, imageLoaderDependencies);
 
     useAnimationLoop(trackRef, targetVelocity, seqWidth, isHovered, pauseOnHover);
 
@@ -265,9 +273,9 @@ export const LogoLoop = React.memo<LogoLoopProps>(
 
     const renderLogoItem = useCallback(
       (item: LogoItem, key: React.Key) => {
-        const isNodeItem = 'node' in item;
+        const isNode = isNodeItem(item);
 
-        const content = isNodeItem ? (
+        const content = isNode ? (
           <span
             className={cx(
               'inline-flex items-center',
@@ -275,9 +283,9 @@ export const LogoLoop = React.memo<LogoLoopProps>(
               scaleOnHover &&
                 'transition-transform duration-200 ease-linear group-hover/item:scale-120'
             )}
-            aria-hidden={!!(item as {href?: string, ariaLabel?: string}).href && !(item as {href?: string, ariaLabel?: string}).ariaLabel}
+            aria-hidden={Boolean(item.href && !item.ariaLabel)}
           >
-            {(item as {node: React.ReactNode}).node}
+            {item.node}
           </span>
         ) : (
           <img
@@ -289,56 +297,51 @@ export const LogoLoop = React.memo<LogoLoopProps>(
               scaleOnHover &&
                 'transition-transform duration-200 ease-linear group-hover/item:scale-120'
             )}
-            src={(item as {src: string}).src}
-            srcSet={(item as {srcSet?: string}).srcSet}
-            sizes={(item as {sizes?: string}).sizes}
-            width={(item as {width?: number}).width}
-            height={(item as {height?: number}).height}
-            alt={(item as {alt?: string}).alt ?? ''}
-            title={(item as {title?: string}).title}
+            src={item.src}
+            srcSet={item.srcSet}
+            sizes={item.sizes}
+            width={item.width}
+            height={item.height}
+            alt={item.alt ?? ''}
+            title={item.title}
             loading="lazy"
             decoding="async"
             draggable={false}
           />
         );
 
-        const itemAriaLabel = isNodeItem
-          ? (((item as {href?: string, ariaLabel?: string}).ariaLabel) ?? ((item as {href?: string, title?: string}).title))
-          : (((item as {alt?: string}).alt) ?? ((item as {title?: string}).title));
+        const itemAriaLabel = item.ariaLabel ?? (isNode ? item.title : item.alt ?? item.title);
+        const hasTooltip = Boolean(item.title);
 
-        const inner = (item as {href?: string}).href ? (
+        const tooltip = hasTooltip ? (
+          <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 text-sm font-bold text-nowrap uppercase bg-white dark:bg-zinc-800 rounded-md border-2 border-zinc-900 dark:border-zinc-300 opacity-0 group-hover/item:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10 after:content-[''] after:absolute after:-bottom-1/2 after:left-1/2 after:-translate-x-1/2 after:border-8 after:border-transparent after:border-t-zinc-900 dark:after:border-t-zinc-300">
+            {item.title}
+          </span>
+        ) : null;
+
+        const inner = item.href ? (
           <a
             className={cx(
-              'inline-flex items-center no-underline rounded',
+              'inline-flex items-center no-underline rounded cursor-pointer',
               'transition-opacity duration-200 ease-linear',
               'hover:opacity-80',
               'focus-visible:outline focus-visible:outline-current focus-visible:outline-offset-2',
               'relative',
               'group/item'
             )}
-            href={(item as any).href}
+            href={item.href}
             aria-label={itemAriaLabel || 'logo link'}
             target="_blank"
             rel="noreferrer noopener"
-            title={(item as any).title}
+            title={item.title}
           >
             {content}
-            {/* Tooltip with navbar style */}
-            {(item as any).title && (
-              <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 text-sm font-bold text-nowrap uppercase bg-white dark:bg-zinc-800 rounded-md border-2 border-zinc-900 dark:border-zinc-300 opacity-0 group-hover/item:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10 after:content-[''] after:absolute after:-bottom-1/2 after:left-1/2 after:-translate-x-1/2 after:border-8 after:border-transparent after:border-t-zinc-900 dark:after:border-t-zinc-300">
-                {(item as any).title}
-              </span>
-            )}
+            {tooltip}
           </a>
         ) : (
           <div className="relative group/item">
             {content}
-            {/* Tooltip with navbar style */}
-            {(item as any).title && (
-              <span className="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 text-sm font-bold text-nowrap uppercase bg-white dark:bg-zinc-800 rounded-md border-2 border-zinc-900 dark:border-zinc-300 opacity-0 group-hover/item:opacity-100 transition-opacity duration-200 whitespace-nowrap z-10 after:content-[''] after:absolute after:-bottom-1/2 after:left-1/2 after:-translate-x-1/2 after:border-8 after:border-transparent after:border-t-zinc-900 dark:after:border-t-zinc-300">
-                {(item as any).title}
-              </span>
-            )}
+            {tooltip}
           </div>
         );
 

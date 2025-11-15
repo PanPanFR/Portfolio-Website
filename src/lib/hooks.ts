@@ -13,6 +13,7 @@ import {
   defaultContributions,
   type Achievement,
   type Contributions,
+  type CurrentlyLearningItem,
   type Project,
   type SupportedLang,
   type Translations,
@@ -127,7 +128,7 @@ export function useContributions() {
 
 // Hook for fetching currently learning items
 export function useCurrentlyLearning() {
-  return useSWR<{name: string, description: string, status: string}[]>(
+  return useSWR<CurrentlyLearningItem[]>(
     'currentlyLearning',
     () => fetchCurrentlyLearning(),
     {

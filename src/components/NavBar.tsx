@@ -1,6 +1,6 @@
 import { Trophy, BookOpen, User, Folder, GitBranch } from "lucide-react";
 import { Link, useLocation } from "react-router-dom";
-import { useData } from "../contexts/DataProvider";
+import { useData } from "../contexts/useData";
 import { motion } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { parentVariants, tooltipVariants } from "./NavBarVariants";
@@ -42,12 +42,20 @@ export default function NavBar() {
 	);
 }
 
-const getMenus = (translations: Record<string, string>) => [
-	{
-		name: translations?.["blog"] || "Blog",
-		path: "blog",
-		Icon: BookOpen,
-	},
+const getMenus = (translations: Record<string, string>) => {
+    const blogTranslation = translations?.["blog"];
+    const blogName = blogTranslation
+        ? blogTranslation.toLowerCase() === "blog"
+            ? `${blogTranslation}s`
+            : blogTranslation
+        : "Blogs";
+
+    return [
+        {
+            name: blogName,
+            path: "blog",
+            Icon: BookOpen,
+        },
 	{
 		name: translations?.["achievements"] || "Achievements",
 		path: "achievements",
@@ -63,12 +71,13 @@ const getMenus = (translations: Record<string, string>) => [
 		path: "projects",
 		Icon: Folder,
 	},
-	{
-		name: translations?.["contributions"] || "Stats",
-		path: "stats",
-		Icon: GitBranch,
-	},
-];
+    {
+        name: translations?.["contributions"] || "Stats",
+        path: "stats",
+        Icon: GitBranch,
+    },
+    ];
+};
 
 
 function DesktopNavBar({
@@ -100,10 +109,10 @@ function DesktopNavBar({
 						</span>
 					</motion.div>
 
-					<Link
+				<Link
 						aria-label={name}
 						to={`/${currentLang}${path ? `/${path}` : ""}`}
-						className={`md:px-1 md:py-1.5 rounded flex flex-col items-center transition-all duration-300 hover:shadow-none
+					className={`md:px-1 md:py-1.5 rounded flex flex-col items-center transition-all duration-300 hover:shadow-none cursor-pointer
                                 ${
 									basePath === path
 										? "bg-black dark:bg-white text-white dark:text-black"
@@ -176,13 +185,13 @@ function MobileNavBar({
 			<ul className="flex items-center justify-around mb-1">
 				{getMenus(translations).map(({ name, path, Icon }) => (
 					<motion.li key={name} className="flex-1">
-						<Link
+				<Link
 							ref={(el) => {
 								menusRef.current[path] = el;
 							}}
 							aria-label={name}
 							to={`/${currentLang}${path ? `/${path}` : ""}`}
-							className="flex flex-col items-center justify-center py-1"
+					className="flex flex-col items-center justify-center py-1 cursor-pointer"
 						>
 							<Icon size={19} />
 							<span className="text-[0.6rem] font-bold mt-0.5">{name}</span>

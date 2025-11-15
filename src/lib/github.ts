@@ -5,6 +5,7 @@ import {
 	type Contributions,
 } from "./schemas";
 
+
 async function fetchGithubContributions(): Promise<unknown> {
 	const username = import.meta.env.VITE_GITHUB_LINK.split("/")[3];
 	const baseHost = import.meta.env.VITE_GITHUB_API_LINK || "https://github-stats-dusky-mu.vercel.app";
@@ -24,15 +25,20 @@ async function fetchGithubContributions(): Promise<unknown> {
 }
 
 export async function fetchContributions(): Promise<Contributions> {
-	const data = await fetchGithubContributions();
-	const validResult = ContributionsSchema.safeParse(data);
-	if (!validResult.success) {
-		console.error(
-			"Invalid contribution data received from source:",
-			z.prettifyError(validResult.error),
-		);
+	try {
+		const data = await fetchGithubContributions();
+		const validResult = ContributionsSchema.safeParse(data);
+		if (!validResult.success) {
+			console.error(
+				"Invalid contribution data received from source:",
+				z.prettifyError(validResult.error),
+			);
+			return defaultContributions;
+		}
+
+		return validResult.data;
+	} catch (error) {
+		console.error("Failed to fetch contributions:", error);
 		return defaultContributions;
 	}
-
-	return validResult.data;
 }
